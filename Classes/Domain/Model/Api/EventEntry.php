@@ -9,8 +9,14 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-class EventAppointment extends AbstractEntity
+class EventEntry extends AbstractEntity
 {
+    /**
+     * @var EventCalendar|null
+     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     */
+    protected ?EventCalendar $calendar = null;
+
     /**
      * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
      */
@@ -23,16 +29,15 @@ class EventAppointment extends AbstractEntity
     protected ?\DateTime $startDate = null;
 
     /**
-     * @var int|null
+     * @var \DateTime|null
      * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
      */
-    protected ?int $startTime = null;
+    protected ?\DateTime $endDate = null;
 
     /**
-     * @var int|null
      * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
      */
-    protected ?int $endTime = null;
+    protected bool $allDay = false;
 
     /**
      * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
@@ -133,6 +138,16 @@ class EventAppointment extends AbstractEntity
 
     // Getters and Setters
 
+    public function getCalendar(): ?EventCalendar
+    {
+        return $this->calendar;
+    }
+
+    public function setCalendar(?EventCalendar $calendar): void
+    {
+        $this->calendar = $calendar;
+    }
+
     public function getTitle(): string
     {
         return $this->title;
@@ -153,24 +168,24 @@ class EventAppointment extends AbstractEntity
         $this->startDate = $startDate;
     }
 
-    public function getStartTime(): ?int
+    public function getEndDate(): ?\DateTime
     {
-        return $this->startTime;
+        return $this->endDate;
     }
 
-    public function setStartTime(?int $startTime): void
+    public function setEndDate(?\DateTime $endDate): void
     {
-        $this->startTime = $startTime;
+        $this->endDate = $endDate;
     }
 
-    public function getEndTime(): ?int
+    public function isAllDay(): bool
     {
-        return $this->endTime;
+        return $this->allDay;
     }
 
-    public function setEndTime(?int $endTime): void
+    public function setAllDay(bool $allDay): void
     {
-        $this->endTime = $endTime;
+        $this->allDay = $allDay;
     }
 
     public function getDescription(): string

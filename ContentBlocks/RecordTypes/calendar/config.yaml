@@ -1,0 +1,17 @@
+name: xima/calendar
+table: tx_ximatypo3calendar_domain_model_calendar
+prefixFields: false
+labelField: title
+languageAware: false
+workspaceAware: false
+editLocking: false
+security:
+  ignorePageTypeRestriction: true
+fields:
+  - identifier: title
+    type: Text
+    label: Title
+  - identifier: description
+    type: Textarea
+    label: Description
+    enableRichtext: true

@@ -1,5 +1,5 @@
-name: xima/calendar-appointment
-table: tx_ximatypo3calendar_domain_model_appointment
+name: xima/calendar-entry
+table: tx_ximatypo3calendar_domain_model_entry
 prefixFields: false
 labelField: title
 languageAware: false
@@ -8,13 +8,15 @@ editLocking: false
 security:
   ignorePageTypeRestriction: true
 fields:
+  - identifier: calendar
+    type: Select
+    renderType: selectSingle
+    label: Kalender
+    foreign_table: tx_ximatypo3calendar_domain_model_calendar
+    required: true
   - identifier: title
     type: Text
     label: Titel
-  - identifier: description
-    type: Textarea
-    label: Beschreibung
-    enableRichtext: true
   - identifier: datetime_palette
     type: Palette
     label: Datum & Zeit
@@ -26,23 +28,36 @@ fields:
         dbType: date
         format: date
         disableAgeDisplay: true
-      - identifier: start_time
+      - identifier: end_date
         type: DateTime
-        label: Startzeit
-        required: false
-        dbType: time
-        format: time
+        label: Enddatum
+        dbType: date
+        format: date
         disableAgeDisplay: true
-      - identifier: end_time
-        type: DateTime
-        label: Endzeit
-        dbType: time
-        format: time
-        disableAgeDisplay: true
+      - identifier: all_day
+        type: Checkbox
+        label: Ganztägig
+        default: 0
   - identifier: canceled
     type: Checkbox
     label: Abgesagt
     default: 0
+  - identifier: content_tab
+    type: Tab
+    label: Inhalte
+  - identifier: description
+    type: Textarea
+    label: Beschreibung
+    enableRichtext: true
+  - identifier: url
+    type: Link
+    label: URL
+    allowedTypes:
+      - url
+  - identifier: files
+    type: File
+    label: Dateien
+    allowed: common-media-types
   - identifier: location_tab
     type: Tab
     label: Ort & Typ
@@ -114,19 +129,3 @@ fields:
     label: Gastgeber
     foreign_table: fe_users
     allowed: fe_users
-  - identifier: content_tab
-    type: Tab
-    label: Inhalte
-  - identifier: additional_information
-    type: Textarea
-    label: Zusätzliche Informationen
-    enableRichtext: true
-  - identifier: url
-    type: Link
-    label: URL
-    allowedTypes:
-      - url
-  - identifier: files
-    type: File
-    label: Dateien
-    allowed: common-media-types

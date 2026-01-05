@@ -136,4 +136,4 @@ fields:
   - identifier: appointments
     type: Collection
     label: Termine
-    foreign_table: tx_ximatypo3calendar_domain_model_appointment
+    foreign_table: tx_ximatypo3calendar_domain_model_entry

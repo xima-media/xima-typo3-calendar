@@ -9,8 +9,8 @@ return [
     \Xima\XimaTypo3Calendar\Domain\Model\Api\EventOrganizer::class => [
         'tableName' => 'tx_ximatypo3calendar_domain_model_organizer',
     ],
-    \Xima\XimaTypo3Calendar\Domain\Model\Api\EventAppointment::class => [
-        'tableName' => 'tx_ximatypo3calendar_domain_model_appointment',
+    \Xima\XimaTypo3Calendar\Domain\Model\Api\EventEntry::class => [
+        'tableName' => 'tx_ximatypo3calendar_domain_model_entry',
     ],
     \Xima\XimaTypo3Calendar\Domain\Model\Api\EventLocation::class => [
         'tableName' => 'tx_ximatypo3calendar_domain_model_location',

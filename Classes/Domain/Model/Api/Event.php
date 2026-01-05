@@ -132,7 +132,7 @@ class Event extends AbstractEntity
     /**
      * @T3api\Serializer\Groups({"api_patch_dkfz_event_update", "api_post_dkfz_event"})
      * @T3api\ORM\Cascade("persist")
-     * @var ?ObjectStorage<EventAppointment>
+     * @var ?ObjectStorage<EventEntry>
      */
     protected ?ObjectStorage $appointments = null;
 
@@ -182,7 +182,7 @@ class Event extends AbstractEntity
     }
 
     /**
-     * @return ObjectStorage<EventAppointment>|null
+     * @return ObjectStorage<EventEntry>|null
      */
     public function getAppointments(): ?ObjectStorage
     {
@@ -190,7 +190,7 @@ class Event extends AbstractEntity
     }
 
     /**
-     * @param ObjectStorage<EventAppointment>|null $appointments
+     * @param ObjectStorage<EventEntry>|null $appointments
      */
     public function setAppointments(?ObjectStorage $appointments): void
     {

@@ -18,8 +18,9 @@ class CalendarController extends AbstractBackendController
             'tx_ximatypo3calendar_domain_model_event',
             'tx_ximatypo3calendar_domain_model_organizer',
             'tx_ximatypo3calendar_domain_model_speaker',
-            'tx_ximatypo3calendar_domain_model_appointment',
+            'tx_ximatypo3calendar_domain_model_entry',
             'tx_ximatypo3calendar_domain_model_location',
+            'tx_ximatypo3calendar_domain_model_calendar',
         ];
     }
 
