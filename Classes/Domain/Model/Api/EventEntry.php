@@ -14,18 +14,19 @@ class EventEntry extends AbstractEntity
 {
     /**
      * @var EventCalendar|null
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
+    #[Validate(['validator' => 'NotEmpty'])]
     protected ?EventCalendar $calendar = null;
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected string $title = '';
 
     /**
      * @var \DateTime|null
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     #[Validate(['validator' => 'DateTime'])]
     #[Validate(['validator' => 'NotEmpty'])]
@@ -33,85 +34,85 @@ class EventEntry extends AbstractEntity
 
     /**
      * @var \DateTime|null
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected ?\DateTime $endDate = null;
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected bool $allDay = false;
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected string $description = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected string $type = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected string $onlineLink = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected string $directions = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected bool $canceled = false;
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected bool $requiresRegistration = false;
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected string $registrationLink = '';
 
     /**
      * @var \DateTime|null
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected ?\DateTime $registrationDeadline = null;
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected string $fee = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected string $address = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected string $additionalInformation = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected string $url = '';
 
     /**
      * @var EventLocation|null
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected ?EventLocation $location = null;
 
     /**
      * @var ObjectStorage<EventSpeaker>
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      * @Cascade("remove")
      * @Lazy
      */
@@ -119,14 +120,14 @@ class EventEntry extends AbstractEntity
 
     /**
      * @var ObjectStorage<FrontendUser>
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      * @Lazy
      */
     protected ObjectStorage $hosts;
 
     /**
      * @var ObjectStorage<FileReference>
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      * @Cascade("remove")
      * @Lazy
      */

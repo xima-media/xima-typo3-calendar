@@ -22,7 +22,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class EventOrganizer extends AbstractEntity
 {
     /**
-     * @T3api\Serializer\Groups({"api_patch_dkfz_event_update"})
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update"})
      */
     protected string $title = '';
 

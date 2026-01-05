@@ -7,6 +7,7 @@ use SourceBroker\T3api\Annotation as T3api;
 use TYPO3\CMS\Core\Resource\DuplicationBehavior;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
+use TYPO3\CMS\Extbase\Annotation\Validate;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
@@ -23,7 +24,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *             "method": "POST",
  *             "security": "frontend.user.isLoggedIn",
  *             "normalizationContext": {
- *                 "groups": {"api_post_dkfz_event"}
+ *                 "groups": {"api_post_xima_event"}
  *             },
  *         },
  *     },
@@ -36,7 +37,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *             "path": "/events/{id}",
  *             "security": "object.getOwner() && object.getOwner().getUid() == currentUserId",
  *             "normalizationContext": {
- *                 "groups": {"api_patch_dkfz_event_update"}
+ *                 "groups": {"api_patch_xima_event_update"}
  *             },
  *         },
  *         "change_request": {
@@ -44,7 +45,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *             "path": "/events/{id}/change",
  *             "security": "object.getOwner() && object.getOwner().getUid() == currentUserId",
  *             "normalizationContext": {
- *                 "groups": {"api_patch_dkfz_event_update"}
+ *                 "groups": {"api_patch_xima_event_update"}
  *             },
  *         },
  *         "delete": {
@@ -69,50 +70,50 @@ class Event extends AbstractEntity
 {
     /**
      * @T3api\Serializer\Type\CurrentFeUser(FrontendUser::class)
-     * @T3api\Serializer\Groups({"api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_post_xima_event"})
      */
     protected ?FrontendUser $owner = null;
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_dkfz_event_update", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected string $title = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_dkfz_event_update", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected string $language = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_dkfz_event_update", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected string $description = '';
 
     /**
      * @var ObjectStorage<Category>|null
-     * @T3api\Serializer\Groups({"api_patch_dkfz_event_update", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
      */
     #[Lazy]
     protected ?ObjectStorage $categories = null;
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_dkfz_event_update", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected bool $publishToWebsite = false;
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_dkfz_event_update", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected bool $publishToFeed = false;
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_dkfz_event_update", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected ?DateTime $publishDate = null;
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_dkfz_event_update", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
      */
     #[Lazy]
@@ -121,7 +122,7 @@ class Event extends AbstractEntity
 
     /**
      * @var ObjectStorage<FileReference>|null
-     * @T3api\Serializer\Groups({"api_patch_dkfz_event_update", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
      */
     #[Lazy]
@@ -129,7 +130,7 @@ class Event extends AbstractEntity
     protected ?ObjectStorage $documents = null;
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_dkfz_event_update", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
      * /
      */
@@ -138,7 +139,7 @@ class Event extends AbstractEntity
     protected ?Event $draftEvent = null;
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_dkfz_event_update", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
      * @var ?ObjectStorage<EventEntry>
      */
@@ -147,14 +148,14 @@ class Event extends AbstractEntity
     protected ?ObjectStorage $appointments = null;
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_dkfz_event_review"})
+     * @T3api\Serializer\Groups({"api_patch_xima_event_review"})
      */
     protected int $status = DraftStatus::DRAFT->value;
 
     protected string $type = 'draft';
 
     /**
-     * @T3api\Serializer\Groups({"api_post_dkfz_event_change"})
+     * @T3api\Serializer\Groups({"api_post_xima_event_change"})
      * @T3api\ORM\Cascade("persist")
      */
     protected ?Event $targetEvent = null;

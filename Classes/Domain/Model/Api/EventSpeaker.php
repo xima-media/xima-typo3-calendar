@@ -8,22 +8,22 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class EventSpeaker extends AbstractEntity
 {
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected string $title = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected string $firstName = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected string $lastName = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
+     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
      */
     protected string $department = '';
 
