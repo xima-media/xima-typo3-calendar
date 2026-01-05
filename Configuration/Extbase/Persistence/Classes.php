@@ -18,6 +18,9 @@ return [
     \Xima\XimaTypo3Calendar\Domain\Model\Api\EventSpeaker::class => [
         'tableName' => 'tx_ximatypo3calendar_domain_model_speaker',
     ],
+    \Xima\XimaTypo3Calendar\Domain\Model\Api\EventCalendar::class => [
+        'tableName' => 'tx_ximatypo3calendar_domain_model_calendar',
+    ],
     \Xima\XimaTypo3Calendar\Domain\Model\Api\FrontendUser::class => [
         'tableName' => 'fe_users',
     ],

@@ -77,7 +77,7 @@ fields:
       - identifier: registration_deadline
         type: DateTime
         label: Anmeldefrist
-        dbType: date
+        dbType: datetime
       - identifier: fee
         type: Text
         label: Teilnahmegebühr

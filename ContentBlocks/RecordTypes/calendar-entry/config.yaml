@@ -25,14 +25,14 @@ fields:
         type: DateTime
         label: Startdatum
         required: true
-        dbType: date
-        format: date
+        dbType: datetime
+        format: datetime
         disableAgeDisplay: true
       - identifier: end_date
         type: DateTime
         label: Enddatum
-        dbType: date
-        format: date
+        dbType: datetime
+        format: datetime
         disableAgeDisplay: true
       - identifier: all_day
         type: Checkbox
@@ -112,7 +112,7 @@ fields:
       - identifier: registration_deadline
         type: DateTime
         label: Anmeldefrist
-        dbType: date
+        dbType: datetime
       - identifier: fee
         type: Text
         label: Teilnahmegebühr
