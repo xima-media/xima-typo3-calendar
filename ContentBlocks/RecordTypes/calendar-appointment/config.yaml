@@ -24,15 +24,21 @@ fields:
         label: Startdatum
         required: true
         dbType: date
+        format: date
+        disableAgeDisplay: true
       - identifier: start_time
         type: DateTime
         label: Startzeit
-        required: true
+        required: false
         dbType: time
+        format: time
+        disableAgeDisplay: true
       - identifier: end_time
         type: DateTime
         label: Endzeit
         dbType: time
+        format: time
+        disableAgeDisplay: true
   - identifier: canceled
     type: Checkbox
     label: Abgesagt

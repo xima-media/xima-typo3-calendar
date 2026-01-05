@@ -57,7 +57,30 @@ fields:
   - identifier: category
     type: Category
     label: Kategorie
-    required: true
+  - identifier: registration_tab
+    type: Tab
+    label: Anmeldung
+  - identifier: registration_palette
+    type: Palette
+    label: Anmeldeinformationen
+    fields:
+      - identifier: requires_registration
+        type: Checkbox
+        label: Anmeldung erforderlich
+        default: 0
+      - identifier: registration_link
+        type: Link
+        label: Anmeldelink
+        allowedTypes:
+          - url
+          - page
+      - identifier: registration_deadline
+        type: DateTime
+        label: Anmeldefrist
+        dbType: date
+      - identifier: fee
+        type: Text
+        label: Teilnahmegebühr
   - identifier: workflow_tab
     type: Tab
     label: Workflow
