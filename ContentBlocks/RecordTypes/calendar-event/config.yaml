@@ -54,7 +54,7 @@ fields:
   - identifier: category_tab
     type: Tab
     label: Kategorie
-  - identifier: category
+  - identifier: categories
     type: Category
     label: Kategorie
   - identifier: registration_tab

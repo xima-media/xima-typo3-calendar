@@ -5,6 +5,7 @@ namespace Xima\XimaTypo3Calendar\Domain\Model\Api;
 use SourceBroker\T3api\Annotation as T3api;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
+use TYPO3\CMS\Extbase\Annotation\Validate;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -26,6 +27,8 @@ class EventEntry extends AbstractEntity
      * @var \DateTime|null
      * @T3api\Serializer\Groups({"api_get_dkfz_event", "api_post_dkfz_event"})
      */
+    #[Validate(['validator' => 'DateTime'])]
+    #[Validate(['validator' => 'NotEmpty'])]
     protected ?\DateTime $startDate = null;
 
     /**

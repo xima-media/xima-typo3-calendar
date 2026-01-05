@@ -47,12 +47,20 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *                 "groups": {"api_patch_dkfz_event_update"}
  *             },
  *         },
+ *         "delete": {
+ *             "method": "DELETE",
+ *             "path": "/events/{id}",
+ *             "security": "object.getOwner() && object.getOwner().getUid() == currentUserId",
+ *         },
  *     },
  *     attributes={
  *         "upload": {
  *             "folder": "1:/user_upload/event-images/",
  *             "allowedFileExtensions": {"jpg", "jpeg", "png"},
  *             "conflictMode": DuplicationBehavior::RENAME,
+ *         },
+ *         "persistence": {
+ *             "storagePid": "1424"
  *         }
  *     },
  * )
@@ -86,7 +94,7 @@ class Event extends AbstractEntity
      * @T3api\ORM\Cascade("persist")
      */
     #[Lazy]
-    protected ?ObjectStorage $category = null;
+    protected ?ObjectStorage $categories = null;
 
     /**
      * @T3api\Serializer\Groups({"api_patch_dkfz_event_update", "api_post_dkfz_event"})
@@ -134,6 +142,8 @@ class Event extends AbstractEntity
      * @T3api\ORM\Cascade("persist")
      * @var ?ObjectStorage<EventEntry>
      */
+    #[Lazy]
+    #[Cascade(['remove'])]
     protected ?ObjectStorage $appointments = null;
 
     /**
@@ -157,7 +167,7 @@ class Event extends AbstractEntity
     private function initializeObject(): void
     {
         $this->appointments = new ObjectStorage();
-        $this->category = new ObjectStorage();
+        $this->categories = new ObjectStorage();
         $this->documents = new ObjectStorage();
     }
 
@@ -270,30 +280,30 @@ class Event extends AbstractEntity
     /**
      * @return ObjectStorage<Category>|null
      */
-    public function getCategory(): ?ObjectStorage
+    public function getCategories(): ?ObjectStorage
     {
-        return $this->category;
+        return $this->categories;
     }
 
     /**
-     * @param ObjectStorage<Category>|null $category
+     * @param ObjectStorage<Category>|null $categories
      */
-    public function setCategory(?ObjectStorage $category): void
+    public function setCategories(?ObjectStorage $categories): void
     {
-        $this->category = $category;
+        $this->categories = $categories;
     }
 
     public function addCategory(Category $category): void
     {
-        if ($this->category === null) {
-            $this->category = new ObjectStorage();
+        if ($this->categories === null) {
+            $this->categories = new ObjectStorage();
         }
-        $this->category->attach($category);
+        $this->categories->attach($category);
     }
 
     public function removeCategory(Category $category): void
     {
-        $this->category?->detach($category);
+        $this->categories?->detach($category);
     }
 
     public function getPublishToWebsite(): bool

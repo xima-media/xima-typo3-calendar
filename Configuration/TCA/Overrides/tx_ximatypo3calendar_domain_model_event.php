@@ -12,6 +12,5 @@ $GLOBALS['TCA']['tx_ximatypo3calendar_domain_model_event']['columns']['type']['c
     'value' => 'change',
 ];
 
-//$GLOBALS['TCA']['tx_ximatypo3calendar_domain_model_event']['types']['change'] =
-//$GLOBALS['TCA']['tx_ximatypo3calendar_domain_model_event']['types']['live'];
+$GLOBALS['TCA']['tx_ximatypo3calendar_domain_model_event']['types']['draft'] = $GLOBALS['TCA']['tx_ximatypo3calendar_domain_model_event']['types']['live'];
 $GLOBALS['TCA']['tx_ximatypo3calendar_domain_model_event']['ctrl']['typeicon_classes']['change'] = 'actions-open';
