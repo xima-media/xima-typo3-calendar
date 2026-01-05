@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-17T12:43:45Z" product-name="xm_dkfz_net_jobs">
+		<body>
+			<trans-unit id="latestEvents.title">
+				<source>Latest Events</source>
+			</trans-unit>
+			<trans-unit id="latestEvents.description">
+				<source>Displays latest events from RSS feed</source>
+			</trans-unit>
+			<trans-unit id="listEvents.title">
+				<source>Event listing</source>
+			</trans-unit>
+			<trans-unit id="listEvents.description">
+				<source>Displays all events from RSS feed</source>
+			</trans-unit>
+			<trans-unit id="latestEvents.all">
+				<source>All events</source>
+			</trans-unit>
+			<trans-unit id="latestEvents.more">
+				<source>More</source>
+			</trans-unit>
+			<trans-unit id="settings.url">
+				<source>URL of the RSS feed</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

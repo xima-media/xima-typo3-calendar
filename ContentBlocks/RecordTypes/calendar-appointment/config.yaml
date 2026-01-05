@@ -1,0 +1,126 @@
+name: xima/calendar-appointment
+table: tx_ximatypo3calendar_domain_model_appointment
+prefixFields: false
+labelField: title
+languageAware: false
+workspaceAware: false
+editLocking: false
+security:
+  ignorePageTypeRestriction: true
+fields:
+  - identifier: title
+    type: Text
+    label: Titel
+  - identifier: description
+    type: Textarea
+    label: Beschreibung
+    enableRichtext: true
+  - identifier: datetime_palette
+    type: Palette
+    label: Datum & Zeit
+    fields:
+      - identifier: start_date
+        type: DateTime
+        label: Startdatum
+        required: true
+        dbType: date
+      - identifier: start_time
+        type: DateTime
+        label: Startzeit
+        required: true
+        dbType: time
+      - identifier: end_time
+        type: DateTime
+        label: Endzeit
+        dbType: time
+  - identifier: canceled
+    type: Checkbox
+    label: Abgesagt
+    default: 0
+  - identifier: location_tab
+    type: Tab
+    label: Ort & Typ
+  - identifier: type
+    type: Select
+    label: Typ
+    renderType: selectSingle
+    items:
+      - value: presence
+        label: 'Präsenz'
+      - value: online
+        label: 'Online'
+      - value: hybrid
+        label: 'Hybrid'
+  - identifier: location
+    type: Relation
+    label: Veranstaltungsort
+    foreign_table: tx_ximatypo3calendar_domain_model_location
+    required: true
+    allowed: tx_ximatypo3calendar_domain_model_location
+    size: 1
+  - identifier: address
+    type: Textarea
+    label: Adresse
+    rows: 3
+  - identifier: online_link
+    type: Link
+    label: Online-Link
+    allowedTypes:
+      - url
+  - identifier: directions
+    type: Textarea
+    label: Wegbeschreibung
+    rows: 5
+  - identifier: registration_tab
+    type: Tab
+    label: Anmeldung
+  - identifier: registration_palette
+    type: Palette
+    label: Anmeldeinformationen
+    fields:
+      - identifier: requires_registration
+        type: Checkbox
+        label: Anmeldung erforderlich
+        default: 0
+      - identifier: registration_link
+        type: Link
+        label: Anmeldelink
+        allowedTypes:
+          - url
+          - page
+      - identifier: registration_deadline
+        type: DateTime
+        label: Anmeldefrist
+        dbType: date
+      - identifier: fee
+        type: Text
+        label: Teilnahmegebühr
+  - identifier: people_tab
+    type: Tab
+    label: Personen
+  - identifier: speakers
+    type: Relation
+    label: Referenten
+    foreign_table: tx_ximatypo3calendar_domain_model_speaker
+    allowed: tx_ximatypo3calendar_domain_model_speaker
+  - identifier: hosts
+    type: Relation
+    label: Gastgeber
+    foreign_table: fe_users
+    allowed: fe_users
+  - identifier: content_tab
+    type: Tab
+    label: Inhalte
+  - identifier: additional_information
+    type: Textarea
+    label: Zusätzliche Informationen
+    enableRichtext: true
+  - identifier: url
+    type: Link
+    label: URL
+    allowedTypes:
+      - url
+  - identifier: files
+    type: File
+    label: Dateien
+    allowed: common-media-types

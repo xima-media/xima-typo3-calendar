@@ -1,0 +1,27 @@
+{
+  "name": "xima/xima-typo3-calendar",
+  "description": "Standalone calendar and event management extension for TYPO3",
+  "type": "typo3-cms-extension",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "XIMA Media GmbH",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "~8.2.0",
+    "typo3/cms-core": "^13.4",
+    "sourcebroker/t3api": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Xima\\XimaTypo3Calendar\\": "Classes"
+    }
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "xima_typo3_calendar"
+    }
+  }
+}

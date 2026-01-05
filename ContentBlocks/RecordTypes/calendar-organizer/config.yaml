@@ -1,0 +1,12 @@
+name: xima/calendar-organizer
+table: tx_ximatypo3calendar_domain_model_organizer
+prefixFields: false
+labelField: title
+languageAware: false
+security:
+  ignorePageTypeRestriction: true
+fields:
+  -
+    identifier: title
+    type: Text
+    label: Title

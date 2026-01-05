@@ -1,0 +1,15 @@
+plugin.tx_ximatypo3calendar {
+  view {
+    layoutRootPath =
+    templateRootPath =
+    partialRootPath =
+  }
+}
+
+plugin.tx_ximatypo3calendar_latestevents.settings {
+  maxItems = 3
+}
+
+plugin.tx_ximatypo3calendar_listevents.settings {
+  maxItems = 10
+}

@@ -1,0 +1,16 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Xima\XimaTypo3Calendar\:
+    resource: '../Classes/*'
+    exclude: '../Classes/Domain/Model/*'
+
+  # Public services for T3api
+  Xima\XimaTypo3Calendar\OperationHandler\EventChangeRequestOperationHandler:
+    public: true
+
+  Xima\XimaTypo3Calendar\EventListener\T3api\BeforeOperationAccessGrantedEventListener:
+    public: true

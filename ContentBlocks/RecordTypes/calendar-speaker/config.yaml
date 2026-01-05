@@ -1,0 +1,23 @@
+name: xima/calendar-speaker
+table: tx_ximatypo3calendar_domain_model_speaker
+prefixFields: false
+labelField: last_name
+languageAware: false
+workspaceAware: false
+editLocking: false
+security:
+  ignorePageTypeRestriction: true
+fields:
+  - identifier: title
+    type: Text
+    label: Titel
+  - identifier: first_name
+    type: Text
+    label: Vorname
+  - identifier: last_name
+    type: Text
+    label: Nachname
+    required: true
+  - identifier: department
+    type: Text
+    label: Abteilung

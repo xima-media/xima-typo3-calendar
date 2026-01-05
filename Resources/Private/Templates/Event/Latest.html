@@ -1,0 +1,47 @@
+<div class="carousel carousel--color-orange carousel__content-teaser events-latest"
+    data-cols="{&quot;xs&quot;: &quot;1&quot;, &quot;sm&quot;: &quot;2&quot;, &quot;md&quot;: &quot;3&quot;, &quot;lg&quot;: &quot;3&quot;}"
+    data-pagination-style="{&quot;xs&quot;: &quot;fraction&quot;, &quot;sm&quot;: &quot;bullets&quot;, &quot;md&quot;: &quot;bullets&quot;, &quot;lg&quot;: &quot;bullets&quot;}"
+    data-pagination-colored="false"
+    data-count="{events->f:count()}">
+    <div class="carousel__content swiper color-accent--orange">
+        <div class="carousel__body swiper-wrapper">
+
+            <f:for each="{events}" as="event" iteration="i">
+                <div class="swiper-slide {f:if(condition: i.isFirst, then: 'swiper-slide-active')} {f:if(condition: '{i.cycle} == 2', then: 'swiper-slide-next')}">
+                    <div class="card card--image-top card--md card--image-size-md card--event">
+
+                        <div class="item">
+                            <a href="{event.link}"
+                            title="{event.title}"
+                            aria-label="{event.eventdate->f:format.date(format: 'd. M')}">
+                                <p class="color">
+                                    <span class="h3 m-b-0">
+                                        <f:format.date format="%d. %B">{event.eventdate}</f:format.date>
+                                    </span>
+                                    <span class="h3 m-b-0 text-intro">{event.eventtime}</span>
+                                </p>
+                                <h3 class="h5">{event.title}</h3>
+                            </a>
+                            <ul class="list card__tags text-small">
+                                <li class="card__tag">{event.eventlanguage}</li>
+                                <li class="card__tag">{event.description->f:format.raw()}</li>
+                            </ul>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </f:for>
+
+        </div>
+    </div>
+    <div class="carousel__pagination swiper-pagination"></div>
+
+    <button class="carousel__button swiper-button-prev" aria-label="Zurück">
+        <f:render partial="Icon" arguments="{icon: 'chevron-left'}"/>
+    </button>
+    <button class="carousel__button swiper-button-next" aria-label="Vor">
+        <f:render partial="Icon" arguments="{icon: 'chevron-right'}"/>
+    </button>
+</div>

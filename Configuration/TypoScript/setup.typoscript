@@ -1,0 +1,23 @@
+plugin.tx_ximatypo3calendar {
+  view {
+    layoutRootPaths.0 = EXT:xima_typo3_calendar/Resources/Private/Layouts
+    layoutRootPaths.10 = {$plugin.tx_ximatypo3calendar.view.layoutRootPath}
+    templateRootPaths.0 = EXT:xima_typo3_calendar/Resources/Private/Templates
+    templateRootPaths.10 = {$plugin.tx_ximatypo3calendar.view.templateRootPath}
+    partialRootPaths.0 = EXT:xima_typo3_calendar/Resources/Private/Partials
+    partialRootPaths.10 = {$plugin.tx_ximatypo3calendar.view.partialRootPath}
+  }
+
+  settings {
+    # Storage PID for events (can be configured per site)
+    storagePid =
+  }
+}
+
+plugin.tx_ximatypo3calendar_latestevents.settings {
+  maxItems = {$plugin.tx_ximatypo3calendar_latestevents.settings.maxItems}
+}
+
+plugin.tx_ximatypo3calendar_listevents.settings {
+  maxItems = {$plugin.tx_ximatypo3calendar_listevents.settings.maxItems}
+}

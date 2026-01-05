@@ -1,0 +1,14 @@
+name: xima/calendar-location
+table: tx_ximatypo3calendar_domain_model_location
+prefixFields: false
+labelField: name
+languageAware: false
+workspaceAware: false
+editLocking: false
+security:
+  ignorePageTypeRestriction: true
+fields:
+  - identifier: name
+    type: Text
+    label: Name
+    required: true

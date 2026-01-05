@@ -1,0 +1,11 @@
+routeEnhancers:
+  CalendarEvent:
+    type: Simple
+    limitToPages: []
+    routePath: '{eventUid}-{eventSlug}'
+    static:
+      eventUid: true
+      eventSlug: true
+    requirements:
+      eventUid: '\d+'
+      eventSlug: '[\w0-9\-]+'

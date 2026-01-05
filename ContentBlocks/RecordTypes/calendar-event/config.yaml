@@ -1,0 +1,116 @@
+name: xima/calendar-event
+table: tx_ximatypo3calendar_domain_model_event
+prefixFields: false
+labelField: title
+typeField: type
+typeName: live
+languageAware: false
+workspaceAware: false
+editLocking: false
+security:
+  ignorePageTypeRestriction: true
+fields:
+  - identifier: title
+    type: Text
+    label: Titel
+  - identifier: event_info_palette
+    type: Palette
+    label: Veranstaltungsinformationen
+    fields:
+      - identifier: language
+        type: Select
+        label: Sprache
+        renderType: selectSingle
+        required: true
+        items:
+          - value: DE
+            label: 'Deutsch'
+          - value: EN
+            label: 'Englisch'
+  - identifier: description
+    type: Textarea
+    label: Beschreibung
+    enableRichtext: true
+  - identifier: preview_image
+    type: File
+    label: Vorschaubild
+    allowed: common-image-types
+    maxitems: 1
+  - identifier: documents
+    type: File
+    label: Dokumente
+    allowed: common-media-types
+  - identifier: appointments_tab
+    type: Tab
+    label: Termine
+  - identifier: organizer_tab
+    type: Tab
+    label: Veranstalter
+  - identifier: organizer
+    type: Relation
+    label: Veranstalter
+    foreign_table: tx_ximatypo3calendar_domain_model_organizer
+    allowed: tx_ximatypo3calendar_domain_model_organizer
+  - identifier: category_tab
+    type: Tab
+    label: Kategorie
+  - identifier: category
+    type: Category
+    label: Kategorie
+    required: true
+  - identifier: workflow_tab
+    type: Tab
+    label: Workflow
+  - identifier: workflow_palette
+    type: Palette
+    label: Workflow
+    fields:
+      - identifier: owner
+        type: Select
+        label: Besitzer
+        renderType: selectSingle
+        items:
+          - value: 0
+            label: 'Bitte wählen Sie einen Besitzer'
+        foreign_table: fe_users
+      - identifier: status
+        type: Select
+        label: Status
+        renderType: selectSingle
+        items:
+          - value: 0
+            label: 'Entwurf'
+          - value: 1
+            label: 'Freigabe'
+          - value: 2
+            label: 'Abgelehnt'
+      - identifier: target_event
+        type: Select
+        label: Zu ändernde Veranstaltung
+        renderType: selectSingle
+        items:
+          - value: 0
+            label: ''
+        foreign_table: tx_ximatypo3calendar_domain_model_event
+  - identifier: publishing_tab
+    type: Tab
+    label: Veröffentlichung
+  - identifier: publishing_palette
+    type: Palette
+    label: Veröffentlichungsoptionen
+    fields:
+      - identifier: publish_to_website
+        type: Checkbox
+        label: Auf Website veröffentlichen
+        default: 0
+      - identifier: publish_to_feed
+        type: Checkbox
+        label: Im Feed veröffentlichen
+        default: 0
+      - identifier: publish_date
+        type: DateTime
+        label: Veröffentlichungsdatum
+  - identifier: appointments
+    type: Collection
+    label: Termine
+    foreign_table: tx_ximatypo3calendar_domain_model_appointment
