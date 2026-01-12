@@ -7,7 +7,6 @@ use SourceBroker\T3api\Annotation as T3api;
 use TYPO3\CMS\Core\Resource\DuplicationBehavior;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
-use TYPO3\CMS\Extbase\Annotation\Validate;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
@@ -156,7 +155,6 @@ class Event extends AbstractEntity
 
     /**
      * @T3api\Serializer\Groups({"api_post_xima_event_change"})
-     * @T3api\ORM\Cascade("persist")
      */
     protected ?Event $targetEvent = null;
 

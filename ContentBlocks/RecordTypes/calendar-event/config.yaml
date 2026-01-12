@@ -90,12 +90,11 @@ fields:
     fields:
       - identifier: owner
         type: Select
-        label: Besitzer
         renderType: selectSingle
-        items:
-          - value: 0
-            label: 'Bitte wählen Sie einen Besitzer'
+        label: Besitzer
         foreign_table: fe_users
+        foreign_field: events
+        relationType: ManyToOne
       - identifier: status
         type: Select
         label: Status
