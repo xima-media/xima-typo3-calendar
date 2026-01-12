@@ -1,10 +1,12 @@
-name: xima/calendar-entry
+name: xima/event-appointment
 table: tx_ximatypo3calendar_domain_model_entry
 prefixFields: false
 labelField: title
 languageAware: false
 workspaceAware: false
 editLocking: false
+typeField: record_type
+typeName: event-appointment
 security:
   ignorePageTypeRestriction: true
 fields:

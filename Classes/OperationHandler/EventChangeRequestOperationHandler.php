@@ -16,7 +16,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use Xima\XimaTypo3Calendar\Domain\Model\Api\Event;
+use Xima\XimaTypo3Calendar\Domain\Model\Api\EventAppointment;
 
 class EventChangeRequestOperationHandler extends AbstractItemOperationHandler
 {
@@ -42,7 +42,7 @@ class EventChangeRequestOperationHandler extends AbstractItemOperationHandler
         $repository = $this->getRepositoryForOperation($operation);
         $object = parent::handle($operation, $request, $route, $response);
 
-        $newEvent = new Event();
+        $newEvent = new EventAppointment();
         foreach ($object->_getProperties() as $propertyName => $propertyValue) {
             if ($propertyName === 'uid') {
                 continue;

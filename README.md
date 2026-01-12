@@ -39,9 +39,9 @@ Add to root `composer.json`:
 
 ```json
 {
-  "require": {
+"require": {
     "xima/xima-typo3-calendar": "@dev"
-  }
+}
 }
 ```
 
@@ -84,19 +84,19 @@ Replace old event plugins with new ones:
 Once migration is verified and working:
 
 1. Remove event code from `xm_dkfz_net_site`:
-   - Delete event-related classes, controllers, models
-   - Remove event configuration from TCA, routing, etc.
+- Delete event-related classes, controllers, models
+- Remove event configuration from TCA, routing, etc.
 
 2. Deprecate or remove `xm_dkfz_net_events` extension
 
 3. Drop old database tables:
-   ```sql
-   DROP TABLE tx_xima_event;
-   DROP TABLE tx_xima_eventorganizer;
-   DROP TABLE tx_xima_eventappointment;
-   DROP TABLE tx_xima_eventlocation;
-   DROP TABLE tx_xima_eventspeaker;
-   ```
+```sql
+DROP TABLE tx_xima_event;
+DROP TABLE tx_xima_eventorganizer;
+DROP TABLE tx_xima_eventappointment;
+DROP TABLE tx_xima_eventlocation;
+DROP TABLE tx_xima_eventspeaker;
+```
 
 ## Features
 
@@ -125,17 +125,17 @@ Once migration is verified and working:
 
 ```typoscript
 plugin.tx_ximatypo3calendar {
-  settings {
+settings {
     storagePid = 123  # PID where events are stored
-  }
+}
 }
 
 plugin.tx_ximatypo3calendar_latestevents.settings {
-  maxItems = 3  # Number of events to display
+maxItems = 3  # Number of events to display
 }
 
 plugin.tx_ximatypo3calendar_listevents.settings {
-  maxItems = 10
+maxItems = 10
 }
 ```
 

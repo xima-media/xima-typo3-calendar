@@ -9,7 +9,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  * @T3api\ApiResource(
  *     collectionOperations={
  *         "get": {
- *             "path": "/event-organizers",
+ *             "path": "/organizers",
  *         }
  *     },
  *     attributes={
@@ -19,7 +19,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  *     },
  * )
  */
-class EventOrganizer extends AbstractEntity
+class Organizer extends AbstractEntity
 {
     /**
      * @T3api\Serializer\Groups({"api_patch_xima_event_update"})

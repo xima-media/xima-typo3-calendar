@@ -4,7 +4,7 @@
 		<header/>
 		<body>
 			<trans-unit id="title">
-				<source>Event Location</source>
+				<source>Location</source>
 			</trans-unit>
 			<trans-unit id="name.label">
 				<source>Name</source>

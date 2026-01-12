@@ -1,4 +1,4 @@
-name: xima/calendar-event
+name: xima/event
 table: tx_ximatypo3calendar_domain_model_event
 prefixFields: false
 labelField: title
@@ -136,3 +136,5 @@ fields:
     type: Collection
     label: Termine
     foreign_table: tx_ximatypo3calendar_domain_model_entry
+    allowed:
+      - event-appointment

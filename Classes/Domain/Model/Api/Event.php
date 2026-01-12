@@ -133,14 +133,12 @@ class Event extends AbstractEntity
      * @T3api\ORM\Cascade("persist")
      * /
      */
-    protected ?EventOrganizer $organizer = null;
-
-    protected ?Event $draftEvent = null;
+    protected ?Organizer $organizer = null;
 
     /**
      * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
-     * @var ?ObjectStorage<EventEntry>
+     * @var ?ObjectStorage<EventAppointment>
      */
     #[Lazy]
     #[Cascade(['remove'])]
@@ -156,7 +154,7 @@ class Event extends AbstractEntity
     /**
      * @T3api\Serializer\Groups({"api_post_xima_event_change"})
      */
-    protected ?Event $targetEvent = null;
+    protected ?EventAppointment $targetEvent = null;
 
     public function __construct()
     {
@@ -180,18 +178,18 @@ class Event extends AbstractEntity
         $this->type = $type;
     }
 
-    public function getTargetEvent(): ?Event
+    public function getTargetEvent(): ?EventAppointment
     {
         return $this->targetEvent;
     }
 
-    public function setTargetEvent(?Event $targetEvent): void
+    public function setTargetEvent(?EventAppointment $targetEvent): void
     {
         $this->targetEvent = $targetEvent;
     }
 
     /**
-     * @return ObjectStorage<EventEntry>|null
+     * @return ObjectStorage<EventAppointment>|null
      */
     public function getAppointments(): ?ObjectStorage
     {
@@ -199,29 +197,19 @@ class Event extends AbstractEntity
     }
 
     /**
-     * @param ObjectStorage<EventEntry>|null $appointments
+     * @param ObjectStorage<EventAppointment>|null $appointments
      */
     public function setAppointments(?ObjectStorage $appointments): void
     {
         $this->appointments = $appointments;
     }
 
-    public function getDraftEvent(): ?Event
-    {
-        return $this->draftEvent;
-    }
-
-    public function setDraftEvent(?Event $draftEvent): void
-    {
-        $this->draftEvent = $draftEvent;
-    }
-
-    public function getOrganizer(): ?EventOrganizer
+    public function getOrganizer(): ?Organizer
     {
         return $this->organizer;
     }
 
-    public function setOrganizer(?EventOrganizer $organizer): void
+    public function setOrganizer(?Organizer $organizer): void
     {
         $this->organizer = $organizer;
     }

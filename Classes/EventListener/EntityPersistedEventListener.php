@@ -10,7 +10,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Event\Persistence\EntityPersistedEvent;
 use Xima\XimaTypo3Calendar\Domain\Model\Api\DraftStatus;
-use Xima\XimaTypo3Calendar\Domain\Model\Api\Event;
+use Xima\XimaTypo3Calendar\Domain\Model\Api\EventAppointment;
 
 #[AsEventListener(
     identifier: 'xima-typo3-calendar/sync-event-status',
@@ -20,7 +20,7 @@ class EntityPersistedEventListener
     public function __invoke(EntityPersistedEvent $event): void
     {
         $object = $event->getObject();
-        if (!$object instanceof Event || $object->getStatus() !== DraftStatus::DRAFT) {
+        if (!$object instanceof EventAppointment || $object->getStatus() !== DraftStatus::DRAFT) {
             return;
         }
 

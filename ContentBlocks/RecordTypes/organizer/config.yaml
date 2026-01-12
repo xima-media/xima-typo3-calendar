@@ -1,4 +1,4 @@
-name: xima/calendar-organizer
+name: xima/organizer
 table: tx_ximatypo3calendar_domain_model_organizer
 prefixFields: false
 labelField: title

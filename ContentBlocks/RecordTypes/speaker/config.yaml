@@ -1,4 +1,4 @@
-name: xima/calendar-speaker
+name: xima/speaker
 table: tx_ximatypo3calendar_domain_model_speaker
 prefixFields: false
 labelField: last_name

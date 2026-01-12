@@ -4,7 +4,7 @@
 		<header/>
 		<body>
 			<trans-unit id="title">
-				<source>Event Speaker</source>
+				<source>Speaker</source>
 			</trans-unit>
 			<trans-unit id="title.label">
 				<source>Title</source>
