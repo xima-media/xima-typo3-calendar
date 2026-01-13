@@ -4,10 +4,12 @@
 		<header/>
 		<body>
 			<trans-unit id="title">
-				<source>Organizer</source>
+				<source />
+				<target>Veranstalter</target>
 			</trans-unit>
 			<trans-unit id="title.label">
-				<source>Title</source>
+				<source />
+				<target>Titel</target>
 			</trans-unit>
 		</body>
 	</file>

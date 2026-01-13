@@ -6,7 +6,5 @@ languageAware: false
 security:
   ignorePageTypeRestriction: true
 fields:
-  -
-    identifier: title
+  - identifier: title
     type: Text
-    label: Title

@@ -10,14 +10,10 @@ security:
 fields:
   - identifier: title
     type: Text
-    label: Titel
   - identifier: first_name
     type: Text
-    label: Vorname
   - identifier: last_name
     type: Text
-    label: Nachname
     required: true
   - identifier: department
     type: Text
-    label: Abteilung

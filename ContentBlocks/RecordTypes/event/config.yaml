@@ -10,16 +10,13 @@ security:
 fields:
   - identifier: event_info_palette
     type: Palette
-    label: Veranstaltungsinformationen
     fields:
       - identifier: title
         type: Text
-        label: Title
         maxLength: 255
         size: 60
       - identifier: language
         type: Select
-        label: Sprache
         renderType: selectSingle
         required: true
         items:
@@ -31,99 +28,75 @@ fields:
             label: 'Englisch'
   - identifier: description
     type: Textarea
-    label: Beschreibung
     enableRichtext: true
   - identifier: preview_image
     type: File
-    label: Vorschaubild
     allowed: common-image-types
     maxitems: 1
   - identifier: files
     type: File
-    label: Dateien
   - identifier: publishing_tab
     type: Tab
-    label: Veröffentlichung
   - identifier: publishing_palette
     type: Palette
-    label: Veröffentlichungsoptionen
     fields:
       - identifier: publish_to_website
         type: Checkbox
-        label: Auf Website veröffentlichen
         default: 0
       - identifier: publish_to_feed
         type: Checkbox
-        label: Im Feed veröffentlichen
         default: 0
       - identifier: publish_date
         type: DateTime
-        label: Veröffentlichungsdatum
   - identifier: appointments
     type: Collection
-    label: Termine
     foreign_table: tx_ximatypo3calendar_domain_model_entry
     foreign_field: event
     allowed:
       - event-appointment
   - identifier: appointments_tab
     type: Tab
-    label: Termine
   - identifier: organizer_tab
     type: Tab
-    label: Veranstalter
   - identifier: organizer
     type: Relation
-    label: Veranstalter
     foreign_table: tx_ximatypo3calendar_domain_model_organizer
     allowed: tx_ximatypo3calendar_domain_model_organizer
   - identifier: category_tab
     type: Tab
-    label: Kategorie
   - identifier: categories
     type: Category
-    label: Kategorie
   - identifier: registration_tab
     type: Tab
-    label: Anmeldung
   - identifier: registration_palette
     type: Palette
-    label: Anmeldeinformationen
     fields:
       - identifier: requires_registration
         type: Checkbox
-        label: Anmeldung erforderlich
         default: 0
       - identifier: registration_link
         type: Link
-        label: Anmeldelink
         allowedTypes:
           - url
           - page
       - identifier: registration_deadline
         type: DateTime
-        label: Anmeldefrist
         dbType: datetime
       - identifier: fee
         type: Text
-        label: Teilnahmegebühr
   - identifier: workflow_tab
     type: Tab
-    label: Workflow
   - identifier: workflow_palette
     type: Palette
-    label: Workflow
     fields:
       - identifier: owner
         type: Select
         renderType: selectSingle
-        label: Besitzer
         foreign_table: fe_users
         foreign_field: events
         relationType: ManyToOne
       - identifier: status
         type: Select
-        label: Status
         renderType: selectSingle
         items:
           - value: 0

@@ -4,19 +4,24 @@
 		<header/>
 		<body>
 			<trans-unit id="title">
-				<source>Speaker</source>
+				<source />
+				<target>Referent</target>
 			</trans-unit>
 			<trans-unit id="title.label">
-				<source>Title</source>
+				<source />
+				<target>Titel</target>
 			</trans-unit>
 			<trans-unit id="first_name.label">
-				<source>First Name</source>
+				<source />
+				<target>Vorname</target>
 			</trans-unit>
 			<trans-unit id="last_name.label">
-				<source>Last Name</source>
+				<source />
+				<target>Nachname</target>
 			</trans-unit>
 			<trans-unit id="department.label">
-				<source>Department</source>
+				<source />
+				<target>Abteilung</target>
 			</trans-unit>
 		</body>
 	</file>

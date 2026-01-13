@@ -10,5 +10,4 @@ security:
 fields:
   - identifier: name
     type: Text
-    label: Name
     required: true

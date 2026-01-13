@@ -4,97 +4,128 @@
 		<header/>
 		<body>
 			<trans-unit id="title">
-				<source>Event Appointment</source>
+				<source />
+				<target>Termin</target>
 			</trans-unit>
 			<trans-unit id="calendar.label">
-				<source>Calendar</source>
+				<source />
+				<target>Kalender</target>
 			</trans-unit>
 			<trans-unit id="event.label">
-				<source>Event</source>
+				<source />
+				<target>Veranstaltung</target>
 			</trans-unit>
 			<trans-unit id="title.label">
-				<source>Title</source>
+				<source />
+				<target>Titel</target>
 			</trans-unit>
 			<trans-unit id="palettes.datetime_palette">
-				<source>Date &amp; Time</source>
+				<source />
+				<target>Datum &amp; Zeit</target>
 			</trans-unit>
 			<trans-unit id="start_date.label">
-				<source>Start Date</source>
+				<source />
+				<target>Startdatum</target>
 			</trans-unit>
 			<trans-unit id="end_date.label">
-				<source>End Date</source>
+				<source />
+				<target>Enddatum</target>
 			</trans-unit>
 			<trans-unit id="all_day.label">
-				<source>All Day</source>
+				<source />
+				<target>Ganztägig</target>
 			</trans-unit>
 			<trans-unit id="canceled.label">
-				<source>Canceled</source>
+				<source />
+				<target>Abgesagt</target>
 			</trans-unit>
 			<trans-unit id="tabs.content_tab">
-				<source>Content</source>
+				<source />
+				<target>Inhalte</target>
 			</trans-unit>
 			<trans-unit id="description.label">
-				<source>Description</source>
+				<source />
+				<target>Beschreibung</target>
 			</trans-unit>
 			<trans-unit id="url.label">
-				<source>URL</source>
+				<source />
+				<target>URL</target>
 			</trans-unit>
 			<trans-unit id="files.label">
-				<source>Files</source>
+				<source />
+				<target>Dateien</target>
 			</trans-unit>
 			<trans-unit id="tabs.location_tab">
-				<source>Location &amp; Type</source>
+				<source />
+				<target>Ort &amp; Typ</target>
 			</trans-unit>
 			<trans-unit id="type.label">
-				<source>Type</source>
+				<source />
+				<target>Typ</target>
 			</trans-unit>
 			<trans-unit id="type.items.presence">
-				<source>In Person</source>
+				<source />
+				<target>Präsenz</target>
 			</trans-unit>
 			<trans-unit id="type.items.online">
-				<source>Online</source>
+				<source />
+				<target>Online</target>
 			</trans-unit>
 			<trans-unit id="type.items.hybrid">
-				<source>Hybrid</source>
+				<source />
+				<target>Hybrid</target>
 			</trans-unit>
 			<trans-unit id="location.label">
-				<source>Location</source>
+				<source />
+				<target>Veranstaltungsort</target>
 			</trans-unit>
 			<trans-unit id="address.label">
-				<source>Address</source>
+				<source />
+				<target>Adresse</target>
 			</trans-unit>
 			<trans-unit id="online_link.label">
-				<source>Online Link</source>
+				<source />
+				<target>Online-Link</target>
 			</trans-unit>
 			<trans-unit id="directions.label">
-				<source>Directions</source>
+				<source />
+				<target>Wegbeschreibung</target>
 			</trans-unit>
 			<trans-unit id="tabs.registration_tab">
-				<source>Registration</source>
+				<source />
+				<target>Anmeldung</target>
 			</trans-unit>
 			<trans-unit id="palettes.registration_palette">
-				<source>Registration Information</source>
+				<source />
+				<target>Anmeldeinformationen</target>
 			</trans-unit>
 			<trans-unit id="requires_registration.label">
-				<source>Registration Required</source>
+				<source />
+				<target>Anmeldung erforderlich</target>
 			</trans-unit>
 			<trans-unit id="registration_link.label">
-				<source>Registration Link</source>
+				<source />
+				<target>Anmeldelink</target>
 			</trans-unit>
 			<trans-unit id="registration_deadline.label">
-				<source>Registration Deadline</source>
+				<source />
+				<target>Anmeldefrist</target>
 			</trans-unit>
 			<trans-unit id="fee.label">
-				<source>Fee</source>
+				<source />
+				<target>Teilnahmegebühr</target>
 			</trans-unit>
 			<trans-unit id="tabs.people_tab">
-				<source>People</source>
+				<source />
+				<target>Personen</target>
 			</trans-unit>
 			<trans-unit id="speakers.label">
-				<source>Speakers</source>
+				<source />
+				<target>Referenten</target>
 			</trans-unit>
 			<trans-unit id="hosts.label">
-				<source>Hosts</source>
+				<source />
+				<target>Gastgeber</target>
 			</trans-unit>
 		</body>
 	</file>

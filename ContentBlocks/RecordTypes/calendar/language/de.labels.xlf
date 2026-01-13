@@ -4,19 +4,24 @@
 		<header/>
 		<body>
 			<trans-unit id="title">
-				<source>Calendar</source>
+				<source />
+				<target>Kalender</target>
 			</trans-unit>
 			<trans-unit id="title.label">
-				<source>Title</source>
+				<source />
+				<target>Titel</target>
 			</trans-unit>
 			<trans-unit id="description.label">
-				<source>Description</source>
+				<source />
+				<target>Beschreibung</target>
 			</trans-unit>
 			<trans-unit id="tabs.entries_tab">
-				<source>Entries</source>
+				<source />
+				<target>Einträge</target>
 			</trans-unit>
 			<trans-unit id="entries.label">
-				<source>Entries</source>
+				<source />
+				<target>Einträge</target>
 			</trans-unit>
 		</body>
 	</file>

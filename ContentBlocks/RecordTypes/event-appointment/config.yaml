@@ -9,65 +9,51 @@ typeField: record_type
 typeName: event-appointment
 fields:
   - identifier: calendar
-    label: Kalender
     type: Select
     useExistingField: true
   - identifier: event
     type: Select
     renderType: selectSingle
-    label: Event
     foreign_table: tx_ximatypo3calendar_domain_model_event
     required: true
   - identifier: title
     type: Text
-    label: Titel
   - identifier: datetime_palette
     type: Palette
-    label: Datum & Zeit
     fields:
       - identifier: start_date
         type: DateTime
-        label: Startdatum
         required: true
         dbType: datetime
         format: datetime
         disableAgeDisplay: true
       - identifier: end_date
         type: DateTime
-        label: Enddatum
         dbType: datetime
         format: datetime
         disableAgeDisplay: true
       - identifier: all_day
         type: Checkbox
-        label: Ganztägig
         default: 0
   - identifier: canceled
     type: Checkbox
-    label: Abgesagt
     default: 0
   - identifier: content_tab
     type: Tab
-    label: Inhalte
   - identifier: description
     type: Textarea
-    label: Beschreibung
     enableRichtext: true
   - identifier: url
     type: Link
-    label: URL
     allowedTypes:
       - url
   - identifier: files
     type: File
-    label: Dateien
     allowed: common-media-types
   - identifier: location_tab
     type: Tab
-    label: Ort & Typ
   - identifier: type
     type: Select
-    label: Typ
     renderType: selectSingle
     items:
       - value: presence
@@ -78,58 +64,45 @@ fields:
         label: 'Hybrid'
   - identifier: location
     type: Relation
-    label: Veranstaltungsort
     foreign_table: tx_ximatypo3calendar_domain_model_location
     required: true
     allowed: tx_ximatypo3calendar_domain_model_location
     size: 1
   - identifier: address
     type: Textarea
-    label: Adresse
     rows: 3
   - identifier: online_link
     type: Link
-    label: Online-Link
     allowedTypes:
       - url
   - identifier: directions
     type: Textarea
-    label: Wegbeschreibung
     rows: 5
   - identifier: registration_tab
     type: Tab
-    label: Anmeldung
   - identifier: registration_palette
     type: Palette
-    label: Anmeldeinformationen
     fields:
       - identifier: requires_registration
         type: Checkbox
-        label: Anmeldung erforderlich
         default: 0
       - identifier: registration_link
         type: Link
-        label: Anmeldelink
         allowedTypes:
           - url
           - page
       - identifier: registration_deadline
         type: DateTime
-        label: Anmeldefrist
         dbType: datetime
       - identifier: fee
         type: Text
-        label: Teilnahmegebühr
   - identifier: people_tab
     type: Tab
-    label: Personen
   - identifier: speakers
     type: Relation
-    label: Referenten
     foreign_table: tx_ximatypo3calendar_domain_model_speaker
     allowed: tx_ximatypo3calendar_domain_model_speaker
   - identifier: hosts
     type: Relation
-    label: Gastgeber
     foreign_table: fe_users
     allowed: fe_users
