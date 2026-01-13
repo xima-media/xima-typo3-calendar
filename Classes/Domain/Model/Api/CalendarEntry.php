@@ -6,7 +6,7 @@ use SourceBroker\T3api\Annotation as T3api;
 use TYPO3\CMS\Extbase\Annotation\Validate;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-abstract class AbstractCalendarEntry extends AbstractEntity
+class CalendarEntry extends AbstractEntity
 {
     /**
      * @var Calendar|null

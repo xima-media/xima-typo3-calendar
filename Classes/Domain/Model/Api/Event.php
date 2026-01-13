@@ -70,6 +70,7 @@ class Event extends AbstractEntity
     /**
      * @T3api\Serializer\Type\CurrentFeUser(FrontendUser::class)
      * @T3api\Serializer\Groups({"api_post_xima_event"})
+     * @T3api\Serializer\MaxDepth(0)
      */
     protected ?FrontendUser $owner = null;
 
@@ -149,8 +150,6 @@ class Event extends AbstractEntity
      */
     protected int $status = DraftStatus::DRAFT->value;
 
-    protected string $type = 'draft';
-
     /**
      * @T3api\Serializer\Groups({"api_post_xima_event_change"})
      */
@@ -166,16 +165,6 @@ class Event extends AbstractEntity
         $this->appointments = new ObjectStorage();
         $this->categories = new ObjectStorage();
         $this->documents = new ObjectStorage();
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): void
-    {
-        $this->type = $type;
     }
 
     public function getTargetEvent(): ?EventAppointment

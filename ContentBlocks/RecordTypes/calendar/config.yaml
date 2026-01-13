@@ -15,3 +15,12 @@ fields:
     type: Textarea
     label: Description
     enableRichtext: true
+  - identifier: entries_tab
+    type: Tab
+    label: Entries
+  - identifier: entries
+    type: Collection
+    label: Entries
+    foreign_table: tx_ximatypo3calendar_domain_model_entry
+    foreign_field: calendar
+    allowed: tx_ximatypo3calendar_domain_model_entry

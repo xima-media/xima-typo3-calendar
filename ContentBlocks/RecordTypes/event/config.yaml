@@ -2,21 +2,21 @@ name: xima/event
 table: tx_ximatypo3calendar_domain_model_event
 prefixFields: false
 labelField: title
-typeField: type
-typeName: live
 languageAware: false
 workspaceAware: false
 editLocking: false
 security:
   ignorePageTypeRestriction: true
 fields:
-  - identifier: title
-    type: Text
-    label: Titel
   - identifier: event_info_palette
     type: Palette
     label: Veranstaltungsinformationen
     fields:
+      - identifier: title
+        type: Text
+        label: Title
+        maxLength: 255
+        size: 60
       - identifier: language
         type: Select
         label: Sprache
@@ -36,10 +36,34 @@ fields:
     label: Vorschaubild
     allowed: common-image-types
     maxitems: 1
-  - identifier: documents
+  - identifier: files
     type: File
-    label: Dokumente
-    allowed: common-media-types
+    label: Dateien
+  - identifier: publishing_tab
+    type: Tab
+    label: Veröffentlichung
+  - identifier: publishing_palette
+    type: Palette
+    label: Veröffentlichungsoptionen
+    fields:
+      - identifier: publish_to_website
+        type: Checkbox
+        label: Auf Website veröffentlichen
+        default: 0
+      - identifier: publish_to_feed
+        type: Checkbox
+        label: Im Feed veröffentlichen
+        default: 0
+      - identifier: publish_date
+        type: DateTime
+        label: Veröffentlichungsdatum
+  - identifier: appointments
+    type: Collection
+    label: Termine
+    foreign_table: tx_ximatypo3calendar_domain_model_entry
+    foreign_field: event
+    allowed:
+      - event-appointment
   - identifier: appointments_tab
     type: Tab
     label: Termine
@@ -103,38 +127,6 @@ fields:
           - value: 0
             label: 'Entwurf'
           - value: 1
-            label: 'Freigabe'
+            label: 'Live'
           - value: 2
             label: 'Abgelehnt'
-      - identifier: target_event
-        type: Select
-        label: Zu ändernde Veranstaltung
-        renderType: selectSingle
-        items:
-          - value: 0
-            label: ''
-        foreign_table: tx_ximatypo3calendar_domain_model_event
-  - identifier: publishing_tab
-    type: Tab
-    label: Veröffentlichung
-  - identifier: publishing_palette
-    type: Palette
-    label: Veröffentlichungsoptionen
-    fields:
-      - identifier: publish_to_website
-        type: Checkbox
-        label: Auf Website veröffentlichen
-        default: 0
-      - identifier: publish_to_feed
-        type: Checkbox
-        label: Im Feed veröffentlichen
-        default: 0
-      - identifier: publish_date
-        type: DateTime
-        label: Veröffentlichungsdatum
-  - identifier: appointments
-    type: Collection
-    label: Termine
-    foreign_table: tx_ximatypo3calendar_domain_model_entry
-    allowed:
-      - event-appointment

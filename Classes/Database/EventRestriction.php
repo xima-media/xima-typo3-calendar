@@ -35,12 +35,12 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             if ($user && $user->getUserId()) {
                 return $expressionBuilder->and(
                     $expressionBuilder->or(
-                        $expressionBuilder->eq('type', $qb->quote('live')),
+                        $expressionBuilder->eq('status', $qb->quote(1)),
                         $expressionBuilder->eq('owner', $user->getUserId())
                     )
                 );
             }
-            return $expressionBuilder->and($expressionBuilder->eq('type', $qb->quote('live')));
+            return $expressionBuilder->and($expressionBuilder->eq('status', $qb->quote(1)));
         }
 
         // @TODO: Check if the user has access to the event

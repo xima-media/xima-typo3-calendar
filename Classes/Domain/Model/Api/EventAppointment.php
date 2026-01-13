@@ -58,12 +58,14 @@ use TYPO3\CMS\Core\Resource\DuplicationBehavior;
  *     },
  * )
  */
-class EventAppointment extends AbstractCalendarEntry
+class EventAppointment extends CalendarEntry
 {
     /**
      * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
      */
     protected string $description = '';
+
+    protected ?Event $event = null;
 
     public function __construct()
     {
@@ -72,6 +74,16 @@ class EventAppointment extends AbstractCalendarEntry
 
     private function initializeObject(): void
     {
+    }
+
+    public function getEvent(): ?Event
+    {
+        return $this->event;
+    }
+
+    public function setEvent(?Event $event): void
+    {
+        $this->event = $event;
     }
 
     public function getDescription(): string

@@ -9,6 +9,9 @@ return [
     \Xima\XimaTypo3Calendar\Domain\Model\Api\Organizer::class => [
         'tableName' => 'tx_ximatypo3calendar_domain_model_organizer',
     ],
+    \Xima\XimaTypo3Calendar\Domain\Model\Api\CalendarEntry::class => [
+        'tableName' => 'tx_ximatypo3calendar_domain_model_entry',
+    ],
     \Xima\XimaTypo3Calendar\Domain\Model\Api\EventAppointment::class => [
         'tableName' => 'tx_ximatypo3calendar_domain_model_entry',
     ],
