@@ -25,9 +25,6 @@ readonly class BeforeOperationAccessGrantedEventListener
         if ($currentUserId !== null) {
             $event->setExpressionLanguageVariable('currentUserId', $currentUserId);
         }
-
-        $request = $this->getRequest()->getUri();
-        $event->setExpressionLanguageVariable('currentUserEventTarget', false);
     }
 
     private function getRequest(): ?ServerRequestInterface

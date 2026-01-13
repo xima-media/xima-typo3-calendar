@@ -23,9 +23,11 @@ fields:
         renderType: selectSingle
         required: true
         items:
-          - value: DE
+          - value: ''
+            label: 'Alle Sprachen'
+          - value: de
             label: 'Deutsch'
-          - value: EN
+          - value: en
             label: 'Englisch'
   - identifier: description
     type: Textarea

@@ -4,7 +4,6 @@ namespace Xima\XimaTypo3Calendar\Domain\Model\Api;
 
 use SourceBroker\T3api\Annotation as T3api;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
-use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -31,7 +30,6 @@ class Calendar extends AbstractEntity
     /**
      * @var ObjectStorage<CalendarEntry>|null
      */
-    #[Lazy]
     #[Cascade(['remove'])]
     protected ?ObjectStorage $entries = null;
 

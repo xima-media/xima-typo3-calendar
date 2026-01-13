@@ -8,9 +8,10 @@ ExtensionManagementUtility::addTCAcolumns(
         'events' => [
             'label' => 'Events',
             'config' => [
-                'type' => 'select',
-                'renderType' => 'selectMultipleSideBySide',
+                'type' => 'group',
+                'allowed' => 'tx_ximatypo3calendar_domain_model_event',
                 'foreign_table' => 'tx_ximatypo3calendar_domain_model_event',
+                'foreign_field' => 'owner',
             ],
         ],
     ]
@@ -20,5 +21,5 @@ ExtensionManagementUtility::addTCAcolumns(
     'fe_users',
     'events',
     '',
-    'after:username'
+    ''
 );

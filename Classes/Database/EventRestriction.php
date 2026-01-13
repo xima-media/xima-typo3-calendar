@@ -10,6 +10,7 @@ use TYPO3\CMS\Core\Database\Query\Restriction\EnforceableQueryRestrictionInterfa
 use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use Xima\XimaTypo3Calendar\Domain\Model\Api\EventStatus;
 
 class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRestrictionInterface
 {
@@ -35,12 +36,12 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             if ($user && $user->getUserId()) {
                 return $expressionBuilder->and(
                     $expressionBuilder->or(
-                        $expressionBuilder->eq('status', $qb->quote(1)),
+                        $expressionBuilder->eq('status', $qb->quote(EventStatus::LIVE->value)),
                         $expressionBuilder->eq('owner', $user->getUserId())
                     )
                 );
             }
-            return $expressionBuilder->and($expressionBuilder->eq('status', $qb->quote(1)));
+            return $expressionBuilder->and($expressionBuilder->eq('status', $qb->quote(EventStatus::LIVE->value)));
         }
 
         // @TODO: Check if the user has access to the event

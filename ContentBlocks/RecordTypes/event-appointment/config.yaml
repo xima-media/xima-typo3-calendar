@@ -11,9 +11,7 @@ fields:
   - identifier: calendar
     label: Kalender
     type: Select
-    renderType: selectSingle
-    foreign_table: tx_ximatypo3calendar_domain_model_calendar
-    required: true
+    useExistingField: true
   - identifier: event
     type: Select
     renderType: selectSingle

@@ -6,7 +6,6 @@ use DateTime;
 use SourceBroker\T3api\Annotation as T3api;
 use TYPO3\CMS\Core\Resource\DuplicationBehavior;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
-use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
@@ -82,7 +81,7 @@ class Event extends AbstractEntity
     /**
      * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      */
-    protected string $language = '';
+    protected string $language = EventLanguage::ALL->value;
 
     /**
      * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
@@ -94,7 +93,6 @@ class Event extends AbstractEntity
      * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
      */
-    #[Lazy]
     protected ?ObjectStorage $categories = null;
 
     /**
@@ -116,7 +114,6 @@ class Event extends AbstractEntity
      * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
      */
-    #[Lazy]
     #[Cascade(['remove'])]
     protected ?FileReference $previewImage = null;
 
@@ -125,9 +122,8 @@ class Event extends AbstractEntity
      * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
      */
-    #[Lazy]
     #[Cascade(['remove'])]
-    protected ?ObjectStorage $documents = null;
+    protected ?ObjectStorage $files = null;
 
     /**
      * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
@@ -141,19 +137,13 @@ class Event extends AbstractEntity
      * @T3api\ORM\Cascade("persist")
      * @var ?ObjectStorage<EventAppointment>
      */
-    #[Lazy]
     #[Cascade(['remove'])]
     protected ?ObjectStorage $appointments = null;
 
     /**
      * @T3api\Serializer\Groups({"api_patch_xima_event_review"})
      */
-    protected int $status = DraftStatus::DRAFT->value;
-
-    /**
-     * @T3api\Serializer\Groups({"api_post_xima_event_change"})
-     */
-    protected ?EventAppointment $targetEvent = null;
+    protected int $status = EventStatus::DRAFT->value;
 
     public function __construct()
     {
@@ -164,17 +154,7 @@ class Event extends AbstractEntity
     {
         $this->appointments = new ObjectStorage();
         $this->categories = new ObjectStorage();
-        $this->documents = new ObjectStorage();
-    }
-
-    public function getTargetEvent(): ?EventAppointment
-    {
-        return $this->targetEvent;
-    }
-
-    public function setTargetEvent(?EventAppointment $targetEvent): void
-    {
-        $this->targetEvent = $targetEvent;
+        $this->files = new ObjectStorage();
     }
 
     /**
@@ -325,29 +305,29 @@ class Event extends AbstractEntity
     /**
      * @return ObjectStorage<FileReference>|null
      */
-    public function getDocuments(): ?ObjectStorage
+    public function getFiles(): ?ObjectStorage
     {
-        return $this->documents;
+        return $this->files;
     }
 
     /**
-     * @param ObjectStorage<FileReference>|null $documents
+     * @param ObjectStorage<FileReference>|null $files
      */
-    public function setDocuments(?ObjectStorage $documents): void
+    public function setFiles(?ObjectStorage $files): void
     {
-        $this->documents = $documents;
+        $this->files = $files;
     }
 
     public function addDocument(FileReference $document): void
     {
-        if ($this->documents === null) {
-            $this->documents = new ObjectStorage();
+        if ($this->files === null) {
+            $this->files = new ObjectStorage();
         }
-        $this->documents->attach($document);
+        $this->files->attach($document);
     }
 
     public function removeDocument(FileReference $document): void
     {
-        $this->documents?->detach($document);
+        $this->files?->detach($document);
     }
 }
