@@ -1,0 +1,130 @@
+@startuml
+
+package "XimaTypo3Calendar" {
+
+class Calendar {
+    + name: string <<required>>
+    + description: string
+}
+
+class CalendarEntry {
+    + title: string <<required>>
+    + start: DateTime <<required>>
+    + end: DateTime
+    + allDay: boolean
+    + recordType: string
+}
+
+class Event {
+    + title: string <<required>>
+    + status: EventStatus
+    + language: EventLanguage
+    + description: string
+    + publishToWebsite: boolean
+    + publishToFeed: boolean
+    + publishDate: Date
+}
+
+class Timeslot #white {
+}
+
+class Holiday #white{
+}
+
+class Organizer {
+    + name: string <<required>>
+}
+
+class Location {
+    + name: string <<required>>
+}
+
+class EventAppointment {
+    + description: string
+    + type: EventAppointmentType
+    + onlineLink: string
+    + directions: string
+    + canceled: boolean
+    + requiresRegistration: boolean
+    + registrationLink: string
+    + registrationDeadline: Date
+    + fee: string
+    + address: string
+    + additionalInformation: string
+    + url: string
+}
+
+class Speaker {
+    + title: string
+    + firstName: string
+    + lastName: string <<required>>
+    + department: string
+}
+
+}
+
+
+class sys_file_reference {
+}
+
+class fe_users {
+}
+
+class be_user {
++ eventNotifications: string
+}
+
+class sys_category {
+}
+
+
+enum EventStatus {
+DRAFT: 0
+LIVE: 1
+REJECTED: 2
+}
+
+enum EventLanguage {
+ALL: ''
+DE: de
+EN: en
+}
+
+enum EventAppointmentType {
+IN_PERSON: inPerson
+ONLINE: online
+HYBRID: hybrid
+}
+
+Calendar "1" -- "*" CalendarEntry
+
+note top of Event
+Events only appear
+in the calendar
+through their appointments
+end note
+
+note top of CalendarEntry
+Calendar entries can be
+of different types
+end note
+
+CalendarEntry <|-- EventAppointment
+CalendarEntry <|-- Timeslot
+CalendarEntry <|-- Holiday
+
+Event "*" -- "1" Organizer
+Event "*" -- "1" sys_category: categories
+Event "1" -- "1..*" EventAppointment
+Event "1" -- "*" sys_file_reference : previewImage
+Event "1" -- "*" sys_file_reference : files
+Event "*" -- "*" fe_users : owner
+
+EventAppointment "*" -- "1" Location
+EventAppointment "*" -- "*" Speaker
+EventAppointment "*" -- "*" fe_users : hosts
+EventAppointment "1" -- "*" sys_file_reference : files
+
+be_user "*" -- "*" sys_category : EventAccess
+
+@enduml
