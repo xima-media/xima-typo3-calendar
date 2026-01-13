@@ -38,14 +38,6 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *                 "groups": {"api_patch_xima_event_update"}
  *             },
  *         },
- *         "change_request": {
- *             "method": "POST",
- *             "path": "/events/{id}/change",
- *             "security": "object.getOwner() && object.getOwner().getUid() == currentUserId",
- *             "normalizationContext": {
- *                 "groups": {"api_patch_xima_event_update"}
- *             },
- *         },
  *         "delete": {
  *             "method": "DELETE",
  *             "path": "/events/{id}",

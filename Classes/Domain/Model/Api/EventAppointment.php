@@ -27,15 +27,7 @@ use TYPO3\CMS\Core\Resource\DuplicationBehavior;
  *         "patch_appointment_update": {
  *             "method": "PATCH",
  *             "path": "/appointments/{id}",
- *             "security": "object.getOwner() && object.getOwner().getUid() == currentUserId",
- *             "normalizationContext": {
- *                 "groups": {"api_patch_xima_appointment_update"}
- *             },
- *         },
- *         "change_request": {
- *             "method": "POST",
- *             "path": "/appointments/{id}/change",
- *             "security": "object.getOwner() && object.getOwner().getUid() == currentUserId",
+ *             "security": "object.getEvent().getOwner() && object.getEvent().getOwner().getUid() == currentUserId",
  *             "normalizationContext": {
  *                 "groups": {"api_patch_xima_appointment_update"}
  *             },
@@ -43,7 +35,7 @@ use TYPO3\CMS\Core\Resource\DuplicationBehavior;
  *         "delete": {
  *             "method": "DELETE",
  *             "path": "/appointments/{id}",
- *             "security": "object.getOwner() && object.getOwner().getUid() == currentUserId",
+ *             "security": "object.getEvent().getOwner() && object.getEvent().getOwner().getUid() == currentUserId",
  *         },
  *     },
  *     attributes={
