@@ -4,7 +4,7 @@ prefixFields: false
 labelField: title
 languageAware: false
 workspaceAware: false
-editLocking: false
+editLocking: true
 security:
   ignorePageTypeRestriction: true
 fields:
