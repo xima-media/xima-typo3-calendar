@@ -9,7 +9,7 @@ class CalendarController extends AbstractBackendController
     public function getRecordPid(): int
     {
         // TODO: Make this configurable via extension configuration or TypoScript
-        return 1424;
+        return 1468;
     }
 
     public function getTableNames(): array
