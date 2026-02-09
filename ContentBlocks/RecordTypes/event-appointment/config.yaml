@@ -1,7 +1,7 @@
 name: xima/event-appointment
 table: tx_ximatypo3calendar_domain_model_entry
 prefixFields: false
-labelField: title
+labelField: start_date
 languageAware: false
 workspaceAware: false
 editLocking: false
@@ -16,8 +16,8 @@ fields:
     renderType: selectSingle
     foreign_table: tx_ximatypo3calendar_domain_model_event
     required: true
-  - identifier: title
-    type: Text
+#  - identifier: title
+#    type: Text
   - identifier: datetime_palette
     type: Palette
     fields:
@@ -32,9 +32,6 @@ fields:
         dbType: datetime
         format: datetime
         disableAgeDisplay: true
-      - identifier: all_day
-        type: Checkbox
-        default: 0
   - identifier: canceled
     type: Checkbox
     default: 0
@@ -43,66 +40,34 @@ fields:
   - identifier: description
     type: Textarea
     enableRichtext: true
-  - identifier: url
-    type: Link
-    allowedTypes:
-      - url
-  - identifier: files
-    type: File
-    allowed: common-media-types
   - identifier: location_tab
     type: Tab
   - identifier: type
     type: Select
     renderType: selectSingle
     items:
-      - value: presence
+      - value: inPerson
         label: 'Präsenz'
       - value: online
         label: 'Online'
       - value: hybrid
         label: 'Hybrid'
+  - identifier: online_link
+    type: Link
+    allowedTypes:
+      - url
   - identifier: location
     type: Relation
     foreign_table: tx_ximatypo3calendar_domain_model_location
     required: true
     allowed: tx_ximatypo3calendar_domain_model_location
     size: 1
-  - identifier: address
-    type: Textarea
-    rows: 3
-  - identifier: online_link
-    type: Link
-    allowedTypes:
-      - url
   - identifier: directions
     type: Textarea
     rows: 5
-  - identifier: registration_tab
-    type: Tab
-  - identifier: registration_palette
-    type: Palette
-    fields:
-      - identifier: requires_registration
-        type: Checkbox
-        default: 0
-      - identifier: registration_link
-        type: Link
-        allowedTypes:
-          - url
-          - page
-      - identifier: registration_deadline
-        type: DateTime
-        dbType: datetime
-      - identifier: fee
-        type: Text
   - identifier: people_tab
     type: Tab
   - identifier: speakers
     type: Relation
     foreign_table: tx_ximatypo3calendar_domain_model_speaker
     allowed: tx_ximatypo3calendar_domain_model_speaker
-  - identifier: hosts
-    type: Relation
-    foreign_table: fe_users
-    allowed: fe_users

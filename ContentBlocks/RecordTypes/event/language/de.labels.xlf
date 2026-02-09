@@ -35,6 +35,14 @@
 				<source />
 				<target>Beschreibung</target>
 			</trans-unit>
+			<trans-unit id="additional_information.label">
+				<source />
+				<target>Weitere Informationen / Anfahrt</target>
+			</trans-unit>
+			<trans-unit id="url.label">
+				<source />
+				<target>URL</target>
+			</trans-unit>
 			<trans-unit id="preview_image.label">
 				<source />
 				<target>Vorschaubild</target>
@@ -73,11 +81,15 @@
 			</trans-unit>
 			<trans-unit id="tabs.organizer_tab">
 				<source />
-				<target>Veranstalter</target>
+				<target>Veranstalter &amp; Gastgeber</target>
 			</trans-unit>
 			<trans-unit id="organizer.label">
 				<source />
 				<target>Veranstalter</target>
+			</trans-unit>
+			<trans-unit id="hosts.label">
+				<source />
+				<target>Gastgeber</target>
 			</trans-unit>
 			<trans-unit id="tabs.category_tab">
 				<source />
@@ -110,6 +122,10 @@
 			<trans-unit id="fee.label">
 				<source />
 				<target>Teilnahmegebühr</target>
+			</trans-unit>
+			<trans-unit id="registration_address.label">
+				<source />
+				<target>Anmeldeadresse</target>
 			</trans-unit>
 			<trans-unit id="tabs.workflow_tab">
 				<source />

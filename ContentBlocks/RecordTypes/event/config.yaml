@@ -29,6 +29,13 @@ fields:
   - identifier: description
     type: Textarea
     enableRichtext: true
+  - identifier: additional_information
+    type: Textarea
+    rows: 3
+  - identifier: url
+    type: Link
+    allowedTypes:
+      - url
   - identifier: preview_image
     type: File
     allowed: common-image-types
@@ -46,8 +53,8 @@ fields:
       - identifier: publish_to_feed
         type: Checkbox
         default: 0
-      - identifier: publish_date
-        type: DateTime
+#      - identifier: publish_date
+#        type: DateTime
   - identifier: appointments
     type: Collection
     foreign_table: tx_ximatypo3calendar_domain_model_entry
@@ -62,6 +69,10 @@ fields:
     type: Relation
     foreign_table: tx_ximatypo3calendar_domain_model_organizer
     allowed: tx_ximatypo3calendar_domain_model_organizer
+  - identifier: hosts
+    type: Relation
+    foreign_table: fe_users
+    allowed: fe_users
   - identifier: category_tab
     type: Tab
   - identifier: categories
@@ -84,6 +95,9 @@ fields:
         dbType: datetime
       - identifier: fee
         type: Text
+  - identifier: registration_address
+    type: Textarea
+    rows: 3
   - identifier: workflow_tab
     type: Tab
   - identifier: workflow_palette

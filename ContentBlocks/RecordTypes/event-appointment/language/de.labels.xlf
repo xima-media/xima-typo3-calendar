@@ -31,10 +31,6 @@
 				<source />
 				<target>Enddatum</target>
 			</trans-unit>
-			<trans-unit id="all_day.label">
-				<source />
-				<target>Ganztägig</target>
-			</trans-unit>
 			<trans-unit id="canceled.label">
 				<source />
 				<target>Abgesagt</target>
@@ -47,14 +43,6 @@
 				<source />
 				<target>Beschreibung</target>
 			</trans-unit>
-			<trans-unit id="url.label">
-				<source />
-				<target>URL</target>
-			</trans-unit>
-			<trans-unit id="files.label">
-				<source />
-				<target>Dateien</target>
-			</trans-unit>
 			<trans-unit id="tabs.location_tab">
 				<source />
 				<target>Ort &amp; Typ</target>
@@ -63,7 +51,7 @@
 				<source />
 				<target>Typ</target>
 			</trans-unit>
-			<trans-unit id="type.items.presence">
+			<trans-unit id="type.items.inPerson">
 				<source />
 				<target>Präsenz</target>
 			</trans-unit>
@@ -79,10 +67,6 @@
 				<source />
 				<target>Veranstaltungsort</target>
 			</trans-unit>
-			<trans-unit id="address.label">
-				<source />
-				<target>Adresse</target>
-			</trans-unit>
 			<trans-unit id="online_link.label">
 				<source />
 				<target>Online-Link</target>
@@ -91,30 +75,6 @@
 				<source />
 				<target>Wegbeschreibung</target>
 			</trans-unit>
-			<trans-unit id="tabs.registration_tab">
-				<source />
-				<target>Anmeldung</target>
-			</trans-unit>
-			<trans-unit id="palettes.registration_palette">
-				<source />
-				<target>Anmeldeinformationen</target>
-			</trans-unit>
-			<trans-unit id="requires_registration.label">
-				<source />
-				<target>Anmeldung erforderlich</target>
-			</trans-unit>
-			<trans-unit id="registration_link.label">
-				<source />
-				<target>Anmeldelink</target>
-			</trans-unit>
-			<trans-unit id="registration_deadline.label">
-				<source />
-				<target>Anmeldefrist</target>
-			</trans-unit>
-			<trans-unit id="fee.label">
-				<source />
-				<target>Teilnahmegebühr</target>
-			</trans-unit>
 			<trans-unit id="tabs.people_tab">
 				<source />
 				<target>Personen</target>
@@ -122,10 +82,6 @@
 			<trans-unit id="speakers.label">
 				<source />
 				<target>Referenten</target>
-			</trans-unit>
-			<trans-unit id="hosts.label">
-				<source />
-				<target>Gastgeber</target>
 			</trans-unit>
 		</body>
 	</file>

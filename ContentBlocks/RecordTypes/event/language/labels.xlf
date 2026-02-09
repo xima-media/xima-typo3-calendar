@@ -27,6 +27,12 @@
 			<trans-unit id="description.label">
 				<source>Description</source>
 			</trans-unit>
+			<trans-unit id="additional_information.label">
+				<source>Additional information / directions</source>
+			</trans-unit>
+			<trans-unit id="url.label">
+				<source>URL</source>
+			</trans-unit>
 			<trans-unit id="preview_image.label">
 				<source>Preview Image</source>
 			</trans-unit>
@@ -55,10 +61,13 @@
 				<source>Appointments</source>
 			</trans-unit>
 			<trans-unit id="tabs.organizer_tab">
-				<source>Organizer</source>
+				<source>Organizer &amp; Hosts</source>
 			</trans-unit>
 			<trans-unit id="organizer.label">
 				<source>Organizer</source>
+			</trans-unit>
+			<trans-unit id="hosts.label">
+				<source>Hosts</source>
 			</trans-unit>
 			<trans-unit id="tabs.category_tab">
 				<source>Category</source>
@@ -80,6 +89,9 @@
 			</trans-unit>
 			<trans-unit id="registration_deadline.label">
 				<source>Registration Deadline</source>
+			</trans-unit>
+			<trans-unit id="registration_address.label">
+				<source>Registration address</source>
 			</trans-unit>
 			<trans-unit id="fee.label">
 				<source>Fee</source>
