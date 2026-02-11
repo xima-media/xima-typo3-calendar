@@ -16,8 +16,6 @@ fields:
     renderType: selectSingle
     foreign_table: tx_ximatypo3calendar_domain_model_event
     required: true
-#  - identifier: title
-#    type: Text
   - identifier: datetime_palette
     type: Palette
     fields:
@@ -32,6 +30,9 @@ fields:
         dbType: datetime
         format: datetime
         disableAgeDisplay: true
+      - identifier: all_day
+        type: Checkbox
+        default: 0
   - identifier: canceled
     type: Checkbox
     default: 0

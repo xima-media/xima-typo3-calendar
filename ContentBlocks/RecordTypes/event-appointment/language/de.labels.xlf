@@ -31,6 +31,10 @@
 				<source />
 				<target>Enddatum</target>
 			</trans-unit>
+			<trans-unit id="all_day.label">
+				<source />
+				<target>Ganztägig</target>
+			</trans-unit>
 			<trans-unit id="canceled.label">
 				<source />
 				<target>Abgesagt</target>

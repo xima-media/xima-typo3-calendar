@@ -24,6 +24,9 @@
 			<trans-unit id="end_date.label">
 				<source>End Date</source>
 			</trans-unit>
+			<trans-unit id="all_day.label">
+				<source>All Day</source>
+			</trans-unit>
 			<trans-unit id="canceled.label">
 				<source>Canceled</source>
 			</trans-unit>
