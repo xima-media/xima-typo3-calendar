@@ -5,6 +5,10 @@ labelField: start_date
 languageAware: false
 workspaceAware: false
 editLocking: false
+restriction:
+  startTime: false
+  endTime: false
+  userGroup: false
 typeField: record_type
 typeName: event-appointment
 fields:

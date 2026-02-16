@@ -3,6 +3,10 @@ table: tx_ximatypo3calendar_domain_model_organizer
 prefixFields: false
 labelField: title
 languageAware: false
+restriction:
+  startTime: false
+  endTime: false
+  userGroup: false
 security:
   ignorePageTypeRestriction: true
 fields:
