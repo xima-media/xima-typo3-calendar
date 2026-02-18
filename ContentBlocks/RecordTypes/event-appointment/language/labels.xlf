@@ -60,11 +60,14 @@
 			<trans-unit id="directions.label">
 				<source>Directions</source>
 			</trans-unit>
-			<trans-unit id="tabs.people_tab">
-				<source>People</source>
+			<trans-unit id="tabs.speakers_tab">
+				<source>Speakers</source>
 			</trans-unit>
 			<trans-unit id="speakers.label">
 				<source>Speakers</source>
+			</trans-unit>
+			<trans-unit id="modified_date.label">
+				<source>Date of last modification</source>
 			</trans-unit>
 		</body>
 	</file>

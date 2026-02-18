@@ -113,6 +113,7 @@ fields:
         foreign_table: fe_users
         foreign_field: events
         relationType: ManyToOne
+        required: true
       - identifier: status
         type: Select
         renderType: selectSingle
@@ -123,3 +124,6 @@ fields:
             label: 'Live'
           - value: 2
             label: 'Abgelehnt'
+  - identifier: approval_date
+    type: DateTime
+    dbType: datetime

@@ -40,6 +40,9 @@ fields:
   - identifier: canceled
     type: Checkbox
     default: 0
+  - identifier: modified_date
+    type: DateTime
+    dbType: datetime
   - identifier: content_tab
     type: Tab
   - identifier: description
@@ -70,7 +73,7 @@ fields:
   - identifier: directions
     type: Textarea
     rows: 5
-  - identifier: people_tab
+  - identifier: speakers_tab
     type: Tab
   - identifier: speakers
     type: Relation

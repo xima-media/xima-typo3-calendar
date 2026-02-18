@@ -16,3 +16,6 @@ ExtensionManagementUtility::addTCAcolumns(
         ],
     ]
 );
+
+// modifiedDate readOnly
+$GLOBALS['TCA']['tx_ximatypo3calendar_domain_model_entry']['columns']['modified_date']['config']['readOnly'] = true;

@@ -79,13 +79,17 @@
 				<source />
 				<target>Wegbeschreibung</target>
 			</trans-unit>
-			<trans-unit id="tabs.people_tab">
+			<trans-unit id="tabs.speakers_tab">
 				<source />
-				<target>Personen</target>
+				<target>Referenten</target>
 			</trans-unit>
 			<trans-unit id="speakers.label">
 				<source />
 				<target>Referenten</target>
+			</trans-unit>
+			<trans-unit id="modified_date.label">
+				<source/>
+				<target>Datum der letzten Änderung</target>
 			</trans-unit>
 		</body>
 	</file>
