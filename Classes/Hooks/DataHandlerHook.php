@@ -1,4 +1,5 @@
 <?php
+
 namespace Xima\XimaTypo3Calendar\Hooks;
 
 use TYPO3\CMS\Core\DataHandling\DataHandler;
