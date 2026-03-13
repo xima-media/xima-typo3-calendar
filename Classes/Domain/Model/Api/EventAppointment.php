@@ -49,7 +49,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *             "conflictMode": DuplicationBehavior::RENAME,
  *         },
  *         "persistence": {
- *             "storagePid": "1424"
+ *             "storagePid": "1478"
  *         }
  *     },
  * )

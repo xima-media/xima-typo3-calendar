@@ -14,6 +14,7 @@ return [
     ],
     \Xima\XimaTypo3Calendar\Domain\Model\Api\EventAppointment::class => [
         'tableName' => 'tx_ximatypo3calendar_domain_model_entry',
+        'recordType' => 'event-appointment',
     ],
     \Xima\XimaTypo3Calendar\Domain\Model\Api\Location::class => [
         'tableName' => 'tx_ximatypo3calendar_domain_model_location',

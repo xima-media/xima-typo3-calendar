@@ -11,18 +11,19 @@ class CalendarEntry extends AbstractEntity
     /**
      * @var Calendar|null
      * @T3api\Serializer\MaxDepth(0)
+    * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event", "api_post_xima_appointment", "api_patch_xima_appointment_update", "api_patch_xima_event_update"})
      */
     #[Validate(['validator' => 'NotEmpty'])]
     protected ?Calendar $calendar = null;
 
     /**
-     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
+        * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event", "api_post_xima_appointment", "api_patch_xima_appointment_update"})
      */
     protected string $title = '';
 
     /**
      * @var \DateTime|null
-     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
+        * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event", "api_post_xima_appointment", "api_patch_xima_appointment_update"})
      */
     #[Validate(['validator' => 'DateTime'])]
     #[Validate(['validator' => 'NotEmpty'])]
@@ -30,12 +31,12 @@ class CalendarEntry extends AbstractEntity
 
     /**
      * @var \DateTime|null
-     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
+        * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event", "api_post_xima_appointment", "api_patch_xima_appointment_update"})
      */
     protected ?\DateTime $endDate = null;
 
     /**
-     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
+        * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event", "api_post_xima_appointment", "api_patch_xima_appointment_update"})
      */
     protected bool $allDay = false;
 

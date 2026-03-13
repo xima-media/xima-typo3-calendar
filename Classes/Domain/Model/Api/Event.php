@@ -51,7 +51,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *             "conflictMode": DuplicationBehavior::RENAME,
  *         },
  *         "persistence": {
- *             "storagePid": "1424"
+ *             "storagePid": "1478"
  *         }
  *     },
  * )
@@ -79,6 +79,16 @@ class Event extends AbstractEntity
      * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected string $description = '';
+
+    /**
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
+     */
+    protected string $additionalInformation = '';
+
+    /**
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
+     */
+    protected string $url = '';
 
     /**
      * @var ObjectStorage<Category>|null
@@ -223,6 +233,26 @@ class Event extends AbstractEntity
     public function setDescription(string $description): void
     {
         $this->description = $description;
+    }
+
+    public function getAdditionalInformation(): string
+    {
+        return $this->additionalInformation;
+    }
+
+    public function setAdditionalInformation(string $additionalInformation): void
+    {
+        $this->additionalInformation = $additionalInformation;
+    }
+
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(string $url): void
+    {
+        $this->url = $url;
     }
 
     /**
