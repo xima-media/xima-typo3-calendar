@@ -4,6 +4,7 @@ namespace Xima\XimaTypo3Calendar\Domain\Model\Api;
 
 use DateTime;
 use SourceBroker\T3api\Annotation as T3api;
+use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 use TYPO3\CMS\Core\Resource\DuplicationBehavior;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
@@ -245,14 +246,33 @@ class Event extends AbstractEntity
         $this->additionalInformation = $additionalInformation;
     }
 
-    public function getUrl(): string
+    /**
+     * @VirtualProperty("externalUrl")
+     */
+    public function getExternalUrl(): string
     {
         return $this->url;
+    }
+
+    /**
+     * @VirtualProperty("url")
+     */
+    public function getUrl(): string
+    {
+        $requestUri = $GLOBALS['TYPO3_REQUEST']->getUri();
+
+        return $requestUri->getScheme() . '://' . $requestUri->getAuthority()
+            . '/aktuelles/veranstaltungen/event/' . $this->getUid() . '-' . $this->getFakeSlug();
     }
 
     public function setUrl(string $url): void
     {
         $this->url = $url;
+    }
+
+    private function getFakeSlug(): string
+    {
+        return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $this->getTitle()), '-'));
     }
 
     /**
