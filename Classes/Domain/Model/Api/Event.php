@@ -136,6 +136,13 @@ class Event extends AbstractEntity
     protected ?Organizer $organizer = null;
 
     /**
+     * @var ObjectStorage<FrontendUser>|null
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
+     * @T3api\ORM\Cascade("persist")
+     */
+    protected ?ObjectStorage $hosts = null;
+
+    /**
      * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
      * @var ?ObjectStorage<EventAppointment>
@@ -158,6 +165,7 @@ class Event extends AbstractEntity
         $this->appointments = new ObjectStorage();
         $this->categories = new ObjectStorage();
         $this->files = new ObjectStorage();
+        $this->hosts = new ObjectStorage();
     }
 
     /**
@@ -184,6 +192,22 @@ class Event extends AbstractEntity
     public function setOrganizer(?Organizer $organizer): void
     {
         $this->organizer = $organizer;
+    }
+
+    /**
+     * @return ObjectStorage<FrontendUser>|null
+     */
+    public function getHosts(): ?ObjectStorage
+    {
+        return $this->hosts;
+    }
+
+    /**
+     * @param ObjectStorage<FrontendUser>|null $hosts
+     */
+    public function setHosts(?ObjectStorage $hosts): void
+    {
+        $this->hosts = $hosts;
     }
 
     public function getOwner(): ?FrontendUser

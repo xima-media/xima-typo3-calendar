@@ -5,25 +5,45 @@ namespace Xima\XimaTypo3Calendar\Domain\Model\Api;
 use SourceBroker\T3api\Annotation as T3api;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
+/**
+ * @T3api\ApiResource(
+ *     collectionOperations={
+ *         "get": {
+ *             "path": "/speakers",
+ *             "normalizationContext": {
+ *                 "groups": {"api_get_xima_speaker"}
+ *             },
+ *         }
+ *     },
+ *     attributes={
+ *         "pagination_client_enabled": true,
+ *         "pagination_items_per_page": 100,
+ *         "maximum_items_per_page": 100,
+ *         "persistence": {
+ *             "storagePid": "1478"
+ *         }
+ *     },
+ * )
+ */
 class Speaker extends AbstractEntity
 {
     /**
-     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
+        * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event", "api_get_xima_speaker"})
      */
     protected string $title = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
+        * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event", "api_get_xima_speaker"})
      */
     protected string $firstName = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
+        * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event", "api_get_xima_speaker"})
      */
     protected string $lastName = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event"})
+        * @T3api\Serializer\Groups({"api_get_xima_event", "api_post_xima_event", "api_get_xima_speaker"})
      */
     protected string $department = '';
 

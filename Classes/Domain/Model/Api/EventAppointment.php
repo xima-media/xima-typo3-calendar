@@ -57,85 +57,85 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 class EventAppointment extends CalendarEntry
 {
     /**
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
+     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected string $description = '';
 
     protected ?Event $event = null;
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
+     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected bool $canceled = false;
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
+     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected string $type = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
+     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
      */
     protected ?Location $location = null;
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
+     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected string $address = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
+     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected string $onlineLink = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
+     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected string $directions = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
+     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected bool $requiresRegistration = false;
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
+     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected string $registrationLink = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
+     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected ?DateTime $registrationDeadline = null;
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
+     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected string $fee = '';
 
     /**
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
+     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected string $url = '';
 
     /**
      * @var ObjectStorage<Speaker>|null
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
+     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
      */
     protected ?ObjectStorage $speakers = null;
 
     /**
      * @var ObjectStorage<FrontendUser>|null
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
+     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
      */
     protected ?ObjectStorage $hosts = null;
 
     /**
      * @var ObjectStorage<FileReference>|null
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment"})
+     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
      */
     #[Cascade(['remove'])]
