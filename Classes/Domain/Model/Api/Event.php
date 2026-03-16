@@ -115,6 +115,31 @@ class Event extends AbstractEntity
 
     /**
      * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
+     */
+    protected bool $requiresRegistration = false;
+
+    /**
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
+     */
+    protected string $registrationLink = '';
+
+    /**
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
+     */
+    protected ?DateTime $registrationDeadline = null;
+
+    /**
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
+     */
+    protected string $fee = '';
+
+    /**
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
+     */
+    protected string $registrationAddress = '';
+
+    /**
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
      */
     #[Cascade(['remove'])]
@@ -395,5 +420,55 @@ class Event extends AbstractEntity
     public function removeDocument(FileReference $document): void
     {
         $this->files?->detach($document);
+    }
+
+    public function getRequiresRegistration(): bool
+    {
+        return $this->requiresRegistration;
+    }
+
+    public function setRequiresRegistration(bool $requiresRegistration): void
+    {
+        $this->requiresRegistration = $requiresRegistration;
+    }
+
+    public function getRegistrationLink(): string
+    {
+        return $this->registrationLink;
+    }
+
+    public function setRegistrationLink(string $registrationLink): void
+    {
+        $this->registrationLink = $registrationLink;
+    }
+
+    public function getRegistrationDeadline(): ?DateTime
+    {
+        return $this->registrationDeadline;
+    }
+
+    public function setRegistrationDeadline(?DateTime $registrationDeadline): void
+    {
+        $this->registrationDeadline = $registrationDeadline;
+    }
+
+    public function getFee(): string
+    {
+        return $this->fee;
+    }
+
+    public function setFee(string $fee): void
+    {
+        $this->fee = $fee;
+    }
+
+    public function getRegistrationAddress(): string
+    {
+        return $this->registrationAddress;
+    }
+
+    public function setRegistrationAddress(string $registrationAddress): void
+    {
+        $this->registrationAddress = $registrationAddress;
     }
 }
