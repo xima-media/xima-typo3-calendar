@@ -61,6 +61,9 @@ class EventAppointment extends CalendarEntry
      */
     protected string $description = '';
 
+    /**
+     * @T3api\Serializer\MaxDepth(0)
+     */
     protected ?Event $event = null;
 
     /**
@@ -101,15 +104,15 @@ class EventAppointment extends CalendarEntry
 
     /**
      * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
-     */
-    protected string $registrationLink = '';
+      */
+     protected string $registrationLink = '';
 
-    /**
-     * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
-     */
-    protected ?DateTime $registrationDeadline = null;
+     /**
+      * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
+      */
+     protected ?DateTime $registrationDeadline = null;
 
-    /**
+     /**
      * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      */
     protected string $fee = '';
@@ -296,7 +299,7 @@ class EventAppointment extends CalendarEntry
      */
     public function setSpeakers(?ObjectStorage $speakers): void
     {
-        $this->speakers = $speakers;
+        $this->speakers = $speakers ?? new ObjectStorage();
     }
 
     /**
@@ -312,7 +315,7 @@ class EventAppointment extends CalendarEntry
      */
     public function setHosts(?ObjectStorage $hosts): void
     {
-        $this->hosts = $hosts;
+        $this->hosts = $hosts ?? new ObjectStorage();
     }
 
     /**
@@ -328,6 +331,6 @@ class EventAppointment extends CalendarEntry
      */
     public function setFiles(?ObjectStorage $files): void
     {
-        $this->files = $files;
+        $this->files = $files ?? new ObjectStorage();
     }
 }

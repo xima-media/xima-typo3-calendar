@@ -20,6 +20,10 @@ fields:
     renderType: selectSingle
     foreign_table: tx_ximatypo3calendar_domain_model_event
     required: true
+  - identifier: title
+    type: Text
+    maxLength: 255
+    size: 60
   - identifier: datetime_palette
     type: Palette
     fields:
@@ -70,6 +74,9 @@ fields:
     required: true
     allowed: tx_ximatypo3calendar_domain_model_location
     size: 1
+  - identifier: address
+    type: Textarea
+    rows: 3
   - identifier: directions
     type: Textarea
     rows: 5

@@ -206,7 +206,7 @@ class Event extends AbstractEntity
      */
     public function setAppointments(?ObjectStorage $appointments): void
     {
-        $this->appointments = $appointments;
+        $this->appointments = $appointments ?? new ObjectStorage();
     }
 
     public function getOrganizer(): ?Organizer
@@ -232,7 +232,7 @@ class Event extends AbstractEntity
      */
     public function setHosts(?ObjectStorage $hosts): void
     {
-        $this->hosts = $hosts;
+        $this->hosts = $hosts ?? new ObjectStorage();
     }
 
     public function getOwner(): ?FrontendUser
@@ -337,7 +337,7 @@ class Event extends AbstractEntity
      */
     public function setCategories(?ObjectStorage $categories): void
     {
-        $this->categories = $categories;
+        $this->categories = $categories ?? new ObjectStorage();
     }
 
     public function addCategory(Category $category): void
@@ -406,7 +406,7 @@ class Event extends AbstractEntity
      */
     public function setFiles(?ObjectStorage $files): void
     {
-        $this->files = $files;
+        $this->files = $files ?? new ObjectStorage();
     }
 
     public function addDocument(FileReference $document): void
