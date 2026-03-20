@@ -105,16 +105,16 @@ class EventAppointment extends CalendarEntry
     /**
      * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
       */
-     protected string $registrationLink = '';
+    protected string $registrationLink = '';
 
-     /**
-      * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
-      */
-     protected ?DateTime $registrationDeadline = null;
-
-     /**
+    /**
      * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
      */
+    protected ?DateTime $registrationDeadline = null;
+
+    /**
+    * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
+    */
     protected string $fee = '';
 
     /**
