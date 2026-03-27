@@ -6,6 +6,9 @@ return [
     \Xima\XimaTypo3Calendar\Domain\Model\Api\Event::class => [
         'tableName' => 'tx_ximatypo3calendar_domain_model_event',
     ],
+    \Xima\XimaTypo3Calendar\Domain\Model\Api\FileReference::class => [
+        'tableName' => 'sys_file_reference',
+    ],
     \Xima\XimaTypo3Calendar\Domain\Model\Api\Organizer::class => [
         'tableName' => 'tx_ximatypo3calendar_domain_model_organizer',
     ],

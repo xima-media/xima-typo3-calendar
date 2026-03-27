@@ -8,7 +8,6 @@ use SourceBroker\T3api\Annotation\Serializer\VirtualProperty;
 use TYPO3\CMS\Core\Resource\DuplicationBehavior;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
-use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -139,6 +138,9 @@ class Event extends AbstractEntity
     protected string $registrationAddress = '';
 
     /**
+     * Submit a sys_file uid as `{"previewImage": {"uidLocal": 123}}`.
+     * Remove the image with `{"previewImage": 0}`.
+     *
      * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
      */
@@ -385,7 +387,19 @@ class Event extends AbstractEntity
 
     public function getPreviewImage(): ?FileReference
     {
-        return $this->previewImage;
+        $previewImage = $this->previewImage;
+
+        // if ($previewImage === null) {
+        //     return null;
+        // }
+
+        // try {
+        //     $previewImage->getOriginalResource();
+        // } catch (\Throwable) {
+        //     return null;
+        // }
+
+        return $previewImage;
     }
 
     public function setPreviewImage(?FileReference $previewImage): void
