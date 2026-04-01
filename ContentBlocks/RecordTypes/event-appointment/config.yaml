@@ -83,6 +83,6 @@ fields:
   - identifier: speakers_tab
     type: Tab
   - identifier: speakers
-    type: Relation
-    foreign_table: tx_ximatypo3calendar_domain_model_speaker
-    allowed: tx_ximatypo3calendar_domain_model_speaker
+    type: Text
+    maxLength: 255
+    size: 60

@@ -123,11 +123,9 @@ class EventAppointment extends CalendarEntry
     protected string $url = '';
 
     /**
-     * @var ObjectStorage<Speaker>|null
      * @T3api\Serializer\Groups({"api_patch_xima_appointment_update", "api_post_xima_appointment", "api_patch_xima_event_update", "api_post_xima_event"})
-     * @T3api\ORM\Cascade("persist")
      */
-    protected ?ObjectStorage $speakers = null;
+    protected string $speakers = '';
 
     /**
      * @var ObjectStorage<FrontendUser>|null
@@ -151,7 +149,6 @@ class EventAppointment extends CalendarEntry
 
     private function initializeObject(): void
     {
-        $this->speakers = new ObjectStorage();
         $this->hosts = new ObjectStorage();
         $this->files = new ObjectStorage();
     }
@@ -286,20 +283,14 @@ class EventAppointment extends CalendarEntry
         $this->url = $url;
     }
 
-    /**
-     * @return ObjectStorage<Speaker>|null
-     */
-    public function getSpeakers(): ?ObjectStorage
+    public function getSpeakers(): string
     {
         return $this->speakers;
     }
 
-    /**
-     * @param ObjectStorage<Speaker>|null $speakers
-     */
-    public function setSpeakers(?ObjectStorage $speakers): void
+    public function setSpeakers(string $speakers): void
     {
-        $this->speakers = $speakers ?? new ObjectStorage();
+        $this->speakers = $speakers;
     }
 
     /**
