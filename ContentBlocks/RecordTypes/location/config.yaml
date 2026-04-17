@@ -1,4 +1,4 @@
-name: xima/location
+name: xima/calendar-location
 table: tx_ximatypo3calendar_domain_model_location
 prefixFields: false
 labelField: name

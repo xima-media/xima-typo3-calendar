@@ -1,4 +1,4 @@
-name: xima/event
+name: xima/calendar-event
 table: tx_ximatypo3calendar_domain_model_event
 prefixFields: false
 labelField: title

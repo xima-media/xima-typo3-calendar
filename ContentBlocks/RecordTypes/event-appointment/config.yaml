@@ -1,4 +1,4 @@
-name: xima/event-appointment
+name: xima/calendar-event-appointment
 table: tx_ximatypo3calendar_domain_model_entry
 prefixFields: false
 labelField: start_date
