@@ -36,6 +36,13 @@ fields:
   - identifier: additional_information
     type: Textarea
     rows: 3
+  - identifier: location
+    type: Select
+    renderType: selectSingle
+    items:
+      - label: ''
+        value:
+    foreign_table: tx_ximatypo3calendar_domain_model_location
   - identifier: url
     type: Link
     allowedTypes:
@@ -81,6 +88,10 @@ fields:
     type: Tab
   - identifier: categories
     type: Category
+  - identifier: event_types
+    type: Category
+  - identifier: target_groups
+    type: Category
   - identifier: registration_tab
     type: Tab
   - identifier: registration_palette
@@ -102,6 +113,13 @@ fields:
   - identifier: registration_address
     type: Textarea
     rows: 3
+  - identifier: max_participants
+    type: Number
+  - identifier: related_tab
+    type: Tab
+  - identifier: related_events
+    type: Relation
+    allowed: 'tx_ximatypo3calendar_domain_model_event'
   - identifier: workflow_tab
     type: Tab
   - identifier: workflow_palette

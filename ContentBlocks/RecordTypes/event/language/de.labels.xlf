@@ -1,164 +1,189 @@
 <?xml version="1.0"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-	<file datatype="plaintext" original="labels.xlf" source-language="en" date="2026-01-13T12:52:00+00:00" product-name="xima/event">
-		<header/>
-		<body>
-			<trans-unit id="title">
-				<source />
-				<target>Veranstaltung</target>
-			</trans-unit>
-			<trans-unit id="palettes.event_info_palette">
-				<source />
-				<target>Veranstaltungsinformationen</target>
-			</trans-unit>
-			<trans-unit id="title.label">
-				<source />
-				<target>Titel</target>
-			</trans-unit>
-			<trans-unit id="language.label">
-				<source />
-				<target>Sprache</target>
-			</trans-unit>
-			<trans-unit id="language.items.">
-				<source />
-				<target>Alle Sprachen</target>
-			</trans-unit>
-			<trans-unit id="language.items.de">
-				<source />
-				<target>Deutsch</target>
-			</trans-unit>
-			<trans-unit id="language.items.en">
-				<source />
-				<target>Englisch</target>
-			</trans-unit>
-			<trans-unit id="description.label">
-				<source />
-				<target>Beschreibung</target>
-			</trans-unit>
-			<trans-unit id="additional_information.label">
-				<source />
-				<target>Weitere Informationen / Anfahrt</target>
-			</trans-unit>
-			<trans-unit id="url.label">
-				<source />
-				<target>URL</target>
-			</trans-unit>
-			<trans-unit id="preview_image.label">
-				<source />
-				<target>Vorschaubild</target>
-			</trans-unit>
-			<trans-unit id="files.label">
-				<source />
-				<target>Dateien</target>
-			</trans-unit>
-			<trans-unit id="tabs.publishing_tab">
-				<source />
-				<target>Veröffentlichung</target>
-			</trans-unit>
-			<trans-unit id="palettes.publishing_palette">
-				<source />
-				<target>Veröffentlichungsoptionen</target>
-			</trans-unit>
-			<trans-unit id="publish_to_website.label">
-				<source />
-				<target>Auf Website veröffentlichen</target>
-			</trans-unit>
-			<trans-unit id="publish_to_feed.label">
-				<source />
-				<target>Im Feed veröffentlichen</target>
-			</trans-unit>
-			<trans-unit id="publish_date.label">
-				<source />
-				<target>Veröffentlichungsdatum</target>
-			</trans-unit>
-			<trans-unit id="appointments.label">
-				<source />
-				<target>Termine</target>
-			</trans-unit>
-			<trans-unit id="tabs.appointments_tab">
-				<source />
-				<target>Termine</target>
-			</trans-unit>
-			<trans-unit id="tabs.organizer_tab">
-				<source />
-				<target>Veranstalter &amp; Gastgeber</target>
-			</trans-unit>
-			<trans-unit id="organizer.label">
-				<source />
-				<target>Veranstalter</target>
-			</trans-unit>
-			<trans-unit id="hosts.label">
-				<source />
-				<target>Gastgeber</target>
-			</trans-unit>
-			<trans-unit id="tabs.category_tab">
-				<source />
-				<target>Kategorie</target>
-			</trans-unit>
-			<trans-unit id="categories.label">
-				<source />
-				<target>Kategorie</target>
-			</trans-unit>
-			<trans-unit id="tabs.registration_tab">
-				<source />
-				<target>Anmeldung</target>
-			</trans-unit>
-			<trans-unit id="palettes.registration_palette">
-				<source />
-				<target>Anmeldeinformationen</target>
-			</trans-unit>
-			<trans-unit id="requires_registration.label">
-				<source />
-				<target>Anmeldung erforderlich</target>
-			</trans-unit>
-			<trans-unit id="registration_link.label">
-				<source />
-				<target>Anmeldelink</target>
-			</trans-unit>
-			<trans-unit id="registration_deadline.label">
-				<source />
-				<target>Anmeldefrist</target>
-			</trans-unit>
-			<trans-unit id="fee.label">
-				<source />
-				<target>Teilnahmegebühr</target>
-			</trans-unit>
-			<trans-unit id="registration_address.label">
-				<source />
-				<target>Anmeldeadresse</target>
-			</trans-unit>
-			<trans-unit id="tabs.workflow_tab">
-				<source />
-				<target>Workflow</target>
-			</trans-unit>
-			<trans-unit id="palettes.workflow_palette">
-				<source />
-				<target>Workflow</target>
-			</trans-unit>
-			<trans-unit id="owner.label">
-				<source />
-				<target>Besitzer</target>
-			</trans-unit>
-			<trans-unit id="status.label">
-				<source />
-				<target>Status</target>
-			</trans-unit>
-			<trans-unit id="status.items.0">
-				<source />
-				<target>Entwurf</target>
-			</trans-unit>
-			<trans-unit id="status.items.1">
-				<source />
-				<target>Live</target>
-			</trans-unit>
-			<trans-unit id="status.items.2">
-				<source />
-				<target>Abgelehnt</target>
-			</trans-unit>
-			<trans-unit id="approval_date.label">
-				<source/>
-				<target>Datum der Freigabe</target>
-			</trans-unit>
-		</body>
-	</file>
+    <file datatype="plaintext" original="labels.xlf" source-language="en" target-language="de" date="2026-01-13T12:52:00+00:00"
+          product-name="xima/calendar-event">
+        <header />
+        <body>
+            <trans-unit id="title">
+                <source />
+                <target>Veranstaltung</target>
+            </trans-unit>
+            <trans-unit id="palettes.event_info_palette">
+                <source />
+                <target>Veranstaltungsinformationen</target>
+            </trans-unit>
+            <trans-unit id="title.label">
+                <source />
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="language.label">
+                <source />
+                <target>Sprache</target>
+            </trans-unit>
+            <trans-unit id="language.items.">
+                <source />
+                <target>Alle Sprachen</target>
+            </trans-unit>
+            <trans-unit id="language.items.de">
+                <source />
+                <target>Deutsch</target>
+            </trans-unit>
+            <trans-unit id="language.items.en">
+                <source />
+                <target>Englisch</target>
+            </trans-unit>
+            <trans-unit id="description.label">
+                <source />
+                <target>Beschreibung</target>
+            </trans-unit>
+            <trans-unit id="additional_information.label">
+                <source />
+                <target>Weitere Informationen / Anfahrt</target>
+            </trans-unit>
+            <trans-unit id="location.label">
+                <source />
+                <target>Veranstaltungsort</target>
+            </trans-unit>
+            <trans-unit id="url.label">
+                <source />
+                <target>URL</target>
+            </trans-unit>
+            <trans-unit id="preview_image.label">
+                <source />
+                <target>Vorschaubild</target>
+            </trans-unit>
+            <trans-unit id="files.label">
+                <source />
+                <target>Dateien</target>
+            </trans-unit>
+            <trans-unit id="tabs.publishing_tab">
+                <source />
+                <target>Veröffentlichung</target>
+            </trans-unit>
+            <trans-unit id="palettes.publishing_palette">
+                <source />
+                <target>Veröffentlichungsoptionen</target>
+            </trans-unit>
+            <trans-unit id="publish_to_website.label">
+                <source />
+                <target>Auf Website veröffentlichen</target>
+            </trans-unit>
+            <trans-unit id="publish_to_feed.label">
+                <source />
+                <target>Im Feed veröffentlichen</target>
+            </trans-unit>
+            <trans-unit id="publish_date.label">
+                <source />
+                <target>Veröffentlichungsdatum</target>
+            </trans-unit>
+            <trans-unit id="appointments.label">
+                <source />
+                <target>Termine</target>
+            </trans-unit>
+            <trans-unit id="tabs.appointments_tab">
+                <source />
+                <target>Termine</target>
+            </trans-unit>
+            <trans-unit id="tabs.organizer_tab">
+                <source />
+                <target>Veranstalter &amp; Gastgeber</target>
+            </trans-unit>
+            <trans-unit id="organizer.label">
+                <source />
+                <target>Veranstalter</target>
+            </trans-unit>
+            <trans-unit id="hosts.label">
+                <source />
+                <target>Gastgeber</target>
+            </trans-unit>
+            <trans-unit id="tabs.category_tab">
+                <source />
+                <target>Kategorisierung</target>
+            </trans-unit>
+            <trans-unit id="categories.label">
+                <source />
+                <target>Kategorie</target>
+            </trans-unit>
+            <trans-unit id="event_types.label">
+                <source />
+                <target>Veranstaltungsarten</target>
+            </trans-unit>
+            <trans-unit id="target_groups.label">
+                <source />
+                <target>Zielgruppen</target>
+            </trans-unit>
+            <trans-unit id="tabs.registration_tab">
+                <source />
+                <target>Anmeldung</target>
+            </trans-unit>
+            <trans-unit id="palettes.registration_palette">
+                <source />
+                <target>Anmeldeinformationen</target>
+            </trans-unit>
+            <trans-unit id="requires_registration.label">
+                <source />
+                <target>Anmeldung erforderlich</target>
+            </trans-unit>
+            <trans-unit id="registration_link.label">
+                <source />
+                <target>Anmeldelink</target>
+            </trans-unit>
+            <trans-unit id="registration_deadline.label">
+                <source />
+                <target>Anmeldefrist</target>
+            </trans-unit>
+            <trans-unit id="fee.label">
+                <source />
+                <target>Teilnahmegebühr</target>
+            </trans-unit>
+            <trans-unit id="registration_address.label">
+                <source />
+                <target>Anmeldeadresse</target>
+            </trans-unit>
+            <trans-unit id="max_participants.label">
+                <source />
+                <target>Maximale Teilnehmendenzahl</target>
+            </trans-unit>
+            <trans-unit id="tabs.related_tab">
+                <source />
+                <target>Verknüpfungen</target>
+            </trans-unit>
+            <trans-unit id="related_events.label">
+                <source />
+                <target>Verknüpfte Veranstaltungen</target>
+            </trans-unit>
+            <trans-unit id="tabs.workflow_tab">
+                <source />
+                <target>Workflow</target>
+            </trans-unit>
+            <trans-unit id="palettes.workflow_palette">
+                <source />
+                <target>Workflow</target>
+            </trans-unit>
+            <trans-unit id="owner.label">
+                <source />
+                <target>Besitzer</target>
+            </trans-unit>
+            <trans-unit id="status.label">
+                <source />
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="status.items.0">
+                <source />
+                <target>Entwurf</target>
+            </trans-unit>
+            <trans-unit id="status.items.1">
+                <source />
+                <target>Live</target>
+            </trans-unit>
+            <trans-unit id="status.items.2">
+                <source />
+                <target>Abgelehnt</target>
+            </trans-unit>
+            <trans-unit id="approval_date.label">
+                <source />
+                <target>Datum der Freigabe</target>
+            </trans-unit>
+        </body>
+    </file>
 </xliff>
