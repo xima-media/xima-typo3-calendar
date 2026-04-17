@@ -2,14 +2,27 @@
 
 namespace Xima\XimaTypo3Calendar\Controller\Backend;
 
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use Xima\XimaTypo3Recordlist\Controller\AbstractBackendController;
 
 class EventsController extends AbstractBackendController
 {
+    public function __construct(
+        private readonly ExtensionConfiguration $extensionConfiguration,
+    ) {
+    }
+
+    /**
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     */
     public function getRecordPid(): int
     {
-        // TODO: Make this configurable via extension configuration or TypoScript
-        return 1478;
+        $pid = $this->extensionConfiguration
+            ->get('xima_typo3_calendar', 'recordPid');
+        return $pid !== null ? (int)$pid : 0;
     }
 
     public function getTableNames(): array
