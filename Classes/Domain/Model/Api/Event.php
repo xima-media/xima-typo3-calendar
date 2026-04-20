@@ -49,9 +49,6 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *             "folder": "1:/user_upload/event-images/",
  *             "allowedFileExtensions": {"jpg", "jpeg", "png"},
  *             "conflictMode": DuplicationBehavior::RENAME,
- *         },
- *         "persistence": {
- *             "storagePid": "1478"
  *         }
  *     },
  * )
