@@ -204,6 +204,11 @@ class Event extends AbstractEntity
     protected int $maxParticipants = 0;
 
     /**
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
+     */
+    protected int $numberOfPersonsGroup = 0;
+
+    /**
      * @var ObjectStorage<Event>|null
      * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
      * @T3api\ORM\Cascade("persist")
@@ -595,6 +600,16 @@ class Event extends AbstractEntity
     public function setMaxParticipants(int $maxParticipants): void
     {
         $this->maxParticipants = $maxParticipants;
+    }
+
+    public function getNumberOfPersonsGroup(): int
+    {
+        return $this->numberOfPersonsGroup;
+    }
+
+    public function setNumberOfPersonsGroup(int $numberOfPersonsGroup): void
+    {
+        $this->numberOfPersonsGroup = $numberOfPersonsGroup;
     }
 
     /**

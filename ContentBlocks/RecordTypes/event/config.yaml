@@ -113,8 +113,13 @@ fields:
   - identifier: registration_address
     type: Textarea
     rows: 3
-  - identifier: max_participants
-    type: Number
+  - identifier: participants_palette
+    type: Palette
+    fields:
+      - identifier: max_participants
+        type: Number
+      - identifier: number_of_persons_group
+        type: Number
   - identifier: related_tab
     type: Tab
   - identifier: related_events
