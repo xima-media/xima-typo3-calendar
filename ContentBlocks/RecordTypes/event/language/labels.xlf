@@ -14,13 +14,13 @@
                 <source>Language</source>
             </trans-unit>
             <trans-unit id="language.items.label">
-                <source>Alle Sprachen</source>
+                <source>All languages</source>
             </trans-unit>
             <trans-unit id="language.items.de.label">
-                <source>Deutsch</source>
+                <source>German</source>
             </trans-unit>
             <trans-unit id="language.items.en.label">
-                <source>Englisch</source>
+                <source>English</source>
             </trans-unit>
             <trans-unit id="description.label">
                 <source>Description</source>
@@ -116,28 +116,19 @@
                 <source>Status</source>
             </trans-unit>
             <trans-unit id="status.items.0.label">
-                <source>Entwurf</source>
+                <source>Draft</source>
             </trans-unit>
             <trans-unit id="status.items.1.label">
                 <source>Live</source>
             </trans-unit>
             <trans-unit id="status.items.2.label">
-                <source>Abgelehnt</source>
+                <source>Rejected</source>
             </trans-unit>
             <trans-unit id="approval_date.label">
                 <source>Approval date</source>
             </trans-unit>
             <trans-unit id="palettes.event_info_palette">
                 <source>Event Information</source>
-            </trans-unit>
-            <trans-unit id="language.items.">
-                <source>All Languages</source>
-            </trans-unit>
-            <trans-unit id="language.items.de">
-                <source>German</source>
-            </trans-unit>
-            <trans-unit id="language.items.en">
-                <source>English</source>
             </trans-unit>
             <trans-unit id="palettes.publishing_palette">
                 <source>Publishing Options</source>
@@ -147,15 +138,6 @@
             </trans-unit>
             <trans-unit id="palettes.workflow_palette">
                 <source>Workflow</source>
-            </trans-unit>
-            <trans-unit id="status.items.0">
-                <source>Draft</source>
-            </trans-unit>
-            <trans-unit id="status.items.1">
-                <source>Live</source>
-            </trans-unit>
-            <trans-unit id="status.items.2">
-                <source>Rejected</source>
             </trans-unit>
         </body>
     </file>

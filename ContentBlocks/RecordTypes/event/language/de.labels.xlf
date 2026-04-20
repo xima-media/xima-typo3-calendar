@@ -20,15 +20,15 @@
                 <source />
                 <target>Sprache</target>
             </trans-unit>
-            <trans-unit id="language.items.">
+            <trans-unit id="language.items.label">
                 <source />
                 <target>Alle Sprachen</target>
             </trans-unit>
-            <trans-unit id="language.items.de">
+            <trans-unit id="language.items.de.label">
                 <source />
                 <target>Deutsch</target>
             </trans-unit>
-            <trans-unit id="language.items.en">
+            <trans-unit id="language.items.en.label">
                 <source />
                 <target>Englisch</target>
             </trans-unit>
@@ -168,15 +168,15 @@
                 <source />
                 <target>Status</target>
             </trans-unit>
-            <trans-unit id="status.items.0">
+            <trans-unit id="status.items.0.label">
                 <source />
                 <target>Entwurf</target>
             </trans-unit>
-            <trans-unit id="status.items.1">
+            <trans-unit id="status.items.1.label">
                 <source />
                 <target>Live</target>
             </trans-unit>
-            <trans-unit id="status.items.2">
+            <trans-unit id="status.items.2.label">
                 <source />
                 <target>Abgelehnt</target>
             </trans-unit>
