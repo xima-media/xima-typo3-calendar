@@ -61,6 +61,19 @@ class Speaker {
     + department: string
 }
 
+class Requirement {
+    + title: string <<required>>
+    + description: string
+}
+
+class RequirementBooking {
+    + requirement: Requirement
+    + amount: number
+    + start: DateTime
+    + end: DateTime
+    + note: string
+}
+
 }
 
 
@@ -113,6 +126,8 @@ CalendarEntry <|-- EventAppointment
 CalendarEntry <|-- Timeslot
 CalendarEntry <|-- Holiday
 
+CalendarEntry "1" -- "*" RequirementBooking : requirements
+
 Event "*" -- "1" Organizer
 Event "*" -- "1" sys_category: categories
 Event "1" -- "1..*" EventAppointment
@@ -124,6 +139,10 @@ EventAppointment "*" -- "1" Location
 EventAppointment "*" -- "*" Speaker
 EventAppointment "*" -- "*" fe_users : hosts
 EventAppointment "1" -- "*" sys_file_reference : files
+
+fe_users "1" -- "*" Requirement : responsible
+
+Requirement "1" -- "*" RequirementBooking
 
 be_user "*" -- "*" sys_category : EventAccess
 
