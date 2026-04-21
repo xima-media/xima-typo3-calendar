@@ -64,10 +64,17 @@ fields:
         label: 'Online'
       - value: hybrid
         label: 'Hybrid'
-  - identifier: online_link
-    type: Link
-    allowedTypes:
-      - url
+  - identifier: attendance_palette
+    type: Palette
+    fields:
+      - identifier: online_link
+        type: Link
+        allowedTypes:
+          - url
+      - identifier: ticket_link
+        type: Link
+        allowedTypes:
+          - url
   - identifier: location
     type: Relation
     foreign_table: tx_ximatypo3calendar_domain_model_location

@@ -1,74 +1,81 @@
 <?xml version="1.0"?>
-<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-	<file datatype="plaintext" original="labels.xlf" source-language="en" date="2026-01-13T12:52:00+00:00" product-name="xima/event-appointment">
-		<header/>
-		<body>
-			<trans-unit id="title">
-				<source>Event Appointment</source>
-			</trans-unit>
-			<trans-unit id="calendar.label">
-				<source>Calendar</source>
-			</trans-unit>
-			<trans-unit id="event.label">
-				<source>Event</source>
-			</trans-unit>
-			<trans-unit id="title.label">
-				<source>Title</source>
-			</trans-unit>
-			<trans-unit id="palettes.datetime_palette">
-				<source>Date &amp; Time</source>
-			</trans-unit>
-			<trans-unit id="start_date.label">
-				<source>Start Date</source>
-			</trans-unit>
-			<trans-unit id="end_date.label">
-				<source>End Date</source>
-			</trans-unit>
-			<trans-unit id="all_day.label">
-				<source>All Day</source>
-			</trans-unit>
-			<trans-unit id="canceled.label">
-				<source>Canceled</source>
-			</trans-unit>
-			<trans-unit id="tabs.content_tab">
-				<source>Content</source>
-			</trans-unit>
-			<trans-unit id="description.label">
-				<source>Description</source>
-			</trans-unit>
-			<trans-unit id="tabs.location_tab">
-				<source>Location &amp; Type</source>
-			</trans-unit>
-			<trans-unit id="type.label">
-				<source>Type</source>
-			</trans-unit>
-			<trans-unit id="type.items.inPerson">
-				<source>In Person</source>
-			</trans-unit>
-			<trans-unit id="type.items.online">
-				<source>Online</source>
-			</trans-unit>
-			<trans-unit id="type.items.hybrid">
-				<source>Hybrid</source>
-			</trans-unit>
-			<trans-unit id="location.label">
-				<source>Location</source>
-			</trans-unit>
-			<trans-unit id="online_link.label">
-				<source>Online Link</source>
-			</trans-unit>
-			<trans-unit id="directions.label">
-				<source>Directions</source>
-			</trans-unit>
-			<trans-unit id="tabs.speakers_tab">
-				<source>Speakers</source>
-			</trans-unit>
-			<trans-unit id="speakers.label">
-				<source>Speakers</source>
-			</trans-unit>
-			<trans-unit id="modified_date.label">
-				<source>Date of last modification</source>
-			</trans-unit>
-		</body>
-	</file>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file datatype="plaintext" original="labels.xlf" source-language="en" date="2026-04-20T14:16:20+00:00"
+          product-name="xima/calendar-event-appointment">
+        <header />
+        <body>
+            <trans-unit id="title">
+                <source>Event Appointment</source>
+            </trans-unit>
+            <trans-unit id="calendar.label">
+                <source>Calendar</source>
+            </trans-unit>
+            <trans-unit id="event.label">
+                <source>Event</source>
+            </trans-unit>
+            <trans-unit id="title.label">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="start_date.label">
+                <source>Start Date</source>
+            </trans-unit>
+            <trans-unit id="end_date.label">
+                <source>End Date</source>
+            </trans-unit>
+            <trans-unit id="all_day.label">
+                <source>All Day</source>
+            </trans-unit>
+            <trans-unit id="canceled.label">
+                <source>Canceled</source>
+            </trans-unit>
+            <trans-unit id="modified_date.label">
+                <source>Date of last modification</source>
+            </trans-unit>
+            <trans-unit id="tabs.content_tab">
+                <source>Content</source>
+            </trans-unit>
+            <trans-unit id="description.label">
+                <source>Description</source>
+            </trans-unit>
+            <trans-unit id="tabs.location_tab">
+                <source>Location &amp; Type</source>
+            </trans-unit>
+            <trans-unit id="type.label">
+                <source>Type</source>
+            </trans-unit>
+            <trans-unit id="type.items.inPerson.label">
+                <source>In Person</source>
+            </trans-unit>
+            <trans-unit id="type.items.online.label">
+                <source>Online</source>
+            </trans-unit>
+            <trans-unit id="type.items.hybrid.label">
+                <source>Hybrid</source>
+            </trans-unit>
+            <trans-unit id="online_link.label">
+                <source>Online Link</source>
+            </trans-unit>
+            <trans-unit id="ticket_link.label">
+                <source>Ticket Link</source>
+            </trans-unit>
+            <trans-unit id="location.label">
+                <source>Location</source>
+            </trans-unit>
+            <trans-unit id="address.label">
+                <source>Address</source>
+            </trans-unit>
+            <trans-unit id="directions.label">
+                <source>Directions</source>
+            </trans-unit>
+            <trans-unit id="tabs.speakers_tab">
+                <source>Speakers</source>
+            </trans-unit>
+            <trans-unit id="speakers.label">
+                <source>Speakers</source>
+            </trans-unit>
+            <trans-unit id="palettes.datetime_palette">
+                <source>Date &amp; Time</source>
+            </trans-unit>
+        </body>
+    </file>
 </xliff>
