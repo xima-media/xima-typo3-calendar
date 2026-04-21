@@ -1,0 +1,22 @@
+name: xima/calender-requirement
+table: tx_ximatypo3calendar_domain_model_requirement
+prefixFields: false
+labelField: title
+languageAware: false
+restriction:
+  startTime: false
+  endTime: false
+  userGroup: false
+security:
+  ignorePageTypeRestriction: true
+fields:
+  - identifier: title
+    type: Text
+  - identifier: description
+    type: Textarea
+    enableRichtext: true
+  - identifier: assignee
+    type: Relation
+    allowed: 'fe_users'
+    maxitems: 1
+    size: 1

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file datatype="plaintext" original="labels.xlf" source-language="en" date="2026-04-21T13:57:31+00:00"
+          product-name="xima/calender-requirement-booking">
+        <header />
+        <body>
+            <trans-unit id="title">
+                <source>Requirement</source>
+            </trans-unit>
+            <trans-unit id="requirement.label">
+                <source>Requirement</source>
+            </trans-unit>
+            <trans-unit id="amount.label">
+                <source>Amount</source>
+            </trans-unit>
+            <trans-unit id="start.label">
+                <source>Start</source>
+            </trans-unit>
+            <trans-unit id="end.label">
+                <source>End</source>
+            </trans-unit>
+            <trans-unit id="note.label">
+                <source>Note</source>
+            </trans-unit>
+            <trans-unit id="title.label">
+                <source>Title</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

@@ -93,3 +93,10 @@ fields:
     type: Text
     maxLength: 255
     size: 60
+  - identifier: requirements_tab
+    type: Tab
+  - identifier: requirement_bookings
+    type: Collection
+    foreign_table: tx_ximatypo3calendar_domain_model_requirementbooking
+    appearance:
+      collapseAll: true

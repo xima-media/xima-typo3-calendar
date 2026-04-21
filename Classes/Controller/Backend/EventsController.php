@@ -33,6 +33,7 @@ class EventsController extends AbstractBackendController
             'tx_ximatypo3calendar_domain_model_speaker',
             'tx_ximatypo3calendar_domain_model_entry',
             'tx_ximatypo3calendar_domain_model_location',
+            'tx_ximatypo3calendar_domain_model_requirement',
             'tx_ximatypo3calendar_domain_model_calendar',
         ];
     }
@@ -92,5 +93,11 @@ class EventsController extends AbstractBackendController
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_speaker']['columns']['title']['defaultPosition'] = 2;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_speaker']['columns']['first_name']['defaultPosition'] = 3;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_speaker']['columns']['department']['defaultPosition'] = 4;
+
+        // ============================================
+        // tx_ximatypo3calendar_domain_model_requirement (Requirement)
+        // ============================================
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_requirement']['columns']['title']['defaultPosition'] = 1;
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_requirement']['columns']['assignee']['defaultPosition'] = 2;
     }
 }

@@ -92,6 +92,14 @@
                 <source />
                 <target>Referenten</target>
             </trans-unit>
+            <trans-unit id="tabs.requirements_tab">
+                <source />
+                <target>Anforderungen</target>
+            </trans-unit>
+            <trans-unit id="requirement_bookings.label">
+                <source />
+                <target>Gebuchte Anforderungen</target>
+            </trans-unit>
             <trans-unit id="modified_date.label">
                 <source />
                 <target>Datum der letzten Änderung</target>

@@ -1,0 +1,29 @@
+name: xima/calender-requirement-booking
+table: tx_ximatypo3calendar_domain_model_requirementbooking
+prefixFields: false
+labelField: requirement
+languageAware: false
+restriction:
+  startTime: false
+  endTime: false
+  userGroup: false
+security:
+  ignorePageTypeRestriction: true
+fields:
+  - identifier: requirement
+    type: Select
+    renderType: selectSingle
+    foreign_table: tx_ximatypo3calendar_domain_model_requirement
+  - identifier: amount_palette
+    type: Palette
+    fields:
+      - identifier: amount
+        type: Number
+        default: 1
+      - identifier: start
+        type: DateTime
+      - identifier: end
+        type: DateTime
+  - identifier: note
+    type: Textarea
+    rows: 3
