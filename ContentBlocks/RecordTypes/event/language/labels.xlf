@@ -73,12 +73,6 @@
             <trans-unit id="categories.label">
                 <source>Categorization</source>
             </trans-unit>
-            <trans-unit id="event_types.label">
-                <source>Event types</source>
-            </trans-unit>
-            <trans-unit id="target_groups.label">
-                <source>Target groups</source>
-            </trans-unit>
             <trans-unit id="tabs.registration_tab">
                 <source>Registration</source>
             </trans-unit>

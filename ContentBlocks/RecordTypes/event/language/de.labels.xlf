@@ -104,14 +104,6 @@
                 <source />
                 <target>Kategorie</target>
             </trans-unit>
-            <trans-unit id="event_types.label">
-                <source />
-                <target>Veranstaltungsarten</target>
-            </trans-unit>
-            <trans-unit id="target_groups.label">
-                <source />
-                <target>Zielgruppen</target>
-            </trans-unit>
             <trans-unit id="tabs.registration_tab">
                 <source />
                 <target>Anmeldung</target>

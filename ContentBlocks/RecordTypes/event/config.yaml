@@ -88,10 +88,6 @@ fields:
     type: Tab
   - identifier: categories
     type: Category
-  - identifier: event_types
-    type: Category
-  - identifier: target_groups
-    type: Category
   - identifier: registration_tab
     type: Tab
   - identifier: registration_palette
