@@ -6,7 +6,6 @@ Calendar and event management extension for TYPO3.
 
 - PHP >= 8.2
 - TYPO3 >= 13.4
-- friendsoftypo3/content-blocks
 - sourcebroker/t3api
 
 ## Installation
@@ -17,21 +16,22 @@ composer require xima/xima-typo3-calendar
 
 ## Features
 
-- Calendar and event management via Content Blocks
+- Calendar and event management
 - REST API for events (via t3api)
 - Backend module for calendar overview
 - Frontend user ownership and access control
 
-## Content Blocks
+## Record Types
 
-| Record Type              | Description                                                  |
-|--------------------------|--------------------------------------------------------------|
-| `xima/calendar`          | Calendar container for entries                               |
-| `xima/event`             | Event with appointments, categories, and publishing options  |
-| `xima/event-appointment` | Individual appointment with date, location, and registration |
-| `xima/organizer`         | Event organizer                                              |
-| `xima/location`          | Event location                                               |
-| `xima/speaker`           | Speaker/presenter                                            |
+| Record Type       | Description                                                  | Table                                           |
+|-------------------|--------------------------------------------------------------|-------------------------------------------------|
+| Calendar          | Calendar container for entries                               | `tx_ximatypo3calendar_domain_model_calendar`    |
+| Event             | Event with appointments, categories, and publishing options  | `tx_ximatypo3calendar_domain_model_event`       |
+| Event Appointment | Individual appointment with date, location, and registration | `tx_ximatypo3calendar_domain_model_entry`       |
+| Organizer         | Event organizer                                              | `tx_ximatypo3calendar_domain_model_organizer`   |
+| Location          | Event location                                               | `tx_ximatypo3calendar_domain_model_location`    |
+| Speaker           | Speaker/presenter                                            | `tx_ximatypo3calendar_domain_model_speaker`     |
+| Requirement       | Requirement for an appointment (e.g. speaker desk, beamer)   | `tx_ximatypo3calendar_domain_model_requirement` |
 
 ### Class Diagram
 
