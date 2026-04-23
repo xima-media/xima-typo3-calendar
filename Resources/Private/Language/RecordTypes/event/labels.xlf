@@ -1,141 +1,141 @@
 <?xml version="1.0"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file datatype="plaintext" original="labels.xlf" source-language="en" date="2026-04-20T13:44:34+00:00"
-          product-name="xima/calendar-event">
-        <header />
-        <body>
-            <trans-unit id="title">
-                <source>Event</source>
-            </trans-unit>
-            <trans-unit id="title.label">
-                <source>Title</source>
-            </trans-unit>
-            <trans-unit id="language.label">
-                <source>Language</source>
-            </trans-unit>
-            <trans-unit id="language.items.label">
-                <source>All languages</source>
-            </trans-unit>
-            <trans-unit id="language.items.de.label">
-                <source>German</source>
-            </trans-unit>
-            <trans-unit id="language.items.en.label">
-                <source>English</source>
-            </trans-unit>
-            <trans-unit id="description.label">
-                <source>Description</source>
-            </trans-unit>
-            <trans-unit id="additional_information.label">
-                <source>Additional information / directions</source>
-            </trans-unit>
-            <trans-unit id="location.label">
-                <source>Location</source>
-            </trans-unit>
-            <trans-unit id="url.label">
-                <source>URL</source>
-            </trans-unit>
-            <trans-unit id="preview_image.label">
-                <source>Preview Image</source>
-            </trans-unit>
-            <trans-unit id="files.label">
-                <source>Files</source>
-            </trans-unit>
-            <trans-unit id="tabs.publishing_tab">
-                <source>Publishing</source>
-            </trans-unit>
-            <trans-unit id="publish_to_website.label">
-                <source>Publish to Website</source>
-            </trans-unit>
-            <trans-unit id="publish_to_feed.label">
-                <source>Publish to Feed</source>
-            </trans-unit>
-            <trans-unit id="publish_date.label">
-                <source>Publish Date</source>
-            </trans-unit>
-            <trans-unit id="appointments.label">
-                <source>Appointments</source>
-            </trans-unit>
-            <trans-unit id="tabs.appointments_tab">
-                <source>Appointments</source>
-            </trans-unit>
-            <trans-unit id="tabs.organizer_tab">
-                <source>Organizer &amp; Hosts</source>
-            </trans-unit>
-            <trans-unit id="organizer.label">
-                <source>Organizer</source>
-            </trans-unit>
-            <trans-unit id="hosts.label">
-                <source>Hosts</source>
-            </trans-unit>
-            <trans-unit id="tabs.category_tab">
-                <source>Category</source>
-            </trans-unit>
-            <trans-unit id="categories.label">
-                <source>Categorization</source>
-            </trans-unit>
-            <trans-unit id="tabs.registration_tab">
-                <source>Registration</source>
-            </trans-unit>
-            <trans-unit id="requires_registration.label">
-                <source>Registration Required</source>
-            </trans-unit>
-            <trans-unit id="registration_link.label">
-                <source>Registration Link</source>
-            </trans-unit>
-            <trans-unit id="registration_deadline.label">
-                <source>Registration Deadline</source>
-            </trans-unit>
-            <trans-unit id="fee.label">
-                <source>Fee</source>
-            </trans-unit>
-            <trans-unit id="registration_address.label">
-                <source>Registration address</source>
-            </trans-unit>
-            <trans-unit id="max_participants.label">
-                <source>Maximum number of participants</source>
-            </trans-unit>
-            <trans-unit id="number_of_persons_group.label">
-                <source>Number of persons in a group</source>
-            </trans-unit>
-            <trans-unit id="tabs.related_tab">
-                <source>Related</source>
-            </trans-unit>
-            <trans-unit id="related_events.label">
-                <source>Related events</source>
-            </trans-unit>
-            <trans-unit id="tabs.workflow_tab">
-                <source>Workflow</source>
-            </trans-unit>
-            <trans-unit id="owner.label">
-                <source>Owner</source>
-            </trans-unit>
-            <trans-unit id="status.label">
-                <source>Status</source>
-            </trans-unit>
-            <trans-unit id="status.items.0.label">
-                <source>Draft</source>
-            </trans-unit>
-            <trans-unit id="status.items.1.label">
-                <source>Live</source>
-            </trans-unit>
-            <trans-unit id="status.items.2.label">
-                <source>Rejected</source>
-            </trans-unit>
-            <trans-unit id="approval_date.label">
-                <source>Approval date</source>
-            </trans-unit>
-            <trans-unit id="palettes.event_info_palette">
-                <source>Event Information</source>
-            </trans-unit>
-            <trans-unit id="palettes.publishing_palette">
-                <source>Publishing Options</source>
-            </trans-unit>
-            <trans-unit id="palettes.registration_palette">
-                <source>Registration Information</source>
-            </trans-unit>
-            <trans-unit id="palettes.workflow_palette">
-                <source>Workflow</source>
-            </trans-unit>
-        </body>
-    </file>
+	<file datatype="plaintext" original="labels.xlf" source-language="en" date="2026-04-20T13:44:34+00:00"
+		  product-name="xima/calendar-event">
+		<header />
+		<body>
+			<trans-unit id="title">
+				<source>Event</source>
+			</trans-unit>
+			<trans-unit id="title.label">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="language.label">
+				<source>Language</source>
+			</trans-unit>
+			<trans-unit id="language.items.label">
+				<source>All languages</source>
+			</trans-unit>
+			<trans-unit id="language.items.de.label">
+				<source>German</source>
+			</trans-unit>
+			<trans-unit id="language.items.en.label">
+				<source>English</source>
+			</trans-unit>
+			<trans-unit id="description.label">
+				<source>Description</source>
+			</trans-unit>
+			<trans-unit id="additional_information.label">
+				<source>Additional information / directions</source>
+			</trans-unit>
+			<trans-unit id="location.label">
+				<source>Location</source>
+			</trans-unit>
+			<trans-unit id="url.label">
+				<source>URL</source>
+			</trans-unit>
+			<trans-unit id="preview_image.label">
+				<source>Preview Image</source>
+			</trans-unit>
+			<trans-unit id="files.label">
+				<source>Files</source>
+			</trans-unit>
+			<trans-unit id="tabs.publishing_tab">
+				<source>Publishing</source>
+			</trans-unit>
+			<trans-unit id="publish_to_website.label">
+				<source>Publish to Website</source>
+			</trans-unit>
+			<trans-unit id="publish_to_feed.label">
+				<source>Publish to Feed</source>
+			</trans-unit>
+			<trans-unit id="publish_date.label">
+				<source>Publish Date</source>
+			</trans-unit>
+			<trans-unit id="appointments.label">
+				<source>Appointments</source>
+			</trans-unit>
+			<trans-unit id="tabs.appointments_tab">
+				<source>Appointments</source>
+			</trans-unit>
+			<trans-unit id="tabs.organizer_tab">
+				<source>Organizer &amp; Hosts</source>
+			</trans-unit>
+			<trans-unit id="organizer.label">
+				<source>Organizer</source>
+			</trans-unit>
+			<trans-unit id="hosts.label">
+				<source>Hosts</source>
+			</trans-unit>
+			<trans-unit id="tabs.category_tab">
+				<source>Category</source>
+			</trans-unit>
+			<trans-unit id="categories.label">
+				<source>Categorization</source>
+			</trans-unit>
+			<trans-unit id="tabs.registration_tab">
+				<source>Registration</source>
+			</trans-unit>
+			<trans-unit id="requires_registration.label">
+				<source>Registration Required</source>
+			</trans-unit>
+			<trans-unit id="registration_link.label">
+				<source>Registration Link</source>
+			</trans-unit>
+			<trans-unit id="registration_deadline.label">
+				<source>Registration Deadline</source>
+			</trans-unit>
+			<trans-unit id="fee.label">
+				<source>Fee</source>
+			</trans-unit>
+			<trans-unit id="registration_address.label">
+				<source>Registration address</source>
+			</trans-unit>
+			<trans-unit id="max_participants.label">
+				<source>Maximum number of participants</source>
+			</trans-unit>
+			<trans-unit id="number_of_persons_group.label">
+				<source>Number of persons in a group</source>
+			</trans-unit>
+			<trans-unit id="tabs.related_tab">
+				<source>Related</source>
+			</trans-unit>
+			<trans-unit id="related_events.label">
+				<source>Related events</source>
+			</trans-unit>
+			<trans-unit id="tabs.workflow_tab">
+				<source>Workflow</source>
+			</trans-unit>
+			<trans-unit id="owner.label">
+				<source>Owner</source>
+			</trans-unit>
+			<trans-unit id="status.label">
+				<source>Status</source>
+			</trans-unit>
+			<trans-unit id="status.items.0.label">
+				<source>Draft</source>
+			</trans-unit>
+			<trans-unit id="status.items.1.label">
+				<source>Live</source>
+			</trans-unit>
+			<trans-unit id="status.items.2.label">
+				<source>Rejected</source>
+			</trans-unit>
+			<trans-unit id="approval_date.label">
+				<source>Approval date</source>
+			</trans-unit>
+			<trans-unit id="palettes.event_info_palette">
+				<source>Event Information</source>
+			</trans-unit>
+			<trans-unit id="palettes.publishing_palette">
+				<source>Publishing Options</source>
+			</trans-unit>
+			<trans-unit id="palettes.registration_palette">
+				<source>Registration Information</source>
+			</trans-unit>
+			<trans-unit id="palettes.workflow_palette">
+				<source>Workflow</source>
+			</trans-unit>
+		</body>
+	</file>
 </xliff>

@@ -1,21 +1,21 @@
 <?xml version="1.0"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file datatype="plaintext" original="labels.xlf" source-language="en" date="2026-04-21T13:56:46+00:00"
-          product-name="xima/calender-requirement">
-        <header />
-        <body>
-            <trans-unit id="title">
-                <source>Requirement</source>
-            </trans-unit>
-            <trans-unit id="title.label">
-                <source>Title</source>
-            </trans-unit>
-            <trans-unit id="description.label">
-                <source>Description</source>
-            </trans-unit>
-            <trans-unit id="assignee.label">
-                <source>Assignee</source>
-            </trans-unit>
-        </body>
-    </file>
+	<file datatype="plaintext" original="labels.xlf" source-language="en" date="2026-04-21T13:56:46+00:00"
+		  product-name="xima/calender-requirement">
+		<header />
+		<body>
+			<trans-unit id="title">
+				<source>Requirement</source>
+			</trans-unit>
+			<trans-unit id="title.label">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="description.label">
+				<source>Description</source>
+			</trans-unit>
+			<trans-unit id="assignee.label">
+				<source>Assignee</source>
+			</trans-unit>
+		</body>
+	</file>
 </xliff>

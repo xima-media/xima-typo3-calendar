@@ -542,7 +542,6 @@ class Event extends AbstractEntity
 
     /**
      * @param ObjectStorage<Category>|null $eventTypes
-     * @return void
      */
     public function setEventTypes(?ObjectStorage $eventTypes): void
     {
@@ -572,7 +571,6 @@ class Event extends AbstractEntity
 
     /**
      * @param ObjectStorage<Category>|null $targetGroups
-     * @return void
      */
     public function setTargetGroups(?ObjectStorage $targetGroups): void
     {
@@ -622,7 +620,6 @@ class Event extends AbstractEntity
 
     /**
      * @param ObjectStorage<Event>|null $relatedEvents
-     * @return void
      */
     public function setRelatedEvents(?ObjectStorage $relatedEvents): void
     {

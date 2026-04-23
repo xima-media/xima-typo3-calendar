@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-    <file source-language="en" datatype="plaintext" original="messages" date="2026-04-17T12:43:45Z" product-name="xima_typo3_calendar">
-        <body>
-            <trans-unit id="extConf.recordPid">
-                <source>Record storage page uid</source>
-            </trans-unit>
-        </body>
-    </file>
+	<file source-language="en" datatype="plaintext" original="messages" date="2026-04-17T12:43:45Z" product-name="xima_typo3_calendar">
+		<body>
+			<trans-unit id="extConf.recordPid">
+				<source>Record storage page uid</source>
+			</trans-unit>
+		</body>
+	</file>
 </xliff>

@@ -1,109 +1,109 @@
 <?xml version="1.0"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-    <file datatype="plaintext" original="labels.xlf" source-language="en" target-language="de" date="2026-01-13T12:52:00+00:00"
-          product-name="xima/calendar-event-appointment">
-        <header />
-        <body>
-            <trans-unit id="title">
-                <source />
-                <target>Termin</target>
-            </trans-unit>
-            <trans-unit id="calendar.label">
-                <source />
-                <target>Kalender</target>
-            </trans-unit>
-            <trans-unit id="event.label">
-                <source />
-                <target>Veranstaltung</target>
-            </trans-unit>
-            <trans-unit id="title.label">
-                <source />
-                <target>Titel</target>
-            </trans-unit>
-            <trans-unit id="palettes.datetime_palette">
-                <source />
-                <target>Datum &amp; Zeit</target>
-            </trans-unit>
-            <trans-unit id="start_date.label">
-                <source />
-                <target>Startdatum</target>
-            </trans-unit>
-            <trans-unit id="end_date.label">
-                <source />
-                <target>Enddatum</target>
-            </trans-unit>
-            <trans-unit id="all_day.label">
-                <source />
-                <target>Ganztägig</target>
-            </trans-unit>
-            <trans-unit id="canceled.label">
-                <source />
-                <target>Abgesagt</target>
-            </trans-unit>
-            <trans-unit id="tabs.content_tab">
-                <source />
-                <target>Inhalte</target>
-            </trans-unit>
-            <trans-unit id="description.label">
-                <source />
-                <target>Beschreibung</target>
-            </trans-unit>
-            <trans-unit id="tabs.location_tab">
-                <source />
-                <target>Ort &amp; Typ</target>
-            </trans-unit>
-            <trans-unit id="type.label">
-                <source />
-                <target>Typ</target>
-            </trans-unit>
-            <trans-unit id="type.items.inPerson">
-                <source />
-                <target>Präsenz</target>
-            </trans-unit>
-            <trans-unit id="type.items.online">
-                <source />
-                <target>Online</target>
-            </trans-unit>
-            <trans-unit id="type.items.hybrid">
-                <source />
-                <target>Hybrid</target>
-            </trans-unit>
-            <trans-unit id="location.label">
-                <source />
-                <target>Veranstaltungsort</target>
-            </trans-unit>
-            <trans-unit id="online_link.label">
-                <source />
-                <target>Online-Link</target>
-            </trans-unit>
-            <trans-unit id="ticket_link.label">
-                <source />
-                <target>Ticket-Link</target>
-            </trans-unit>
-            <trans-unit id="directions.label">
-                <source />
-                <target>Wegbeschreibung</target>
-            </trans-unit>
-            <trans-unit id="tabs.speakers_tab">
-                <source />
-                <target>Referenten</target>
-            </trans-unit>
-            <trans-unit id="speakers.label">
-                <source />
-                <target>Referenten</target>
-            </trans-unit>
-            <trans-unit id="tabs.requirements_tab">
-                <source />
-                <target>Anforderungen</target>
-            </trans-unit>
-            <trans-unit id="requirement_bookings.label">
-                <source />
-                <target>Gebuchte Anforderungen</target>
-            </trans-unit>
-            <trans-unit id="modified_date.label">
-                <source />
-                <target>Datum der letzten Änderung</target>
-            </trans-unit>
-        </body>
-    </file>
+	<file datatype="plaintext" original="labels.xlf" source-language="en" target-language="de" date="2026-01-13T12:52:00+00:00"
+		  product-name="xima/calendar-event-appointment">
+		<header />
+		<body>
+			<trans-unit id="title">
+				<source />
+				<target>Termin</target>
+			</trans-unit>
+			<trans-unit id="calendar.label">
+				<source />
+				<target>Kalender</target>
+			</trans-unit>
+			<trans-unit id="event.label">
+				<source />
+				<target>Veranstaltung</target>
+			</trans-unit>
+			<trans-unit id="title.label">
+				<source />
+				<target>Titel</target>
+			</trans-unit>
+			<trans-unit id="palettes.datetime_palette">
+				<source />
+				<target>Datum &amp; Zeit</target>
+			</trans-unit>
+			<trans-unit id="start_date.label">
+				<source />
+				<target>Startdatum</target>
+			</trans-unit>
+			<trans-unit id="end_date.label">
+				<source />
+				<target>Enddatum</target>
+			</trans-unit>
+			<trans-unit id="all_day.label">
+				<source />
+				<target>Ganztägig</target>
+			</trans-unit>
+			<trans-unit id="canceled.label">
+				<source />
+				<target>Abgesagt</target>
+			</trans-unit>
+			<trans-unit id="tabs.content_tab">
+				<source />
+				<target>Inhalte</target>
+			</trans-unit>
+			<trans-unit id="description.label">
+				<source />
+				<target>Beschreibung</target>
+			</trans-unit>
+			<trans-unit id="tabs.location_tab">
+				<source />
+				<target>Ort &amp; Typ</target>
+			</trans-unit>
+			<trans-unit id="type.label">
+				<source />
+				<target>Typ</target>
+			</trans-unit>
+			<trans-unit id="type.items.inPerson">
+				<source />
+				<target>Präsenz</target>
+			</trans-unit>
+			<trans-unit id="type.items.online">
+				<source />
+				<target>Online</target>
+			</trans-unit>
+			<trans-unit id="type.items.hybrid">
+				<source />
+				<target>Hybrid</target>
+			</trans-unit>
+			<trans-unit id="location.label">
+				<source />
+				<target>Veranstaltungsort</target>
+			</trans-unit>
+			<trans-unit id="online_link.label">
+				<source />
+				<target>Online-Link</target>
+			</trans-unit>
+			<trans-unit id="ticket_link.label">
+				<source />
+				<target>Ticket-Link</target>
+			</trans-unit>
+			<trans-unit id="directions.label">
+				<source />
+				<target>Wegbeschreibung</target>
+			</trans-unit>
+			<trans-unit id="tabs.speakers_tab">
+				<source />
+				<target>Referenten</target>
+			</trans-unit>
+			<trans-unit id="speakers.label">
+				<source />
+				<target>Referenten</target>
+			</trans-unit>
+			<trans-unit id="tabs.requirements_tab">
+				<source />
+				<target>Anforderungen</target>
+			</trans-unit>
+			<trans-unit id="requirement_bookings.label">
+				<source />
+				<target>Gebuchte Anforderungen</target>
+			</trans-unit>
+			<trans-unit id="modified_date.label">
+				<source />
+				<target>Datum der letzten Änderung</target>
+			</trans-unit>
+		</body>
+	</file>
 </xliff>
