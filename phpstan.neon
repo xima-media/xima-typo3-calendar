@@ -1,0 +1,20 @@
+includes:
+	- phpstan-baseline.neon
+
+parameters:
+		parallel:
+				maximumNumberOfProcesses: 5
+
+		level: 6
+
+		bootstrapFiles:
+				- vendor/autoload.php
+
+		paths:
+				- Classes
+				- Configuration
+				- Resources
+
+		ignoreErrors:
+				- '#return type has no value type specified in iterable type array#'
+				- '#with no value type specified in iterable type array#'
