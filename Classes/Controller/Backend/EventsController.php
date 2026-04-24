@@ -64,17 +64,15 @@ class EventsController extends AbstractBackendController
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['appointments']['defaultPosition'] = 8;
 
         // ============================================
-        // tx_ximatypo3calendar_domain_model_appointment (Appointment)
+        // tx_ximatypo3calendar_domain_model_entry (Appointment)
         // ============================================
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_appointment']['columns']['title']['defaultPosition'] = 1;
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_appointment']['columns']['start_date']['defaultPosition'] = 2;
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_appointment']['columns']['start_time']['defaultPosition'] = 3;
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_appointment']['columns']['end_time']['defaultPosition'] = 4;
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_appointment']['columns']['type']['defaultPosition'] = 5;
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_appointment']['columns']['location']['defaultPosition'] = 6;
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_appointment']['columns']['canceled']['defaultPosition'] = 7;
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_appointment']['columns']['requires_registration']['defaultPosition'] = 8;
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_appointment']['columns']['speakers']['defaultPosition'] = 9;
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['title']['defaultPosition'] = 1;
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['event']['defaultPosition'] = 2;
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['start_date']['defaultPosition'] = 3;
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['type']['defaultPosition'] = 4;
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['location']['defaultPosition'] = 5;
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['canceled']['defaultPosition'] = 6;
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['speakers']['defaultPosition'] = 7;
 
         // ============================================
         // tx_ximatypo3calendar_domain_model_organizer (Organizer)
