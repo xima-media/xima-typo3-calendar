@@ -2,6 +2,7 @@
 
 namespace Xima\XimaTypo3Calendar\Controller\Backend;
 
+use Doctrine\DBAL\Exception;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -68,6 +69,8 @@ class EventsController extends AbstractBackendController
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['publish_date']['defaultPosition'] = 7;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['appointments']['defaultPosition'] = 8;
 
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['location']['filter']['items'] = $this->getFilterItemsForTable('tx_ximatypo3calendar_domain_model_location');
+
         // ============================================
         // tx_ximatypo3calendar_domain_model_entry (Appointment)
         // ============================================
@@ -78,6 +81,8 @@ class EventsController extends AbstractBackendController
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['location']['defaultPosition'] = 5;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['canceled']['defaultPosition'] = 6;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['speakers']['defaultPosition'] = 7;
+
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['event']['filter']['items'] = $this->getFilterItemsForTable('tx_ximatypo3calendar_domain_model_event');
 
         // ============================================
         // tx_ximatypo3calendar_domain_model_organizer (Organizer)
@@ -167,5 +172,33 @@ class EventsController extends AbstractBackendController
 
             $record['location'] = $locationName ?: '';
         }
+    }
+
+    /**
+     * @param string $table
+     * @return array<int, array<string, string>>
+     */
+    private function getFilterItemsForTable(string $table): array
+    {
+        $labelField = $GLOBALS['TCA'][$table]['ctrl']['label'] ?? 'uid';
+        $items = [];
+
+        $qb = $this->connectionPool->getQueryBuilderForTable($table);
+        try {
+            $rows = $qb->select('uid', $labelField)
+                ->from($table)
+                ->executeQuery()
+                ->fetchAllAssociativeIndexed();
+        } catch (Exception $e) {
+            // In case of an error (e.g. table does not exist), return an empty array
+            return [];
+        }
+
+        foreach ($rows as $uid => $row) {
+            $items[$uid]['label'] = $row[$labelField];
+            $items[$uid]['value'] = $uid;
+        }
+
+        return $items;
     }
 }
