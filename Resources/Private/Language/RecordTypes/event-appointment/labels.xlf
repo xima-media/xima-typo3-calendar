@@ -72,6 +72,15 @@
 	  <trans-unit id="speakers.label">
 		<source>Speakers</source>
 	  </trans-unit>
+	  <trans-unit id="contact.label">
+		<source>Contact</source>
+	  </trans-unit>
+	  <trans-unit id="doors_open.label">
+		<source>Doors open</source>
+	  </trans-unit>
+	  <trans-unit id="notes.label">
+		<source>Notes</source>
+	  </trans-unit>
 	  <trans-unit id="tabs.requirements_tab">
 		<source>Requirements</source>
 	  </trans-unit>

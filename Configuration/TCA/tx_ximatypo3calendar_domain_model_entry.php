@@ -24,7 +24,7 @@ return [
     ],
     'palettes' => [
         'hidden' => ['showitem' => 'hidden'],
-        'datetime_palette' => ['showitem' => 'start_date,end_date,all_day'],
+        'datetime_palette' => ['showitem' => 'start_date,end_date,all_day,--linebreak--,doors_open'],
         'attendance_palette' => ['showitem' => 'online_link,ticket_link'],
     ],
     'columns' => [
@@ -215,29 +215,38 @@ return [
                 ],
             ],
         ],
-        //'t3_origuid' => [
-        //    'config' => [
-        //        'type' => 'passthrough',
-        //    ],
-        //],
-        //'hidden' => [
-        //    'exclude' => true,
-        //    'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.enabled',
-        //    'config' => [
-        //        'type' => 'check',
-        //        'renderType' => 'checkboxToggle',
-        //        'items' => [
-        //            [
-        //                'label' => '',
-        //                'invertStateDisplay' => true,
-        //            ],
-        //        ],
-        //    ],
-        //],
+        'contact' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:contact.label',
+            'config' => [
+                'type' => 'group',
+                'allowed' => 'fe_users',
+                'foreign_table' => 'fe_users',
+                'size' => 1,
+                'maxitems' => 1,
+            ],
+        ],
+        'doors_open' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:doors_open.label',
+            'config' => [
+                'type' => 'datetime',
+                'format' => 'time',
+                'disableAgeDisplay' => true,
+            ],
+        ],
+        'notes' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:notes.label',
+            'config' => [
+                'type' => 'text',
+                'rows' => 3,
+            ],
+        ],
     ],
     'types' => [
         'event-appointment' => [
-            'showitem' => '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,record_type,calendar,event,title,--palette--;;datetime_palette,canceled,modified_date,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.content_tab,description,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.location_tab,type,--palette--;;attendance_palette,location,address,directions,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.speakers_tab,speakers,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.requirements_tab,requirement_bookings,--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,--palette--;;hidden',
+            'showitem' => '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,record_type,calendar,event,title,--palette--;;datetime_palette,canceled,modified_date,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.content_tab,description,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.location_tab,type,--palette--;;attendance_palette,location,address,directions,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.speakers_tab,speakers,contact,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.requirements_tab,requirement_bookings,notes,--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,--palette--;;hidden',
         ],
     ],
 ];

@@ -92,6 +92,18 @@
 				<source />
 				<target>Referenten</target>
 			</trans-unit>
+			<trans-unit id="contact.label">
+				<source />
+				<target>Ansprechperson</target>
+			</trans-unit>
+			<trans-unit id="doors_open.label">
+				<source />
+				<target>Einlass</target>
+			</trans-unit>
+			<trans-unit id="notes.label">
+				<source />
+				<target>Bemerkungen</target>
+			</trans-unit>
 			<trans-unit id="tabs.requirements_tab">
 				<source />
 				<target>Anforderungen</target>
