@@ -71,7 +71,9 @@ class EventsController extends AbstractBackendController
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['appointments']['defaultPosition'] = 8;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['appointments']['filter']['partial'] = 'DateTime';
 
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['location']['filter']['items'] = $this->getFilterItemsForTable('tx_ximatypo3calendar_domain_model_location');
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['location']['filter']['items'] = $this->getFilterItemsForTable(
+            'tx_ximatypo3calendar_domain_model_location'
+        );
 
         // ============================================
         // tx_ximatypo3calendar_domain_model_entry (Appointment)
@@ -84,7 +86,9 @@ class EventsController extends AbstractBackendController
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['canceled']['defaultPosition'] = 6;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['speakers']['defaultPosition'] = 7;
 
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['event']['filter']['items'] = $this->getFilterItemsForTable('tx_ximatypo3calendar_domain_model_event');
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['event']['filter']['items'] = $this->getFilterItemsForTable(
+            'tx_ximatypo3calendar_domain_model_event'
+        );
 
         // ============================================
         // tx_ximatypo3calendar_domain_model_organizer (Organizer)
@@ -239,22 +243,36 @@ class EventsController extends AbstractBackendController
                 )
             );
         match ($expr) {
-            'lt' => $qb->andWhere($qb->expr()->lt(
-                'start_date',
-                $qb->createNamedParameter($value, Type::getType('datetime'))
-            )),
-            'gt' => $qb->andWhere($qb->expr()->gt(
-                'start_date',
-                $qb->createNamedParameter($value, Type::getType('datetime'))
-            )),
-            'neq' => $qb->andWhere($qb->expr()->neq(
-                'start_date',
-                $qb->createNamedParameter($value, Type::getType('datetime'))
-            )),
-            default => $qb->andWhere($qb->expr()->eq(
-                'start_date',
-                $qb->createNamedParameter($value, Type::getType('datetime'))
-            ))
+            'lt' => $qb->andWhere(
+                $qb->expr()->lt(
+                    'start_date',
+                    $qb->createNamedParameter($value, Type::getType('datetime'))
+                )
+            ),
+            'gt' => $qb->andWhere(
+                $qb->expr()->gt(
+                    'start_date',
+                    $qb->createNamedParameter($value, Type::getType('datetime'))
+                )
+            ),
+            'neq' => $qb->andWhere(
+                $qb->expr()->neq(
+                    'start_date',
+                    $qb->createNamedParameter($value, Type::getType('datetime'))
+                )
+            ),
+            default => $qb->andWhere(
+                $qb->expr()->and(
+                    $qb->expr()->gte(
+                        'start_date',
+                        $qb->createNamedParameter($value, Type::getType('datetime'))
+                    ),
+                    $qb->expr()->lt(
+                        'start_date',
+                        $qb->createNamedParameter(date('Y-m-d H:i:s', strtotime($value . ' +1 day')), Type::getType('datetime'))
+                    )
+                )
+            )
         };
 
         $uids = $qb->executeQuery()->fetchAllNumeric();
