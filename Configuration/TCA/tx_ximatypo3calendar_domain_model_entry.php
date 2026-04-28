@@ -243,10 +243,17 @@ return [
                 'rows' => 3,
             ],
         ],
+        'max_participants' => [
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:max_participants.label',
+            'exclude' => true,
+            'config' => [
+                'type' => 'number',
+            ],
+        ],
     ],
     'types' => [
         'event-appointment' => [
-            'showitem' => '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,record_type,calendar,event,title,--palette--;;datetime_palette,canceled,modified_date,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.content_tab,description,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.location_tab,type,--palette--;;attendance_palette,location,address,directions,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.speakers_tab,speakers,contact,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.requirements_tab,requirement_bookings,notes,--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,--palette--;;hidden',
+            'showitem' => '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,record_type,calendar,event,title,--palette--;;datetime_palette,canceled,modified_date,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.content_tab,description,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.location_tab,type,--palette--;;attendance_palette,location,address,directions,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.speakers_tab,speakers,contact,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.participants_tab,max_participants,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.requirements_tab,requirement_bookings,notes,--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,--palette--;;hidden',
         ],
     ],
 ];

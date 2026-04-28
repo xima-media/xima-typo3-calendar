@@ -104,6 +104,14 @@
 				<source />
 				<target>Bemerkungen</target>
 			</trans-unit>
+			<trans-unit id="tabs.participants_tab">
+				<source />
+				<target>Teilnehmende</target>
+			</trans-unit>
+			<trans-unit id="max_participants.label">
+				<source />
+				<target>Maximale Teilnehmendenzahl</target>
+			</trans-unit>
 			<trans-unit id="tabs.requirements_tab">
 				<source />
 				<target>Anforderungen</target>

@@ -26,7 +26,6 @@ return [
         'event_info_palette' => ['showitem' => 'title,language'],
         'publishing_palette' => ['showitem' => 'publish_to_website,publish_to_feed,publish_date'],
         'registration_palette' => ['showitem' => 'requires_registration,registration_link,registration_deadline,fee'],
-        'participants_palette' => ['showitem' => 'max_participants,number_of_persons_group'],
         'workflow_palette' => ['showitem' => 'owner,status'],
     ],
     'columns' => [
@@ -214,20 +213,6 @@ return [
             'config' => [
                 'type' => 'text',
                 'rows' => 3,
-            ],
-        ],
-        'max_participants' => [
-            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:max_participants.label',
-            'exclude' => true,
-            'config' => [
-                'type' => 'number',
-            ],
-        ],
-        'number_of_persons_group' => [
-            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:number_of_persons_group.label',
-            'exclude' => true,
-            'config' => [
-                'type' => 'number',
             ],
         ],
         'related_events' => [

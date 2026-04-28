@@ -91,12 +91,6 @@
 			<trans-unit id="registration_address.label">
 				<source>Registration address</source>
 			</trans-unit>
-			<trans-unit id="max_participants.label">
-				<source>Maximum number of participants</source>
-			</trans-unit>
-			<trans-unit id="number_of_persons_group.label">
-				<source>Number of persons in a group</source>
-			</trans-unit>
 			<trans-unit id="tabs.related_tab">
 				<source>Related</source>
 			</trans-unit>
