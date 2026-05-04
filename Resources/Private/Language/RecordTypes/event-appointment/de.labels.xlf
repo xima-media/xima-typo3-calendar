@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-	<file datatype="plaintext" original="labels.xlf" source-language="en" date="2026-01-13T12:52:00+00:00" product-name="xima/event-appointment">
-		<header/>
+	<file datatype="plaintext" original="labels.xlf" source-language="en" target-language="de" date="2026-01-13T12:52:00+00:00"
+		  product-name="xima/calendar-event-appointment">
+		<header />
 		<body>
 			<trans-unit id="title">
 				<source />
@@ -75,6 +76,10 @@
 				<source />
 				<target>Online-Link</target>
 			</trans-unit>
+			<trans-unit id="ticket_link.label">
+				<source />
+				<target>Ticket-Link</target>
+			</trans-unit>
 			<trans-unit id="directions.label">
 				<source />
 				<target>Wegbeschreibung</target>
@@ -87,8 +92,16 @@
 				<source />
 				<target>Referenten</target>
 			</trans-unit>
+			<trans-unit id="tabs.requirements_tab">
+				<source />
+				<target>Anforderungen</target>
+			</trans-unit>
+			<trans-unit id="requirement_bookings.label">
+				<source />
+				<target>Gebuchte Anforderungen</target>
+			</trans-unit>
 			<trans-unit id="modified_date.label">
-				<source/>
+				<source />
 				<target>Datum der letzten Änderung</target>
 			</trans-unit>
 		</body>

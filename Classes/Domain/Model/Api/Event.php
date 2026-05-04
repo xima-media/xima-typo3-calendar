@@ -49,9 +49,6 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *             "folder": "1:/user_upload/event-images/",
  *             "allowedFileExtensions": {"jpg", "jpeg", "png"},
  *             "conflictMode": DuplicationBehavior::RENAME,
- *         },
- *         "persistence": {
- *             "storagePid": "1478"
  *         }
  *     },
  * )
@@ -182,6 +179,42 @@ class Event extends AbstractEntity
      */
     protected int $status = EventStatus::DRAFT->value;
 
+    /**
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
+     */
+    protected ?Location $location = null;
+
+    /**
+     * @var ObjectStorage<Category>|null
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
+     * @T3api\ORM\Cascade("persist")
+     */
+    protected ?ObjectStorage $eventTypes = null;
+
+    /**
+     * @var ObjectStorage<Category>|null
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
+     * @T3api\ORM\Cascade("persist")
+     */
+    protected ?ObjectStorage $targetGroups = null;
+
+    /**
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
+     */
+    protected int $maxParticipants = 0;
+
+    /**
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
+     */
+    protected int $numberOfPersonsGroup = 0;
+
+    /**
+     * @var ObjectStorage<Event>|null
+     * @T3api\Serializer\Groups({"api_patch_xima_event_update", "api_post_xima_event"})
+     * @T3api\ORM\Cascade("persist")
+     */
+    protected ?ObjectStorage $relatedEvents = null;
+
     public function __construct()
     {
         $this->initializeObject();
@@ -193,6 +226,9 @@ class Event extends AbstractEntity
         $this->categories = new ObjectStorage();
         $this->files = new ObjectStorage();
         $this->hosts = new ObjectStorage();
+        $this->eventTypes = new ObjectStorage();
+        $this->targetGroups = new ObjectStorage();
+        $this->relatedEvents = new ObjectStorage();
     }
 
     /**
@@ -484,5 +520,122 @@ class Event extends AbstractEntity
     public function setRegistrationAddress(string $registrationAddress): void
     {
         $this->registrationAddress = $registrationAddress;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): void
+    {
+        $this->location = $location;
+    }
+
+    /**
+     * @return ObjectStorage<Category>|null
+     */
+    public function getEventTypes(): ?ObjectStorage
+    {
+        return $this->eventTypes;
+    }
+
+    /**
+     * @param ObjectStorage<Category>|null $eventTypes
+     */
+    public function setEventTypes(?ObjectStorage $eventTypes): void
+    {
+        $this->eventTypes = $eventTypes ?? new ObjectStorage();
+    }
+
+    public function addEventType(Category $eventType): void
+    {
+        if ($this->eventTypes === null) {
+            $this->eventTypes = new ObjectStorage();
+        }
+        $this->eventTypes->attach($eventType);
+    }
+
+    public function removeEventType(Category $eventType): void
+    {
+        $this->eventTypes?->detach($eventType);
+    }
+
+    /**
+     * @return ObjectStorage<Category>|null
+     */
+    public function getTargetGroups(): ?ObjectStorage
+    {
+        return $this->targetGroups;
+    }
+
+    /**
+     * @param ObjectStorage<Category>|null $targetGroups
+     */
+    public function setTargetGroups(?ObjectStorage $targetGroups): void
+    {
+        $this->targetGroups = $targetGroups;
+    }
+
+    public function addTargetGroup(Category $targetGroup): void
+    {
+        if ($this->targetGroups === null) {
+            $this->targetGroups = new ObjectStorage();
+        }
+        $this->targetGroups->attach($targetGroup);
+    }
+
+    public function removeTargetGroup(Category $targetGroup): void
+    {
+        $this->targetGroups?->detach($targetGroup);
+    }
+
+    public function getMaxParticipants(): int
+    {
+        return $this->maxParticipants;
+    }
+
+    public function setMaxParticipants(int $maxParticipants): void
+    {
+        $this->maxParticipants = $maxParticipants;
+    }
+
+    public function getNumberOfPersonsGroup(): int
+    {
+        return $this->numberOfPersonsGroup;
+    }
+
+    public function setNumberOfPersonsGroup(int $numberOfPersonsGroup): void
+    {
+        $this->numberOfPersonsGroup = $numberOfPersonsGroup;
+    }
+
+    /**
+     * @return ObjectStorage<Event>|null
+     */
+    public function getRelatedEvents(): ?ObjectStorage
+    {
+        return $this->relatedEvents;
+    }
+
+    /**
+     * @param ObjectStorage<Event>|null $relatedEvents
+     */
+    public function setRelatedEvents(?ObjectStorage $relatedEvents): void
+    {
+        $this->relatedEvents = $relatedEvents;
+    }
+
+    public function addRelatedEvent(self $event): void
+    {
+        if ($this->relatedEvents === null) {
+            $this->relatedEvents = new ObjectStorage();
+        }
+        $this->relatedEvents->attach($event);
+    }
+
+    public function removeRelatedEvent(self $event): void
+    {
+        $this->relatedEvents?->detach($event);
     }
 }

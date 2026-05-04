@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-	<file datatype="plaintext" original="labels.xlf" source-language="en" date="2026-01-13T12:52:00+00:00" product-name="xima/event">
-		<header/>
+	<file datatype="plaintext" original="labels.xlf" source-language="en" target-language="de" date="2026-01-13T12:52:00+00:00"
+		  product-name="xima/calendar-event">
+		<header />
 		<body>
 			<trans-unit id="title">
 				<source />
@@ -19,15 +20,15 @@
 				<source />
 				<target>Sprache</target>
 			</trans-unit>
-			<trans-unit id="language.items.">
+			<trans-unit id="language.items.label">
 				<source />
 				<target>Alle Sprachen</target>
 			</trans-unit>
-			<trans-unit id="language.items.de">
+			<trans-unit id="language.items.de.label">
 				<source />
 				<target>Deutsch</target>
 			</trans-unit>
-			<trans-unit id="language.items.en">
+			<trans-unit id="language.items.en.label">
 				<source />
 				<target>Englisch</target>
 			</trans-unit>
@@ -38,6 +39,10 @@
 			<trans-unit id="additional_information.label">
 				<source />
 				<target>Weitere Informationen / Anfahrt</target>
+			</trans-unit>
+			<trans-unit id="location.label">
+				<source />
+				<target>Veranstaltungsort</target>
 			</trans-unit>
 			<trans-unit id="url.label">
 				<source />
@@ -93,7 +98,7 @@
 			</trans-unit>
 			<trans-unit id="tabs.category_tab">
 				<source />
-				<target>Kategorie</target>
+				<target>Kategorisierung</target>
 			</trans-unit>
 			<trans-unit id="categories.label">
 				<source />
@@ -127,6 +132,22 @@
 				<source />
 				<target>Anmeldeadresse</target>
 			</trans-unit>
+			<trans-unit id="max_participants.label">
+				<source />
+				<target>Maximale Teilnehmendenzahl</target>
+			</trans-unit>
+			<trans-unit id="number_of_persons_group.label">
+				<source />
+				<target>Personenanzahl Gruppe</target>
+			</trans-unit>
+			<trans-unit id="tabs.related_tab">
+				<source />
+				<target>Verknüpfungen</target>
+			</trans-unit>
+			<trans-unit id="related_events.label">
+				<source />
+				<target>Verknüpfte Veranstaltungen</target>
+			</trans-unit>
 			<trans-unit id="tabs.workflow_tab">
 				<source />
 				<target>Workflow</target>
@@ -143,20 +164,20 @@
 				<source />
 				<target>Status</target>
 			</trans-unit>
-			<trans-unit id="status.items.0">
+			<trans-unit id="status.items.0.label">
 				<source />
 				<target>Entwurf</target>
 			</trans-unit>
-			<trans-unit id="status.items.1">
+			<trans-unit id="status.items.1.label">
 				<source />
 				<target>Live</target>
 			</trans-unit>
-			<trans-unit id="status.items.2">
+			<trans-unit id="status.items.2.label">
 				<source />
 				<target>Abgelehnt</target>
 			</trans-unit>
 			<trans-unit id="approval_date.label">
-				<source/>
+				<source />
 				<target>Datum der Freigabe</target>
 			</trans-unit>
 		</body>

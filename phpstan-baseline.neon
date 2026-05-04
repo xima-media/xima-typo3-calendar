@@ -1,0 +1,31 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Parameter \#1 \$input of method TYPO3\\CMS\\Core\\Database\\Query\\QueryBuilder\:\:quote\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 2
+			path: Classes/Database/EventRestriction.php
+
+		-
+			message: '#^Method Xima\\XimaTypo3Calendar\\Domain\\Model\\Api\\Calendar\:\:getEntries\(\) return type with generic class TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage does not specify its types\: TEntity$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Model/Api/Calendar.php
+
+		-
+			message: '#^Method Xima\\XimaTypo3Calendar\\Domain\\Model\\Api\\Calendar\:\:setEntries\(\) has parameter \$entries with generic class TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage but does not specify its types\: TEntity$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Model/Api/Calendar.php
+
+		-
+			message: '#^Class Xima\\XimaTypo3Calendar\\Domain\\Repository\\EventRepository extends generic class TYPO3\\CMS\\Extbase\\Persistence\\Repository but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Repository/EventRepository.php
+
+		-
+			message: '#^Method Xima\\XimaTypo3Calendar\\EventListener\\T3api\\BeforeOperationAccessGrantedEventListener\:\:getRequest\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: Classes/EventListener/T3api/BeforeOperationAccessGrantedEventListener.php

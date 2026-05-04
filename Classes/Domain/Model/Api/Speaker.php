@@ -18,10 +18,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  *     attributes={
  *         "pagination_client_enabled": true,
  *         "pagination_items_per_page": 100,
- *         "maximum_items_per_page": 100,
- *         "persistence": {
- *             "storagePid": "1478"
- *         }
+ *         "maximum_items_per_page": 100
  *     },
  * )
  */
