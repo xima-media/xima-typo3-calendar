@@ -8,14 +8,16 @@ use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotCon
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\Connection;
+use Xima\XimaTypo3Calendar\Helper\RelationHelper;
 use Xima\XimaTypo3Recordlist\Controller\AbstractBackendController;
 
 class EventsController extends AbstractBackendController
 {
-    private array $mmTableColumnsCache = [];
+    private const int RELATED_LABELS_PREVIEW_LIMIT = 3;
 
     public function __construct(
         private readonly ExtensionConfiguration $extensionConfiguration,
+        private readonly RelationHelper $relationHelper,
     ) {
     }
 
@@ -54,9 +56,7 @@ class EventsController extends AbstractBackendController
             unset($record);
         }
 
-        $this->addAppointmentsToEvents();
-        $this->addEventsToAppointments();
-        $this->addLocations();
+        $this->addRelatedLabelsForActiveColumns();
     }
 
     protected function modifyTableConfiguration(): void
@@ -140,78 +140,31 @@ class EventsController extends AbstractBackendController
                         }
                     }
 
-                    $this->addRelationFieldConstraint($field, (string)$data['value'], $data['expr'] ?? 'eq');
+                    $constraint = $this->relationHelper->buildRelationFieldConstraint(
+                        $this->queryBuilder,
+                        $this->getTableName(),
+                        $field,
+                        (string)$data['value'],
+                        $data['expr'] ?? 'eq'
+                    );
+                    if ($constraint !== null) {
+                        $this->additionalConstraints[] = $constraint;
+                    }
                 }
             }
         }
     }
 
-    private function addAppointmentsToEvents(): void
+    private function addRelatedLabelsForActiveColumns(): void
     {
-        if ($this->getTableName() !== 'tx_ximatypo3calendar_domain_model_event') {
-            return;
-        }
-
-        foreach ($this->records as &$record) {
-            $qb = $this->connectionPool->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_entry');
-            $appointments = $qb->select('*')
-                ->from('tx_ximatypo3calendar_domain_model_entry')
-                ->where(
-                    $qb->expr()->eq('event', $qb->createNamedParameter($record['uid'], Connection::PARAM_INT)),
-                    $qb->expr()->eq('record_type', $qb->createNamedParameter('event-appointment'))
-                )
-                ->orderBy('start_date', 'ASC')
-                ->executeQuery()
-                ->fetchAllAssociative();
-
-            $record['appointments'] = implode(', ', array_map(static function ($appointment) {
-                $date = date_create($appointment['start_date']);
-                return $date ? date_format($date, 'd.m.Y H:i') : null;
-            }, $appointments));
-        }
-        unset($record);
-    }
-
-    private function addEventsToAppointments(): void
-    {
-        if ($this->getTableName() !== 'tx_ximatypo3calendar_domain_model_entry') {
-            return;
-        }
-
-        foreach ($this->records as &$record) {
-            $qb = $this->connectionPool->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_event');
-            $eventTitle = $qb->select('title')
-                ->from('tx_ximatypo3calendar_domain_model_event')
-                ->where(
-                    $qb->expr()->eq('uid', $qb->createNamedParameter($record['event'], Connection::PARAM_INT)),
-                )
-                ->executeQuery()
-                ->fetchOne();
-
-            $record['event'] = $eventTitle ?: '';
-        }
-        unset($record);
-    }
-
-    private function addLocations(): void
-    {
-        if (!in_array($this->getTableName(), ['tx_ximatypo3calendar_domain_model_event', 'tx_ximatypo3calendar_domain_model_entry'])) {
-            return;
-        }
-
-        foreach ($this->records as &$record) {
-            $qb = $this->connectionPool->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_location');
-            $locationName = $qb->select('name')
-                ->from('tx_ximatypo3calendar_domain_model_location')
-                ->where(
-                    $qb->expr()->eq('uid', $qb->createNamedParameter($record['location'], Connection::PARAM_INT)),
-                )
-                ->executeQuery()
-                ->fetchOne();
-
-            $record['location'] = $locationName ?: '';
-        }
-        unset($record);
+        $tableName = $this->getTableName();
+        $tableColumns = $this->tableConfiguration[$tableName]['columns'] ?? [];
+        $this->records = $this->relationHelper->enrichActiveRelationLabels(
+            $tableName,
+            $this->records,
+            $tableColumns,
+            self::RELATED_LABELS_PREVIEW_LIMIT
+        );
     }
 
     /**
@@ -310,277 +263,4 @@ class EventsController extends AbstractBackendController
         );
     }
 
-    private function addRelationFieldConstraint(string $field, string $value, string $expr = 'eq'): void
-    {
-        $tableName = $this->getTableName();
-        $fieldConfig = $GLOBALS['TCA'][$tableName]['columns'][$field]['config'] ?? [];
-        $foreignTable = $fieldConfig['foreign_table'] ?? null;
-        if (!is_string($foreignTable) || $foreignTable === '') {
-            return;
-        }
-
-        $foreignUids = $this->resolveForeignUids($foreignTable, $value);
-        if ($foreignUids === []) {
-            // No matches: handle based on expression
-            if ($expr === 'neq') {
-                // NOT IN (empty set) = all records
-                return;
-            }
-            // For 'eq' and others: no match = no results
-            $this->additionalConstraints[] = $this->queryBuilder->expr()->eq('t1.uid', 0);
-            return;
-        }
-
-        if (($fieldConfig['type'] ?? '') === 'inline' && !empty($fieldConfig['foreign_field'])) {
-            $localUids = $this->resolveLocalUidsForInlineRelation(
-                $foreignTable,
-                (string)$fieldConfig['foreign_field'],
-                $foreignUids
-            );
-            $this->addLocalUidConstraint($localUids, $expr);
-            return;
-        }
-
-        if (!empty($fieldConfig['MM']) && is_string($fieldConfig['MM'])) {
-            $localUids = $this->resolveLocalUidsForMmRelation($tableName, $field, $fieldConfig, $foreignUids);
-            $this->addLocalUidConstraint($localUids, $expr);
-            return;
-        }
-
-        $this->addDirectFieldConstraint($field, $foreignUids, $expr);
-    }
-
-    private function addDirectFieldConstraint(string $field, array $foreignUids, string $expr): void
-    {
-        $qualifiedField = 't1.' . $field;
-
-        if ($expr === 'neq') {
-            // NOT IN constraint
-            $this->additionalConstraints[] = $this->queryBuilder->expr()->notIn(
-                $qualifiedField,
-                $this->queryBuilder->createNamedParameter($foreignUids, Connection::PARAM_INT_ARRAY)
-            );
-            return;
-        }
-
-        // Default 'eq': IN constraint with fallback for CSV/group fields
-        $constraints = [
-            $this->queryBuilder->expr()->in(
-                $qualifiedField,
-                $this->queryBuilder->createNamedParameter($foreignUids, Connection::PARAM_INT_ARRAY)
-            ),
-        ];
-
-        foreach ($foreignUids as $foreignUid) {
-            $constraints[] = sprintf(
-                'FIND_IN_SET(%s, %s) > 0',
-                $this->queryBuilder->createNamedParameter((string)$foreignUid),
-                $qualifiedField
-            );
-        }
-
-        $this->additionalConstraints[] = $this->queryBuilder->expr()->or(...$constraints);
-    }
-
-    /**
-     * @return int[]
-     */
-    private function resolveForeignUids(string $foreignTable, string $value): array
-    {
-        $parts = array_filter(array_map('trim', explode(',', $value)), static fn(string $part): bool => $part !== '');
-        if ($parts !== [] && count(array_filter($parts, static fn(string $part): bool => ctype_digit($part))) === count($parts)) {
-            return array_values(array_unique(array_map('intval', $parts)));
-        }
-
-        $escapedValue = '%' . $this->connectionPool->getConnectionForTable($foreignTable)->escapeLikeWildcards($value) . '%';
-        $qb = $this->connectionPool->getQueryBuilderForTable($foreignTable);
-
-        try {
-            $searchFields = $GLOBALS['TCA'][$foreignTable]['ctrl']['searchFields'] ?? '';
-            $fields = array_filter(array_map('trim', explode(',', (string)$searchFields)));
-
-            // If no searchFields configured, fall back to label field
-            if ($fields === []) {
-                $labelField = $GLOBALS['TCA'][$foreignTable]['ctrl']['label'] ?? 'uid';
-                $fields = [$labelField];
-            }
-
-            // Build OR condition for all search fields
-            $constraints = [];
-            foreach ($fields as $field) {
-                if (is_string($field) && $field !== '') {
-                    $constraints[] = $qb->expr()->like(
-                        $field,
-                        $qb->createNamedParameter($escapedValue)
-                    );
-                }
-            }
-
-            if ($constraints === []) {
-                return [];
-            }
-
-            $uids = $qb->select('uid')
-                ->from($foreignTable)
-                ->where($qb->expr()->or(...$constraints))
-                ->executeQuery()
-                ->fetchFirstColumn();
-        } catch (Exception $e) {
-            return [];
-        }
-
-        return array_values(array_unique(array_map('intval', $uids)));
-    }
-
-    /**
-     * @param int[] $foreignUids
-     * @return int[]
-     */
-    private function resolveLocalUidsForInlineRelation(string $foreignTable, string $foreignField, array $foreignUids): array
-    {
-        if ($foreignUids === []) {
-            return [];
-        }
-
-        $qb = $this->connectionPool->getQueryBuilderForTable($foreignTable);
-        try {
-            $uids = $qb->select($foreignField)
-                ->distinct()
-                ->from($foreignTable)
-                ->where(
-                    $qb->expr()->in(
-                        'uid',
-                        $qb->createNamedParameter($foreignUids, Connection::PARAM_INT_ARRAY)
-                    )
-                )
-                ->executeQuery()
-                ->fetchFirstColumn();
-        } catch (Exception $e) {
-            return [];
-        }
-
-        $uids = array_filter(array_map('intval', $uids), static fn(int $uid): bool => $uid > 0);
-        return array_values(array_unique($uids));
-    }
-
-    /**
-     * @param int[] $foreignUids
-     * @return int[]
-     */
-    private function resolveLocalUidsForMmRelation(string $tableName, string $field, array $fieldConfig, array $foreignUids): array
-    {
-        if ($foreignUids === []) {
-            return [];
-        }
-
-        $mmTable = (string)($fieldConfig['MM'] ?? '');
-        if ($mmTable === '') {
-            return [];
-        }
-
-        $isOpposite = !empty($fieldConfig['MM_opposite_field']);
-        $localColumn = $isOpposite ? 'uid_foreign' : 'uid_local';
-        $foreignColumn = $isOpposite ? 'uid_local' : 'uid_foreign';
-
-        $qb = $this->connectionPool->getQueryBuilderForTable($mmTable);
-        try {
-            $qb->select($localColumn)
-                ->distinct()
-                ->from($mmTable)
-                ->where(
-                    $qb->expr()->in(
-                        $foreignColumn,
-                        $qb->createNamedParameter($foreignUids, Connection::PARAM_INT_ARRAY)
-                    )
-                );
-
-            // Restrict shared MM tables to the concrete table/field context when possible.
-            if (!$isOpposite && $this->mmTableHasColumn($mmTable, 'tablenames')) {
-                $qb->andWhere(
-                    $qb->expr()->eq('tablenames', $qb->createNamedParameter($tableName))
-                );
-            }
-            if (!$isOpposite && $this->mmTableHasColumn($mmTable, 'fieldname')) {
-                $qb->andWhere(
-                    $qb->expr()->eq('fieldname', $qb->createNamedParameter($field))
-                );
-            }
-
-            $matchFields = $fieldConfig['MM_match_fields'] ?? [];
-            if (is_array($matchFields)) {
-                foreach ($matchFields as $matchField => $matchValue) {
-                    if (!is_string($matchField) || $matchField === '') {
-                        continue;
-                    }
-                    if (!$this->mmTableHasColumn($mmTable, $matchField)) {
-                        continue;
-                    }
-                    if (is_scalar($matchValue) || $matchValue === null) {
-                        $qb->andWhere(
-                            $qb->expr()->eq(
-                                $matchField,
-                                $qb->createNamedParameter((string)$matchValue)
-                            )
-                        );
-                    }
-                }
-            }
-
-            $uids = $qb->executeQuery()->fetchFirstColumn();
-        } catch (Exception $e) {
-            return [];
-        }
-
-        $uids = array_filter(array_map('intval', $uids), static fn(int $uid): bool => $uid > 0);
-        return array_values(array_unique($uids));
-    }
-
-    private function mmTableHasColumn(string $tableName, string $columnName): bool
-    {
-        if (!isset($this->mmTableColumnsCache[$tableName])) {
-            try {
-                $columns = $this->connectionPool
-                    ->getConnectionForTable($tableName)
-                    ->createSchemaManager()
-                    ->listTableColumns($tableName);
-            } catch (Exception $e) {
-                $this->mmTableColumnsCache[$tableName] = [];
-                return false;
-            }
-
-            $this->mmTableColumnsCache[$tableName] = array_keys($columns);
-        }
-
-        return in_array($columnName, $this->mmTableColumnsCache[$tableName], true);
-    }
-
-    /**
-     * @param int[] $localUids
-     */
-    private function addLocalUidConstraint(array $localUids, string $expr = 'eq'): void
-    {
-        if ($expr === 'neq') {
-            // NOT IN constraint
-            if ($localUids === []) {
-                // NOT IN (empty set) = all records
-                return;
-            }
-            $this->additionalConstraints[] = $this->queryBuilder->expr()->notIn(
-                't1.uid',
-                $this->queryBuilder->createNamedParameter($localUids, Connection::PARAM_INT_ARRAY)
-            );
-            return;
-        }
-
-        // Default 'eq': IN constraint
-        if ($localUids === []) {
-            $this->additionalConstraints[] = $this->queryBuilder->expr()->eq('t1.uid', 0);
-            return;
-        }
-
-        $this->additionalConstraints[] = $this->queryBuilder->expr()->in(
-            't1.uid',
-            $this->queryBuilder->createNamedParameter($localUids, Connection::PARAM_INT_ARRAY)
-        );
-    }
 }
