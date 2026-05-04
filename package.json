@@ -1,18 +1,19 @@
 {
-  "name": "@xima/xima-typo3-calendar",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "build": "node esbuild.config.mjs --build",
-    "watch": "node esbuild.config.mjs --watch"
-  },
-  "dependencies": {
-    "@event-calendar/core": "^2",
-    "@event-calendar/day-grid": "^2",
-    "@event-calendar/time-grid": "^2",
-    "@event-calendar/list": "^2"
-  },
-  "devDependencies": {
-    "esbuild": "^0.25.0"
-  }
+	"name": "@xima/xima-typo3-calendar",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"build": "node esbuild.config.mjs --build",
+		"watch": "node esbuild.config.mjs --watch"
+	},
+	"dependencies": {
+		"@event-calendar/core": "^2",
+		"@event-calendar/day-grid": "^2",
+		"@event-calendar/time-grid": "^2",
+		"@event-calendar/list": "^2"
+	},
+	"devDependencies": {
+		"esbuild": "^0.25.0",
+		"typo3-typescript-sources": "^13.4.26"
+	}
 }

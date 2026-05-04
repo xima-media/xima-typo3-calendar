@@ -7,6 +7,7 @@ const buildConfig = {
     sourcemap: true,
     outdir: 'Resources/Public/JavaScript/',
     logLevel: 'info',
+    external: ["@typo3/*", "interactjs", "lit", "lit/decorators.js", "css-tree", "nprogress"],
 };
 
 if (process.argv.includes('--build')) {

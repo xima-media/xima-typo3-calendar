@@ -3,6 +3,7 @@ import DayGrid from '@event-calendar/day-grid';
 import TimeGrid from '@event-calendar/time-grid';
 import List from '@event-calendar/list';
 import '@event-calendar/core/index.css';
+import Viewport from "@typo3/backend/viewport.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('xima-calendar-mount');
@@ -32,6 +33,23 @@ document.addEventListener('DOMContentLoaded', () => {
                         url: ajaxUrl
                     },
                 ],
+              eventClick: (info) => {
+                  const eventUid = info.event.extendedProps.eventUid;
+                  if (eventUid) {
+
+                    const overrideVals = '';
+                    const table = 'tx_ximatypo3calendar_domain_model_event';
+                    const returnUrl = document.location.pathname + document.location.search;
+
+                    Viewport.ContentContainer.setUrl(
+                      top.TYPO3.settings.FormEngine.moduleUrl
+                      + '&edit[' + table + '][' + eventUid + ']=edit'
+                      + overrideVals
+                      + '&module=' + encodeURIComponent(top.TYPO3.ModuleMenu.App.getCurrentModule())
+                      + '&returnUrl=' + returnUrl,
+                    );
+                  }
+              }
             },
         },
     });

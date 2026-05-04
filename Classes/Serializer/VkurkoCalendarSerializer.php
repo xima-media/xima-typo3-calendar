@@ -14,7 +14,12 @@ class VkurkoCalendarSerializer
                 ? (new \DateTime($row['end_date']))->format('Y-m-d\TH:i:s')
                 : null;
 
-            $title = $row['event_title'] ?: $row['title'];
+            $title = $row['title'] ?? null;
+            if ($title && ($row['event_title'] ?? null)) {
+                $title .= ' (' . $row['event_title'] . ')';
+            } elseif (!$title && ($row['event_title'] ?? null)) {
+                $title = $row['event_title'];
+            }
 
             return [
                 'id' => 'entry-' . $row['uid'],

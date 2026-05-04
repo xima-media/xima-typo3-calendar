@@ -4546,20 +4546,20 @@ function instance$32($$self, $$props, $$invalidate) {
       }
     }
     $$invalidate(2, style += `left:${left}px;`);
-    let top;
+    let top2;
     if (popupRect.height >= bodyRect.height) {
-      top = bodyRect.top - dayRect.top;
+      top2 = bodyRect.top - dayRect.top;
       let bottom = dayRect.bottom - bodyRect.bottom;
       $$invalidate(2, style += `bottom:${bottom}px;`);
     } else {
-      top = (dayRect.height - popupRect.height) / 2;
-      if (dayRect.top + top < bodyRect.top) {
-        top = bodyRect.top - dayRect.top;
-      } else if (dayRect.top + top + popupRect.height > bodyRect.bottom) {
-        top = bodyRect.bottom - dayRect.top - popupRect.height;
+      top2 = (dayRect.height - popupRect.height) / 2;
+      if (dayRect.top + top2 < bodyRect.top) {
+        top2 = bodyRect.top - dayRect.top;
+      } else if (dayRect.top + top2 + popupRect.height > bodyRect.bottom) {
+        top2 = bodyRect.bottom - dayRect.top - popupRect.height;
       }
     }
-    $$invalidate(2, style += `top:${top}px;`);
+    $$invalidate(2, style += `top:${top2}px;`);
   }
   function reposition() {
     if (el) {
@@ -7087,12 +7087,12 @@ function instance$62($$self, $$props, $$invalidate) {
         let offset = $_slotTimeLimits.min.seconds / 60;
         let start = (chunk.start - date) / 1e3 / 60;
         let end = (chunk.end - date) / 1e3 / 60;
-        let top = (start - offset) / step * $slotHeight;
+        let top2 = (start - offset) / step * $slotHeight;
         let height2 = (end - start) / step * $slotHeight;
         let maxHeight = ($_slotTimeLimits.max.seconds / 60 - start) / step * $slotHeight;
         let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
         let txtColor = event.textColor || $_resTxtColor(event) || $eventTextColor;
-        $$invalidate(5, style = `top:${top}px;min-height:${height2}px;height:${height2}px;max-height:${maxHeight}px;`);
+        $$invalidate(5, style = `top:${top2}px;min-height:${height2}px;height:${height2}px;max-height:${maxHeight}px;`);
         if (bgColor) {
           $$invalidate(5, style += `background-color:${bgColor};`);
         }
@@ -7241,7 +7241,7 @@ function instance$52($$self, $$props, $$invalidate) {
   component_subscribe($$self, _today, (value) => $$invalidate(12, $_today = value));
   component_subscribe($$self, _slotTimeLimits, (value) => $$invalidate(10, $_slotTimeLimits = value));
   let start;
-  let top = 0;
+  let top2 = 0;
   $$self.$$.update = () => {
     if ($$self.$$.dirty & /*$_now, $_today*/
     12288) {
@@ -7252,12 +7252,12 @@ function instance$52($$self, $$props, $$invalidate) {
       {
         let step = $slotDuration.seconds / 60;
         let offset = $_slotTimeLimits.min.seconds / 60;
-        $$invalidate(0, top = (start - offset) / step * $slotHeight);
+        $$invalidate(0, top2 = (start - offset) / step * $slotHeight);
       }
     }
   };
   return [
-    top,
+    top2,
     $theme,
     slotDuration,
     slotHeight,
@@ -10948,6 +10948,7 @@ var index3 = {
 };
 
 // Resources/Private/TypeScript/calendar.ts
+import Viewport from "@typo3/backend/viewport.js";
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("xima-calendar-mount");
   if (!container) {
@@ -10970,7 +10971,18 @@ document.addEventListener("DOMContentLoaded", () => {
           {
             url: ajaxUrl
           }
-        ]
+        ],
+        eventClick: (info) => {
+          const eventUid = info.event.extendedProps.eventUid;
+          if (eventUid) {
+            const overrideVals = "";
+            const table = "tx_ximatypo3calendar_domain_model_event";
+            const returnUrl = document.location.pathname + document.location.search;
+            Viewport.ContentContainer.setUrl(
+              top.TYPO3.settings.FormEngine.moduleUrl + "&edit[" + table + "][" + eventUid + "]=edit" + overrideVals + "&module=" + encodeURIComponent(top.TYPO3.ModuleMenu.App.getCurrentModule()) + "&returnUrl=" + returnUrl
+            );
+          }
+        }
       }
     }
   });
