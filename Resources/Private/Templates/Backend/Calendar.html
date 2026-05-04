@@ -1,5 +1,29 @@
 <f:layout name="Default" />
 
 <f:section name="Content">
-    <h1>Hello World</h1>
+    <f:be.pageRenderer
+        pageTitle="calendar-css"
+        includeCssFiles="{0: 'EXT:xima_typo3_calendar/Resources/Public/JavaScript/calendar.css'}" />
+
+    <f:if condition="{calendars}">
+        <div class="xima-cal-filter mb-3 d-flex flex-wrap gap-3">
+            <f:for each="{calendars}" as="calendar">
+                <div class="form-check form-check-inline">
+                    <input class="xima-cal-filter__checkbox form-check-input"
+                           type="checkbox"
+                           id="cal-{calendar.uid}"
+                           value="{calendar.uid}"
+                           checked="checked" />
+                    <label class="form-check-label" for="cal-{calendar.uid}">
+                        {calendar.title}
+                    </label>
+                </div>
+            </f:for>
+        </div>
+    </f:if>
+
+    <div id="xima-calendar-mount"
+         data-ajax-url="{ajaxUrl}">
+    </div>
+
 </f:section>
