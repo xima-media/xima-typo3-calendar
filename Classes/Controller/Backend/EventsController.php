@@ -2,22 +2,17 @@
 
 namespace Xima\XimaTypo3Calendar\Controller\Backend;
 
-use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Types\Type;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\Connection;
-use Xima\XimaTypo3Calendar\Helper\RelationHelper;
 use Xima\XimaTypo3Recordlist\Controller\AbstractBackendController;
 
 class EventsController extends AbstractBackendController
 {
-    private const int RELATED_LABELS_PREVIEW_LIMIT = 3;
-
     public function __construct(
         private readonly ExtensionConfiguration $extensionConfiguration,
-        private readonly RelationHelper $relationHelper,
     ) {
     }
 
@@ -55,8 +50,6 @@ class EventsController extends AbstractBackendController
             }
             unset($record);
         }
-
-        $this->addRelatedLabelsForActiveColumns();
     }
 
     protected function modifyTableConfiguration(): void
@@ -74,10 +67,6 @@ class EventsController extends AbstractBackendController
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['appointments']['defaultPosition'] = 8;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['appointments']['filter']['partial'] = 'DateTime';
 
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['location']['filter']['items'] = $this->getFilterItemsForTable(
-            'tx_ximatypo3calendar_domain_model_location'
-        );
-
         // ============================================
         // tx_ximatypo3calendar_domain_model_entry (Appointment)
         // ============================================
@@ -88,10 +77,6 @@ class EventsController extends AbstractBackendController
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['location']['defaultPosition'] = 5;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['canceled']['defaultPosition'] = 6;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['speakers']['defaultPosition'] = 7;
-
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['event']['filter']['items'] = $this->getFilterItemsForTable(
-            'tx_ximatypo3calendar_domain_model_event'
-        );
 
         // ============================================
         // tx_ximatypo3calendar_domain_model_organizer (Organizer)
@@ -125,74 +110,9 @@ class EventsController extends AbstractBackendController
             foreach ($body['filter'] as $field => $data) {
                 if ($field === 'appointments' && !empty($data['value'])) {
                     $this->addAppointmentsConstraint($data['value'], $data['expr'] ?? 'eq');
-                    continue;
-                }
-                $isRelationField = in_array(
-                        $GLOBALS['TCA'][$this->getTableName()]['columns'][$field]['config']['type'] ?? '',
-                        ['select', 'group', 'inline']
-                    ) &&
-                    isset($GLOBALS['TCA'][$this->getTableName()]['columns'][$field]['config']['foreign_table']);
-                if ($isRelationField && !empty($data['value'])) {
-                    foreach ($this->additionalConstraints as $key => $constraint) {
-                        // remove existing relation constraints for the same field to avoid conflicting filters
-                        if (str_contains((string)$constraint, $field)) {
-                            unset($this->additionalConstraints[$key]);
-                        }
-                    }
-
-                    $constraint = $this->relationHelper->buildRelationFieldConstraint(
-                        $this->queryBuilder,
-                        $this->getTableName(),
-                        $field,
-                        (string)$data['value'],
-                        $data['expr'] ?? 'eq'
-                    );
-                    if ($constraint !== null) {
-                        $this->additionalConstraints[] = $constraint;
-                    }
                 }
             }
         }
-    }
-
-    private function addRelatedLabelsForActiveColumns(): void
-    {
-        $tableName = $this->getTableName();
-        $tableColumns = $this->tableConfiguration[$tableName]['columns'] ?? [];
-        $this->records = $this->relationHelper->enrichActiveRelationLabels(
-            $tableName,
-            $this->records,
-            $tableColumns,
-            self::RELATED_LABELS_PREVIEW_LIMIT
-        );
-    }
-
-    /**
-     * @param string $table
-     * @return array<int, array<string, string>>
-     */
-    private function getFilterItemsForTable(string $table): array
-    {
-        $labelField = $GLOBALS['TCA'][$table]['ctrl']['label'] ?? 'uid';
-        $items = [];
-
-        $qb = $this->connectionPool->getQueryBuilderForTable($table);
-        try {
-            $rows = $qb->select('uid', $labelField)
-                ->from($table)
-                ->executeQuery()
-                ->fetchAllAssociativeIndexed();
-        } catch (Exception $e) {
-            // In case of an error (e.g. table does not exist), return an empty array
-            return [];
-        }
-
-        foreach ($rows as $uid => $row) {
-            $items[$uid]['label'] = $row[$labelField];
-            $items[$uid]['value'] = $uid;
-        }
-
-        return $items;
     }
 
     private function addAppointmentsConstraint(string $value, string $expr): void
@@ -262,5 +182,4 @@ class EventsController extends AbstractBackendController
             $this->queryBuilder->createNamedParameter($value, Connection::PARAM_INT_ARRAY)
         );
     }
-
 }
