@@ -13,7 +13,7 @@
 		"php": "^8.2.0",
 		"sourcebroker/t3api": "*",
 		"typo3/cms-core": "^13.4",
-		"xima/xima-typo3-recordlist": "dev-record-relation-filter"
+		"xima/xima-typo3-recordlist": "^14.2"
 	},
 	"require-dev": {
 		"armin/editorconfig-cli": "^2.1",
