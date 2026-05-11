@@ -30,6 +30,26 @@
 				<source />
 				<target>URL des RSS-Feeds</target>
 			</trans-unit>
+			<trans-unit id="widget_group.calendar">
+				<source />
+				<target>Kalender</target>
+			</trans-unit>
+			<trans-unit id="widget.ready_to_publish_events.title">
+				<source />
+				<target>Freizugebende Veranstaltungen</target>
+			</trans-unit>
+			<trans-unit id="widget.ready_to_publish_events.description">
+				<source />
+				<target>Zeigt eine Liste mit Veranstaltungen, die bereit zum Veröffentlichen sind.</target>
+			</trans-unit>
+			<trans-unit id="widget.ready_to_publish_events.no_events">
+				<source />
+				<target>Momentan gibt es keine freizugebenden Veranstaltungen.</target>
+			</trans-unit>
+			<trans-unit id="widget.button.calendar_events">
+				<source />
+				<target>Zum Veranstaltungsmodul</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

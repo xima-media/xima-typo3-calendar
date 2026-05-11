@@ -23,6 +23,21 @@
 			<trans-unit id="settings.url">
 				<source>URL of the RSS feed</source>
 			</trans-unit>
+			<trans-unit id="widget_group.calendar">
+				<source>Calendar</source>
+			</trans-unit>
+			<trans-unit id="widget.ready_to_publish_events.title">
+				<source>Ready to publish events</source>
+			</trans-unit>
+			<trans-unit id="widget.ready_to_publish_events.description">
+				<source>Shows events that are ready to be published.</source>
+			</trans-unit>
+			<trans-unit id="widget.ready_to_publish_events.no_events">
+				<source>Currently there are no events waiting for publication.</source>
+			</trans-unit>
+			<trans-unit id="widget.button.calendar_events">
+				<source>Show events module</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

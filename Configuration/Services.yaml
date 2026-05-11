@@ -14,3 +14,31 @@ services:
 
   Xima\XimaTypo3Calendar\EventListener\T3api\BeforeOperationAccessGrantedEventListener:
     public: true
+
+  Xima\XimaTypo3Calendar\Widgets\Provider\ReadyToPublishEventsDataProvider:
+    arguments:
+      $limit: 8
+
+  xima_typo3_calendar_widget.button.calendar_events_event:
+    class: 'Xima\XimaTypo3Calendar\Widgets\Provider\ModuleButtonProvider'
+    arguments:
+      $routeIdentifier: 'calendar_events'
+      $table: 'tx_ximatypo3calendar_domain_model_event'
+      $title: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:widget.button.calendar_events'
+
+  dashboard.widget.xima_readytopublishevents:
+    class: 'Xima\XimaTypo3Calendar\Widgets\ReadyToPublishEventsWidget'
+    arguments:
+      $buttonProvider: '@xima_typo3_calendar_widget.button.calendar_events_event'
+      $dataProvider: '@Xima\XimaTypo3Calendar\Widgets\Provider\ReadyToPublishEventsDataProvider'
+      $options:
+        refreshAvailable: true
+    tags:
+      - name: dashboard.widget
+        identifier: 'xima_readytopublishevents'
+        groupNames: 'xima_typo3_calendar'
+        title: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:widget.ready_to_publish_events.title'
+        description: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:widget.ready_to_publish_events.description'
+        iconIdentifier: 'content-widget-list'
+        height: 'large'
+        width: 'medium'
