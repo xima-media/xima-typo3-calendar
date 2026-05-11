@@ -16,13 +16,15 @@
                         <f:for each="{items}" as="item">
                             <tr>
                                 <td>
-                                    <strong>{item.title}</strong>
+                                    <strong>{item.start_date -> f:format.date(format: 'd.m.Y H:i')}</strong>
                                 </td>
+                                <td>{f:if(condition: item.entry_title, then: item.entry_title, else: item.event_title)}</td>
                                 <td class="text-end">
                                     <div class="btn-group">
                                         <be:link.editRecord
-                                            uid="{item.uid}"
-                                            table="tx_ximatypo3calendar_domain_model_event"
+                                            uid="{item.entry_uid}"
+                                            table="tx_ximatypo3calendar_domain_model_entry"
+                                            title="{f:translate(key: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:edit_appointment')}"
                                             returnUrl="{be:moduleLink(route: 'dashboard')}"
                                             class="btn btn-default">
                                             <core:icon identifier="actions-open" alternativeMarkupIdentifier="inline" />

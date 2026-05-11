@@ -26,8 +26,15 @@ services:
       $table: 'tx_ximatypo3calendar_domain_model_event'
       $title: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:widget.button.calendar_events'
 
+  xima_typo3_calendar_widget.button.calendar_events_entry:
+    class: 'Xima\XimaTypo3Calendar\Widgets\Provider\ModuleButtonProvider'
+    arguments:
+      $routeIdentifier: 'calendar_events'
+      $table: 'tx_ximatypo3calendar_domain_model_entry'
+      $title: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:widget.button.calendar_appointments'
+
   dashboard.widget.xima_readytopublishevents:
-    class: 'Xima\XimaTypo3Calendar\Widgets\ReadyToPublishEventsWidget'
+    class: 'Xima\XimaTypo3Calendar\Widgets\CalendarWidget'
     arguments:
       $buttonProvider: '@xima_typo3_calendar_widget.button.calendar_events_event'
       $dataProvider: '@Xima\XimaTypo3Calendar\Widgets\Provider\ReadyToPublishEventsDataProvider'
@@ -39,6 +46,23 @@ services:
         groupNames: 'xima_typo3_calendar'
         title: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:widget.ready_to_publish_events.title'
         description: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:widget.ready_to_publish_events.description'
+        iconIdentifier: 'content-widget-list'
+        height: 'large'
+        width: 'medium'
+
+  dashboard.widget.xima_upcomingappointments:
+    class: 'Xima\XimaTypo3Calendar\Widgets\CalendarWidget'
+    arguments:
+      $buttonProvider: '@xima_typo3_calendar_widget.button.calendar_events_entry'
+      $dataProvider: '@Xima\XimaTypo3Calendar\Widgets\Provider\UpcomingAppointmentsDataProvider'
+      $options:
+        refreshAvailable: true
+    tags:
+      - name: dashboard.widget
+        identifier: 'xima_upcomingappointments'
+        groupNames: 'xima_typo3_calendar'
+        title: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:widget.upcoming_appointments.title'
+        description: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:widget.upcoming_appointments.description'
         iconIdentifier: 'content-widget-list'
         height: 'large'
         width: 'medium'

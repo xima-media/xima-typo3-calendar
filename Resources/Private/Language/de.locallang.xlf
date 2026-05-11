@@ -42,13 +42,29 @@
 				<source />
 				<target>Zeigt eine Liste mit Veranstaltungen, die bereit zum Veröffentlichen sind.</target>
 			</trans-unit>
-			<trans-unit id="widget.ready_to_publish_events.no_events">
+			<trans-unit id="widget.no_entries">
 				<source />
-				<target>Momentan gibt es keine freizugebenden Veranstaltungen.</target>
+				<target>Momentan nichts anzuzeigen.</target>
 			</trans-unit>
 			<trans-unit id="widget.button.calendar_events">
 				<source />
 				<target>Zum Veranstaltungsmodul</target>
+			</trans-unit>
+			<trans-unit id="widget.button.calendar_appointments">
+				<source />
+				<target>Zu den Veranstaltungsterminen</target>
+			</trans-unit>
+			<trans-unit id="widget.upcoming_appointments.title">
+				<source />
+				<target>Anstehende Termine</target>
+			</trans-unit>
+			<trans-unit id="widget.upcoming_appointments.description">
+				<source />
+				<target>Zeigt kommende Veranstaltungstermine</target>
+			</trans-unit>
+			<trans-unit id="edit_appointment">
+				<source />
+				<target>Termin bearbeiten</target>
 			</trans-unit>
 		</body>
 	</file>

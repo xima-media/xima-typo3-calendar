@@ -12,7 +12,7 @@ use TYPO3\CMS\Dashboard\Widgets\RequestAwareWidgetInterface;
 use TYPO3\CMS\Dashboard\Widgets\WidgetConfigurationInterface;
 use TYPO3\CMS\Dashboard\Widgets\WidgetInterface;
 
-class ReadyToPublishEventsWidget implements WidgetInterface, RequestAwareWidgetInterface
+class CalendarWidget implements WidgetInterface, RequestAwareWidgetInterface
 {
     private ServerRequestInterface $request;
 
@@ -37,13 +37,18 @@ class ReadyToPublishEventsWidget implements WidgetInterface, RequestAwareWidgetI
         $view = $this->backendViewFactory->create($this->request);
 
         $view->assignMultiple([
-            'events' => $this->dataProvider->getItems(),
+            'items' => $this->dataProvider->getItems(),
             'button' => $this->buttonProvider,
             'configuration' => $this->configuration,
             'options' => $this->options,
         ]);
 
-        return $view->render('Widgets/XimaTypo3CalendarEventsWidget');
+        $template = match (get_class($this->dataProvider)) {
+            Provider\ReadyToPublishEventsDataProvider::class => 'Widgets/XimaTypo3CalendarEventsWidget',
+            Provider\UpcomingAppointmentsDataProvider::class => 'Widgets/XimaTypo3CalendarAppointmentsWidget',
+        };
+
+        return $view->render($template);
     }
 
     /**

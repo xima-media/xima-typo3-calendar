@@ -32,11 +32,23 @@
 			<trans-unit id="widget.ready_to_publish_events.description">
 				<source>Shows events that are ready to be published.</source>
 			</trans-unit>
-			<trans-unit id="widget.ready_to_publish_events.no_events">
-				<source>Currently there are no events waiting for publication.</source>
+			<trans-unit id="widget.no_entries">
+				<source>Currently nothing to show.</source>
 			</trans-unit>
 			<trans-unit id="widget.button.calendar_events">
 				<source>Show events module</source>
+			</trans-unit>
+			<trans-unit id="widget.button.calendar_appointments">
+				<source>Show appointments in events module</source>
+			</trans-unit>
+			<trans-unit id="widget.upcoming_appointments.title">
+				<source>Upcoming appointments</source>
+			</trans-unit>
+			<trans-unit id="widget.upcoming_appointments.description">
+				<source>Shows upcoming appointments of events.</source>
+			</trans-unit>
+			<trans-unit id="edit_appointment">
+				<source>Edit appointment</source>
 			</trans-unit>
 		</body>
 	</file>
