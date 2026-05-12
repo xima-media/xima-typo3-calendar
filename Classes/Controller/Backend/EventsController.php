@@ -2,7 +2,6 @@
 
 namespace Xima\XimaTypo3Calendar\Controller\Backend;
 
-use Doctrine\DBAL\Types\Type;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -141,30 +140,30 @@ class EventsController extends AbstractBackendController
             'lt' => $qb->andWhere(
                 $qb->expr()->lt(
                     'start_date',
-                    $qb->createNamedParameter($value, Type::getType('datetime'))
+                    $qb->createNamedParameter(strtotime($value), Connection::PARAM_INT)
                 )
             ),
             'gt' => $qb->andWhere(
                 $qb->expr()->gt(
                     'start_date',
-                    $qb->createNamedParameter($value, Type::getType('datetime'))
+                    $qb->createNamedParameter(strtotime($value), Connection::PARAM_INT)
                 )
             ),
             'neq' => $qb->andWhere(
                 $qb->expr()->neq(
                     'start_date',
-                    $qb->createNamedParameter($value, Type::getType('datetime'))
+                    $qb->createNamedParameter(strtotime($value), Connection::PARAM_INT)
                 )
             ),
             default => $qb->andWhere(
                 $qb->expr()->and(
                     $qb->expr()->gte(
                         'start_date',
-                        $qb->createNamedParameter($value, Type::getType('datetime'))
+                        $qb->createNamedParameter(strtotime($value), Connection::PARAM_INT)
                     ),
                     $qb->expr()->lt(
                         'start_date',
-                        $qb->createNamedParameter(date('Y-m-d H:i:s', strtotime($value . ' +1 day')), Type::getType('datetime'))
+                        $qb->createNamedParameter(strtotime($value . ' +1 day'), Connection::PARAM_INT)
                     )
                 )
             )

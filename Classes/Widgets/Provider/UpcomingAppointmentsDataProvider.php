@@ -19,10 +19,10 @@ readonly class UpcomingAppointmentsDataProvider implements ListDataProviderInter
 
     public function getItems(): array
     {
-        $nowDateString = date('Y-m-d H:i:s');
+        $nowTimestap = time();
         $upperBoundDate = new \DateTime();
         $upperBoundDate->add(new \DateInterval('P' . $this->daysInPreview . 'D'))->setTime(23, 59, 59);
-        $upperBoundDateString = $upperBoundDate->format('Y-m-d H:i:s');
+        $upperBoundTimestamp = $upperBoundDate->getTimestamp();
 
         $qb = $this->connectionPool->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_entry');
         $qb->select(
@@ -40,8 +40,8 @@ readonly class UpcomingAppointmentsDataProvider implements ListDataProviderInter
                 $qb->expr()->eq('a.event', $qb->quoteIdentifier('e.uid'))
             )
             ->where(
-                $qb->expr()->gt('a.start_date', $qb->createNamedParameter($nowDateString, Connection::PARAM_STR)),
-                $qb->expr()->lt('a.start_date', $qb->createNamedParameter($upperBoundDateString, Connection::PARAM_STR)),
+                $qb->expr()->gt('a.start_date', $qb->createNamedParameter($nowTimestap, Connection::PARAM_INT)),
+                $qb->expr()->lt('a.start_date', $qb->createNamedParameter($upperBoundTimestamp, Connection::PARAM_INT)),
                 $qb->expr()->eq('e.status', $qb->createNamedParameter(1, Connection::PARAM_INT))
             )
             ->orderBy('a.start_date', 'ASC')
