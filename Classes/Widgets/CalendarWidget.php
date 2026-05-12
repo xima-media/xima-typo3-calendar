@@ -46,6 +46,7 @@ class CalendarWidget implements WidgetInterface, RequestAwareWidgetInterface
         $template = match (get_class($this->dataProvider)) {
             Provider\ReadyToPublishEventsDataProvider::class => 'Widgets/XimaTypo3CalendarEventsWidget',
             Provider\UpcomingAppointmentsDataProvider::class => 'Widgets/XimaTypo3CalendarAppointmentsWidget',
+            Provider\SoonNeededRequirementsDataProvider::class => 'Widgets/XimaTypo3CalendarRequirementsWidget',
         };
 
         return $view->render($template);

@@ -1,0 +1,104 @@
+<html
+    xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+    xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true">
+    <f:layout name="Widget/Widget" />
+
+    <f:section name="main">
+        <f:if condition="!{items}">
+            <f:then>
+                <f:translate key="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:widget.no_entries" />
+            </f:then>
+            <f:else>
+                <div class="widget-table-wrapper">
+                    <table class="widget-table table-striped table-hover table">
+                        <tr>
+                            <th>
+                                <f:translate
+                                    id="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:start_date.label" />
+                            </th>
+                            <th>
+                                <f:translate
+                                    id="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/requirement-booking/labels.xlf:amount.label" />
+                            </th>
+                            <th>
+                                <f:translate
+                                    id="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/requirement/labels.xlf:title" />
+                            </th>
+                            <th>
+                                <f:translate
+                                    id="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/requirement-booking/labels.xlf:note.label" />
+                            </th>
+                            <th>
+                                <f:translate
+                                    id="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/requirement/labels.xlf:assignee.label" />
+                            </th>
+                            <th>
+                                <f:translate
+                                    id="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/location/labels.xlf:title" />
+                            </th>
+                            <th>
+                                <f:translate
+                                    id="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:title" />
+                            </th>
+                        </tr>
+                        <f:for each="{items}" as="item">
+                            <tr>
+                                <td>
+                                    <be:link.editRecord
+                                        uid="{item.entry_uid}"
+                                        table="tx_ximatypo3calendar_domain_model_entry"
+                                        title="{f:translate(key: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:edit_appointment')}"
+                                        returnUrl="{be:moduleLink(route: 'dashboard')}">
+                                        {item.start_date -> f:format.date(format: 'd.m.Y H:i')}
+                                        <core:icon identifier="actions-open" size="small" />
+                                    </be:link.editRecord>
+                                </td>
+                                <td>{item.amount}</td>
+                                <td>
+                                    <be:link.editRecord
+                                        uid="{item.booking_uid}"
+                                        table="tx_ximatypo3calendar_domain_model_requirementbooking"
+                                        title="{f:translate(key: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:edit_requirementbooking')}"
+                                        returnUrl="{be:moduleLink(route: 'dashboard')}">
+                                        {item.requirement_title}
+                                        <core:icon identifier="actions-open" size="small" />
+                                    </be:link.editRecord>
+                                </td>
+                                <td>
+                                    <f:if condition="{item.booking_note}">
+                                        <be:link.editRecord
+                                            uid="{item.booking_uid}"
+                                            table="tx_ximatypo3calendar_domain_model_requirementbooking"
+                                            title="{f:translate(key: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:edit_requirementbooking')}"
+                                            returnUrl="{be:moduleLink(route: 'dashboard')}">
+                                            {item.booking_note -> f:format.crop(maxCharacters: 50)}
+                                            <core:icon identifier="actions-open" size="small" />
+                                        </be:link.editRecord>
+                                    </f:if>
+                                </td>
+                                <td>{item.requirement_assignee}</td>
+                                <td>{f:if(condition: item.entry_location, then: item.entry_location, else: item.event_location)}</td>
+                                <td>
+                                    <be:link.editRecord
+                                        uid="{item.event_uid}"
+                                        table="tx_ximatypo3calendar_domain_model_event"
+                                        title="{f:translate(key: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:edit_event')}"
+                                        returnUrl="{be:moduleLink(route: 'dashboard')}">
+                                        {item.event_title}
+                                        <core:icon identifier="actions-open" size="small" />
+                                    </be:link.editRecord>
+                                </td>
+                            </tr>
+                        </f:for>
+                    </table>
+                </div>
+            </f:else>
+        </f:if>
+    </f:section>
+
+    <f:section name="footer">
+        <f:render partial="Widget/Button" arguments="{button: button}" />
+    </f:section>
+</html>

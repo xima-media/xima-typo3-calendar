@@ -19,6 +19,11 @@ services:
     arguments:
       $limit: 8
 
+  Xima\XimaTypo3Calendar\Widgets\Provider\SoonNeededRequirementsDataProvider:
+    arguments:
+      $daysInPreview: 2
+      $limit: 10
+
   xima_typo3_calendar_widget.button.calendar_events_event:
     class: 'Xima\XimaTypo3Calendar\Widgets\Provider\ModuleButtonProvider'
     arguments:
@@ -66,3 +71,20 @@ services:
         iconIdentifier: 'content-widget-list'
         height: 'large'
         width: 'medium'
+
+  dashboard.widget.xima_soonneededrequirements:
+    class: 'Xima\XimaTypo3Calendar\Widgets\CalendarWidget'
+    arguments:
+      $buttonProvider: '@xima_typo3_calendar_widget.button.calendar_events_entry'
+      $dataProvider: '@Xima\XimaTypo3Calendar\Widgets\Provider\SoonNeededRequirementsDataProvider'
+      $options:
+        refreshAvailable: true
+    tags:
+      - name: dashboard.widget
+        identifier: 'xima_soonneededrequirements'
+        groupNames: 'xima_typo3_calendar'
+        title: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:widget.soon_needed_requirements.title'
+        description: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:widget.soon_needed_requirements.description'
+        iconIdentifier: 'content-widget-list'
+        height: 'medium'
+        width: 'large'

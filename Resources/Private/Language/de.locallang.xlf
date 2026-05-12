@@ -66,6 +66,22 @@
 				<source />
 				<target>Termin bearbeiten</target>
 			</trans-unit>
+			<trans-unit id="edit_requirementbooking">
+				<source />
+				<target>Anforderungsbuchung bearbeiten</target>
+			</trans-unit>
+			<trans-unit id="edit_event">
+				<source />
+				<target>Veranstaltung bearbeiten</target>
+			</trans-unit>
+			<trans-unit id="widget.soon_needed_requirements.title">
+				<source />
+				<target>Demnächst benötigte Anforderungen</target>
+			</trans-unit>
+			<trans-unit id="widget.soon_needed_requirements.description">
+				<source />
+				<target>Zeigt anstehende Anforderungsbuchungen von Veranstaltungsterminen.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

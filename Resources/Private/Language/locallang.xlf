@@ -50,6 +50,18 @@
 			<trans-unit id="edit_appointment">
 				<source>Edit appointment</source>
 			</trans-unit>
+			<trans-unit id="edit_requirementbooking">
+				<source>Edit requirement booking</source>
+			</trans-unit>
+			<trans-unit id="edit_event">
+				<source>Edit event</source>
+			</trans-unit>
+			<trans-unit id="widget.soon_needed_requirements.title">
+				<source>Soon needed requirements</source>
+			</trans-unit>
+			<trans-unit id="widget.soon_needed_requirements.description">
+				<source>Shows upcoming requirements bookings of event appointments.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
