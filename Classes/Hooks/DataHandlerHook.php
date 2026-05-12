@@ -13,7 +13,7 @@ class DataHandlerHook
         if ($status === 'update' && $table === 'tx_ximatypo3calendar_domain_model_event') {
             if (array_key_exists('status', $fieldArray)) {
                 if ($fieldArray['status'] == EventStatus::LIVE->value) {
-                    $fieldArray['approval_date'] = date('Y-m-d H:i:s');
+                    $fieldArray['approval_date'] = time();
                 } else {
                     $fieldArray['approval_date'] = null;
                 }
@@ -23,7 +23,7 @@ class DataHandlerHook
         // Save modifiedDate of an event appointment if startDate/endDate/canceled was changed
         if ($status === 'update' && $table === 'tx_ximatypo3calendar_domain_model_entry') {
             if (array_intersect_key(array_flip(['start_date', 'end_date', 'canceled']), $fieldArray)) {
-                $fieldArray['modified_date'] = date('Y-m-d H:i:s');
+                $fieldArray['modified_date'] = time();
             }
         }
     }
