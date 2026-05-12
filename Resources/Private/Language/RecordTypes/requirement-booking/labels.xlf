@@ -13,10 +13,10 @@
 			<trans-unit id="amount.label">
 				<source>Amount</source>
 			</trans-unit>
-			<trans-unit id="start.label">
+			<trans-unit id="start_date.label">
 				<source>Start</source>
 			</trans-unit>
-			<trans-unit id="end.label">
+			<trans-unit id="end_date.label">
 				<source>End</source>
 			</trans-unit>
 			<trans-unit id="note.label">

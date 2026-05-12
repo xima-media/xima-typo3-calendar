@@ -16,11 +16,11 @@
 				<source />
 				<target>Anzahl</target>
 			</trans-unit>
-			<trans-unit id="start.label">
+			<trans-unit id="start_date.label">
 				<source />
 				<target>Start</target>
 			</trans-unit>
-			<trans-unit id="end.label">
+			<trans-unit id="end_date.label">
 				<source />
 				<target>Ende</target>
 			</trans-unit>
