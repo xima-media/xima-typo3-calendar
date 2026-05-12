@@ -2,6 +2,7 @@
 
 namespace Xima\XimaTypo3Calendar\Controller\Backend;
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -45,6 +46,33 @@ class EventsController extends AbstractBackendController
         if ($this->getTableName() === 'tx_ximatypo3calendar_domain_model_event') {
             foreach ($this->records as &$record) {
                 $record['url'] = '/aktuelles/veranstaltungen/event/' . $record['uid'] . '-slug';
+            }
+            unset($record);
+        }
+
+        if (in_array($this->getTableName(), ['tx_ximatypo3calendar_domain_model_event', 'tx_ximatypo3calendar_domain_model_entry'])) {
+            foreach ($this->records as &$record) {
+                foreach ($record as $key => &$value) {
+                    if (str_starts_with($key, '_')) {
+                        foreach ($value as $table => &$relatedRecords) {
+                            foreach ($relatedRecords as &$relatedRecord) {
+                                $labelField = $GLOBALS['TCA'][$table]['ctrl']['label'] ?? null;
+                                if ($labelField) {
+                                    $relatedRecord['label'] = BackendUtility::getProcessedValue(
+                                        table: $table,
+                                        col: $labelField,
+                                        value: $relatedRecord['label'],
+                                        uid: $relatedRecord['label'],
+                                        pid: $this->getRecordPid()
+                                    );
+                                }
+                            }
+                            unset($relatedRecord);
+                        }
+                        unset($relatedRecords);
+                    }
+                }
+                unset($value);
             }
             unset($record);
         }
