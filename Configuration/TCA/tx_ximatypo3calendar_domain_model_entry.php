@@ -79,7 +79,6 @@ return [
             'exclude' => true,
             'config' => [
                 'type' => 'datetime',
-                'dbType' => 'datetime',
                 'required' => true,
                 'format' => 'datetime',
                 'disableAgeDisplay' => true,
@@ -90,7 +89,6 @@ return [
             'exclude' => true,
             'config' => [
                 'type' => 'datetime',
-                'dbType' => 'datetime',
                 'format' => 'datetime',
                 'disableAgeDisplay' => true,
             ],
@@ -116,7 +114,6 @@ return [
             'exclude' => true,
             'config' => [
                 'type' => 'datetime',
-                'dbType' => 'datetime',
                 'readOnly' => true,
             ],
         ],

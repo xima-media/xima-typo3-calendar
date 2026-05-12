@@ -197,7 +197,6 @@ return [
             'exclude' => true,
             'config' => [
                 'type' => 'datetime',
-                'dbType' => 'datetime',
             ],
         ],
         'fee' => [
@@ -262,7 +261,6 @@ return [
             'exclude' => true,
             'config' => [
                 'type' => 'datetime',
-                'dbType' => 'datetime',
                 'readOnly' => true,
             ],
         ],
