@@ -5,7 +5,6 @@ namespace Xima\XimaTypo3Calendar\Controller\Backend;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\Connection;
 use Xima\XimaTypo3Recordlist\Controller\AbstractBackendController;
 
 class EventsController extends AbstractBackendController
@@ -64,7 +63,6 @@ class EventsController extends AbstractBackendController
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['publish_to_website']['defaultPosition'] = 6;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['publish_date']['defaultPosition'] = 7;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['appointments']['defaultPosition'] = 8;
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['appointments']['filter']['partial'] = 'DateTime';
 
         // ============================================
         // tx_ximatypo3calendar_domain_model_entry (Appointment)
@@ -100,85 +98,5 @@ class EventsController extends AbstractBackendController
         // ============================================
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_requirement']['columns']['title']['defaultPosition'] = 1;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_requirement']['columns']['assignee']['defaultPosition'] = 2;
-    }
-
-    protected function addAdditionalConstraints(): void
-    {
-        $body = $this->request->getParsedBody();
-        if (is_array($body) && !empty($body['filter'])) {
-            foreach ($body['filter'] as $field => $data) {
-                if ($field === 'appointments' && !empty($data['value'])) {
-                    $this->addAppointmentsConstraint($data['value'], $data['expr'] ?? 'eq');
-                }
-            }
-        }
-    }
-
-    private function addAppointmentsConstraint(string $value, string $expr): void
-    {
-        if ($value === '') {
-            return;
-        }
-
-        foreach ($this->additionalConstraints as $key => $constraint) {
-            // remove existing appointment constraints as they do not respect the relation yet
-            if (str_contains((string)$constraint, 'appointments')) {
-                unset($this->additionalConstraints[$key]);
-            }
-        }
-        $qb = $this->connectionPool->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_entry');
-        $qb->select('event')
-            ->distinct()
-            ->from('tx_ximatypo3calendar_domain_model_entry')
-            ->where(
-                $qb->expr()->eq(
-                    'record_type',
-                    $qb->createNamedParameter('event-appointment')
-                )
-            );
-        match ($expr) {
-            'lt' => $qb->andWhere(
-                $qb->expr()->lt(
-                    'start_date',
-                    $qb->createNamedParameter(strtotime($value), Connection::PARAM_INT)
-                )
-            ),
-            'gt' => $qb->andWhere(
-                $qb->expr()->gt(
-                    'start_date',
-                    $qb->createNamedParameter(strtotime($value), Connection::PARAM_INT)
-                )
-            ),
-            'neq' => $qb->andWhere(
-                $qb->expr()->neq(
-                    'start_date',
-                    $qb->createNamedParameter(strtotime($value), Connection::PARAM_INT)
-                )
-            ),
-            default => $qb->andWhere(
-                $qb->expr()->and(
-                    $qb->expr()->gte(
-                        'start_date',
-                        $qb->createNamedParameter(strtotime($value), Connection::PARAM_INT)
-                    ),
-                    $qb->expr()->lt(
-                        'start_date',
-                        $qb->createNamedParameter(strtotime($value . ' +1 day'), Connection::PARAM_INT)
-                    )
-                )
-            )
-        };
-
-        $uids = $qb->executeQuery()->fetchAllNumeric();
-        // prepare for in constraint
-        $value = array_map('current', $uids);
-        if (empty($value)) {
-            $this->additionalConstraints[] = $this->queryBuilder->expr()->eq('t1.uid', 0);
-            return;
-        }
-        $this->additionalConstraints[] = $this->queryBuilder->expr()->in(
-            't1.uid',
-            $this->queryBuilder->createNamedParameter($value, Connection::PARAM_INT_ARRAY)
-        );
     }
 }
