@@ -44,7 +44,7 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             return $expressionBuilder->and($expressionBuilder->eq('status', $qb->quote(EventStatus::LIVE->value)));
         }
 
-        // @TODO: Check if the user has access to the event
+        // @TODO: Check if the user has access to the event module
         if (isset($GLOBALS['BE_USER'])) {
         }
 
