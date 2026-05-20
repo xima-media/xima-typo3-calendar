@@ -14,6 +14,13 @@ class VkurkoCalendarSerializer
                 ? (new \DateTime($row['end_date']))->format('Y-m-d\TH:i:s')
                 : null;
 
+            // If end date is missing and it's not an all-day event, assume a default duration of 30 minutes
+            if ($end === null && $start && !$row['all_day']) {
+                $end = new \DateTime($start);
+                $end->modify('+30 minutes');
+                $end = $end->format('Y-m-d\TH:i:s');
+            }
+
             $title = $row['title'] ?? null;
             if ($title && ($row['event_title'] ?? null)) {
                 $title .= ' (' . $row['event_title'] . ')';
@@ -32,6 +39,15 @@ class VkurkoCalendarSerializer
                     'calendarTitle' => $row['calendar_title'] ?? '',
                     'recordType' => $row['record_type'] ?? '',
                     'eventUid' => $row['event_uid'] ?? null,
+                    'eventTitle' => $row['event_title'] ?? null,
+                    'eventDescription' => $row['event_description'] ?? null,
+                    'eventCategoryTitle' => $row['event_category_title'] ?? null,
+                    'eventCategoryId' => isset($row['event_category_id']) ? (int)$row['event_category_id'] : null,
+                    'eventLanguage' => $row['event_language'] ?? null,
+                    'appointmentDescription' => $row['description'] ?? null,
+                    'appointmentLocation' => $row['location_name'] ?? null,
+                    'appointmentCanceled' => (bool)($row['canceled'] ?? false),
+                    'appointmentSpeakers' => $row['speakers'] ?? null,
                 ],
             ];
         }, $backendEntries);
