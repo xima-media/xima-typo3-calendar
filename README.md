@@ -50,3 +50,10 @@ composer require xima/xima-typo3-calendar
 | POST   | `/appointments`      | Create appointment (authenticated) |
 | PATCH  | `/appointments{id}`  | Update appointment (owner only)    |
 | DELETE | `/appointments/{id}` | Delete appointment (owner only)    |
+
+## DataHandler Change Events
+
+The extension dispatches custom events during DataHandler datamap and cmdmap operations.
+
+For comprehensive documentation on event types, payloads, use cases, and listener implementation, see [`Documentation/DataHandlerEvents.md`](Documentation/DataHandlerEvents.md).
+
