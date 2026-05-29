@@ -10,11 +10,9 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use Xima\XimaTypo3Calendar\Domain\Model\Api\EventStatus;
 use Xima\XimaTypo3Calendar\Event\ChangeType;
-use Xima\XimaTypo3Calendar\Event\EntryDateRangeChangedEvent;
-use Xima\XimaTypo3Calendar\Event\EntryLifecycleChangedEvent;
-use Xima\XimaTypo3Calendar\Event\EventLifecycleChangedEvent;
-use Xima\XimaTypo3Calendar\Event\LocationChangedEvent;
-use Xima\XimaTypo3Calendar\Event\RequirementBookingLifecycleChangedEvent;
+use Xima\XimaTypo3Calendar\Event\EntryChangedEvent;
+use Xima\XimaTypo3Calendar\Event\EventChangedEvent;
+use Xima\XimaTypo3Calendar\Event\RequirementBookingChangedEvent;
 
 class DataHandlerHook
 {
@@ -131,14 +129,14 @@ class DataHandlerHook
             if ($table === self::TABLE_ENTRY || $table === self::TABLE_EVENT) {
                 $locationFields = $this->buildChangedFields([], $fieldArray, ['location']);
                 if ($locationFields !== []) {
-                    $this->dispatchLocationChangedEvent($table, $uid, $locationFields);
+                    $this->dispatchLifecycleEvent($table, $uid, ChangeType::LOCATION_CHANGED, $locationFields);
                 }
             }
 
             if ($table === self::TABLE_ENTRY) {
                 $dateRangeFields = $this->buildChangedFields([], $fieldArray, ['start_date', 'end_date']);
                 if ($dateRangeFields !== []) {
-                    $this->dispatchEntryDateRangeChangedEvent($uid, $dateRangeFields);
+                    $this->dispatchLifecycleEvent($table, $uid, ChangeType::DATE_RANGE_CHANGED, $dateRangeFields);
                 }
             }
             return;
@@ -325,18 +323,6 @@ class DataHandlerHook
             return;
         }
 
-        if ($changeType === ChangeType::LOCATION_CHANGED) {
-            $this->dispatchLocationChangedEvent($table, $uid, $changedFields);
-            return;
-        }
-
-        if ($changeType === ChangeType::DATE_RANGE_CHANGED) {
-            if ($table === self::TABLE_ENTRY) {
-                $this->dispatchEntryDateRangeChangedEvent($uid, $changedFields);
-            }
-            return;
-        }
-
         $this->dispatchLifecycleEvent($table, $uid, $changeType, $changedFields);
     }
 
@@ -356,47 +342,21 @@ class DataHandlerHook
         }
 
         if ($table === self::TABLE_EVENT) {
-            $event = new EventLifecycleChangedEvent($uid, $table, $changeType, $changedFields);
+            $event = new EventChangedEvent($uid, $table, $changeType, $changedFields);
             $this->eventDispatcher->dispatch($event);
             return;
         }
 
         if ($table === self::TABLE_ENTRY) {
-            $event = new EntryLifecycleChangedEvent($uid, $table, $changeType, $changedFields);
+            $event = new EntryChangedEvent($uid, $table, $changeType, $changedFields);
             $this->eventDispatcher->dispatch($event);
             return;
         }
 
         if ($table === self::TABLE_REQUIREMENT_BOOKING) {
-            $event = new RequirementBookingLifecycleChangedEvent($uid, $table, $changeType, $changedFields);
+            $event = new RequirementBookingChangedEvent($uid, $table, $changeType, $changedFields);
             $this->eventDispatcher->dispatch($event);
         }
-    }
-
-    /**
-     * @param array<string, array{old: mixed, new: mixed}> $changedFields
-     */
-    private function dispatchLocationChangedEvent(string $table, int $uid, array $changedFields): void
-    {
-        if (!$this->registerDispatch($table, $uid, ChangeType::LOCATION_CHANGED)) {
-            return;
-        }
-
-        $event = new LocationChangedEvent($uid, $table, ChangeType::LOCATION_CHANGED, $changedFields);
-        $this->eventDispatcher->dispatch($event);
-    }
-
-    /**
-     * @param array<string, array{old: mixed, new: mixed}> $changedFields
-     */
-    private function dispatchEntryDateRangeChangedEvent(int $uid, array $changedFields): void
-    {
-        if (!$this->registerDispatch(self::TABLE_ENTRY, $uid, ChangeType::DATE_RANGE_CHANGED)) {
-            return;
-        }
-
-        $event = new EntryDateRangeChangedEvent($uid, self::TABLE_ENTRY, ChangeType::DATE_RANGE_CHANGED, $changedFields);
-        $this->eventDispatcher->dispatch($event);
     }
 
     private function rememberDatamapEvent(string $table, mixed $id, string $changeType, array $changedFields): void

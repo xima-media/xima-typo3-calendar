@@ -12,16 +12,15 @@ All events follow a consistent payload structure:
 
 Only fields that actually changed are included. No-op updates (where `old === new`) are automatically filtered out.
 For lifecycle events with `changeType` `hidden`, `deleted`, and `reactivated`, `changedFields` is intentionally empty.
+For `location_changed` and `date_range_changed`, `changedFields` contains the relevant field diffs, allowing listeners to inspect the exact changes.
 
 ## Event Classes
 
 | Event | Table(s) | Triggered On | Notes |
 |---|---|---|---|
-| `RequirementBookingLifecycleChangedEvent` | `tx_ximatypo3calendar_domain_model_requirementbooking` | Create, Update, Hide, Delete, Reactivate | |
-| `EntryLifecycleChangedEvent` | `tx_ximatypo3calendar_domain_model_entry` | Create, Update, Hide, Delete, Reactivate | Full field tracking on update |
-| `EventLifecycleChangedEvent` | `tx_ximatypo3calendar_domain_model_event` | Create, Hide, Delete, Reactivate | No `updated` events dispatched |
-| `LocationChangedEvent` | `tx_ximatypo3calendar_domain_model_event`, `tx_ximatypo3calendar_domain_model_entry` | When `location` field changes | Emitted alongside lifecycle events |
-| `EntryDateRangeChangedEvent` | `tx_ximatypo3calendar_domain_model_entry` | When `start_date` or `end_date` changes | Emitted alongside lifecycle events |
+| `RequirementBookingChangedEvent` | `tx_ximatypo3calendar_domain_model_requirementbooking` | Create, Update, Hide, Delete, Reactivate | |
+| `EntryChangedEvent` | `tx_ximatypo3calendar_domain_model_entry` | Create, Update, Hide, Delete, Reactivate, Location Change, Date Range Change | Full field tracking; use `changeType` to distinguish updates from location/date changes |
+| `EventChangedEvent` | `tx_ximatypo3calendar_domain_model_event` | Create, Hide, Delete, Reactivate | No `updated` events dispatched |
 
 ## Consuming Events
 
@@ -33,13 +32,13 @@ For lifecycle events with `changeType` `hidden`, `deleted`, and `reactivated`, `
 namespace YourVendor\YourExtension\EventListener;
 
 use TYPO3\CMS\Core\Attribute\AsEventListener;
-use Xima\XimaTypo3Calendar\Event\EntryLifecycleChangedEvent;
+use Xima\XimaTypo3Calendar\Event\EntryChangedEvent;
 use Xima\XimaTypo3Calendar\Event\ChangeType;
 
 #[AsEventListener(identifier: 'your-ext/entry-change-listener')]
 readonly class EntryChangeListener
 {
-    public function __invoke(EntryLifecycleChangedEvent $event): void
+    public function __invoke(EntryChangedEvent $event): void
     {
         if ($event->changeType === ChangeType::CREATED) {
             // Handle new entry creation
@@ -78,7 +77,7 @@ Alternatively, register manually in `ext_localconf.php`:
 
 ```php
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['eventDispatcher']['listeners'][
-    \Xima\XimaTypo3Calendar\Event\EntryLifecycleChangedEvent::class
+    \Xima\XimaTypo3Calendar\Event\EntryChangedEvent::class
 ][] = [
     'listener' => YourVendor\YourExtension\EventListener\EntryChangeListener::class,
     'method' => '__invoke',
@@ -100,40 +99,18 @@ $event->changedFields // [
 // ]
 ```
 
-### EntryLifecycleChangedEvent (updated with date range change)
+### EntryChangedEvent (updated with date range change)
 
 ```php
 $event->uid // 456
 $event->table // 'tx_ximatypo3calendar_domain_model_entry'
-$event->changeType // 'updated'
+$event->changeType // 'updated' or 'date_range_changed' or 'location_changed'
 $event->changedFields // [
 //     'start_date' => ['old' => 1622505600, 'new' => 1622592000],
 //     'title' => ['old' => 'Old Title', 'new' => 'New Title'],
 // ]
 ```
 
-### LocationChangedEvent
-
-```php
-$event->uid // 789
-$event->table // 'tx_ximatypo3calendar_domain_model_entry'
-$event->changeType // 'location_changed'
-$event->changedFields // [
-//     'location' => ['old' => '0', 'new' => '3'],
-// ]
-```
-
-### EntryDateRangeChangedEvent
-
-```php
-$event->uid // 789
-$event->table // 'tx_ximatypo3calendar_domain_model_entry'
-$event->changeType // 'date_range_changed'
-$event->changedFields // [
-//     'start_date' => ['old' => 1622505600, 'new' => 1622592000],
-//     'end_date' => ['old' => 1622509200, 'new' => 1622595600],
-// ]
-```
 
 ## Behavior Notes
 
@@ -195,8 +172,12 @@ readonly class BookingNotifier
 #[AsEventListener(identifier: 'my-ext/track-entry-changes')]
 readonly class EntryChangeTracker
 {
-    public function __invoke(EntryDateRangeChangedEvent $event): void
+    public function __invoke(EntryChangedEvent $event): void
     {
+        if ($event->changeType !== ChangeType::DATE_RANGE_CHANGED) {
+            return;
+        }
+
         // Log all date/time changes
         // $this->auditLog->record('entry_datetime_changed', $event->uid, $event->changedFields);
     }
@@ -213,9 +194,13 @@ readonly class LocationCacheInvalidator
         private CacheManager $cacheManager,
     ) {}
 
-    public function __invoke(LocationChangedEvent $event): void
+    public function __invoke(EntryChangedEvent $event): void
     {
-        // Clear frontend cache for affected entry/event
+        if ($event->changeType !== ChangeType::LOCATION_CHANGED) {
+            return;
+        }
+
+        // Clear frontend cache for affected entry
         $this->cacheManager->flushCachesInGroupByTags('pages', ['entry_' . $event->uid]);
     }
 }

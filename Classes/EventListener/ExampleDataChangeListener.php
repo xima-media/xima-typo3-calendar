@@ -8,11 +8,9 @@ use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Log\LogDataTrait;
 use Xima\XimaTypo3Calendar\Event\ChangeType;
-use Xima\XimaTypo3Calendar\Event\EntryDateRangeChangedEvent;
-use Xima\XimaTypo3Calendar\Event\EntryLifecycleChangedEvent;
-use Xima\XimaTypo3Calendar\Event\EventLifecycleChangedEvent;
-use Xima\XimaTypo3Calendar\Event\LocationChangedEvent;
-use Xima\XimaTypo3Calendar\Event\RequirementBookingLifecycleChangedEvent;
+use Xima\XimaTypo3Calendar\Event\EntryChangedEvent;
+use Xima\XimaTypo3Calendar\Event\EventChangedEvent;
+use Xima\XimaTypo3Calendar\Event\RequirementBookingChangedEvent;
 
 /**
  * Example event listener demonstrating how to consume calendar change events.
@@ -32,19 +30,17 @@ readonly class ExampleDataChangeListener
     }
 
     public function __invoke(
-        RequirementBookingLifecycleChangedEvent|EntryLifecycleChangedEvent|EventLifecycleChangedEvent|LocationChangedEvent|EntryDateRangeChangedEvent $event
+        RequirementBookingChangedEvent|EntryChangedEvent|EventChangedEvent $event
     ): void {
         match ($event::class) {
-            RequirementBookingLifecycleChangedEvent::class => $this->handleRequirementBooking($event),
-            EntryLifecycleChangedEvent::class => $this->handleEntry($event),
-            EventLifecycleChangedEvent::class => $this->handleEvent($event),
-            LocationChangedEvent::class => $this->handleLocationChanged($event),
-            EntryDateRangeChangedEvent::class => $this->handleDateRangeChanged($event),
+            RequirementBookingChangedEvent::class => $this->handleRequirementBooking($event),
+            EntryChangedEvent::class => $this->handleEntry($event),
+            EventChangedEvent::class => $this->handleEvent($event),
             default => null,
         };
     }
 
-    private function handleRequirementBooking(RequirementBookingLifecycleChangedEvent $event): void
+    private function handleRequirementBooking(RequirementBookingChangedEvent $event): void
     {
         if ($event->changeType === ChangeType::CREATED) {
             $this->logger->info('RequirementBooking created', ['uid' => $event->uid, 'fields' => array_keys($event->changedFields)]);
@@ -55,7 +51,7 @@ readonly class ExampleDataChangeListener
         }
     }
 
-    private function handleEntry(EntryLifecycleChangedEvent $event): void
+    private function handleEntry(EntryChangedEvent $event): void
     {
         if ($event->changeType === ChangeType::CREATED) {
             $this->logger->info('Entry created', ['uid' => $event->uid, 'fields' => array_keys($event->changedFields)]);
@@ -65,10 +61,14 @@ readonly class ExampleDataChangeListener
             $this->logger->info('Entry hidden', ['uid' => $event->uid]);
         } elseif ($event->changeType === ChangeType::DELETED) {
             $this->logger->info('Entry deleted', ['uid' => $event->uid]);
+        } elseif ($event->changeType === ChangeType::LOCATION_CHANGED) {
+            $this->logger->info('Entry location changed', ['uid' => $event->uid, 'fields' => array_keys($event->changedFields)]);
+        } elseif ($event->changeType === ChangeType::DATE_RANGE_CHANGED) {
+            $this->logger->info('Entry date range changed', ['uid' => $event->uid, 'fields' => array_keys($event->changedFields)]);
         }
     }
 
-    private function handleEvent(EventLifecycleChangedEvent $event): void
+    private function handleEvent(EventChangedEvent $event): void
     {
         if ($event->changeType === ChangeType::CREATED) {
             $this->logger->info('Event created', ['uid' => $event->uid]);
@@ -78,29 +78,8 @@ readonly class ExampleDataChangeListener
             $this->logger->info('Event reactivated', ['uid' => $event->uid]);
         } elseif ($event->changeType === ChangeType::HIDDEN) {
             $this->logger->info('Event hidden', ['uid' => $event->uid]);
-        }
-    }
-
-    private function handleLocationChanged(LocationChangedEvent $event): void
-    {
-        $this->logger->info('Location changed', ['uid' => $event->uid, 'table' => $event->table]);
-    }
-
-    private function handleDateRangeChanged(EntryDateRangeChangedEvent $event): void
-    {
-        if (isset($event->changedFields['start_date'])) {
-            $this->logger->info('Entry start_date changed', [
-                'uid' => $event->uid,
-                'old' => $event->changedFields['start_date']['old'],
-                'new' => $event->changedFields['start_date']['new'],
-            ]);
-        }
-        if (isset($event->changedFields['end_date'])) {
-            $this->logger->info('Entry end_date changed', [
-                'uid' => $event->uid,
-                'old' => $event->changedFields['end_date']['old'],
-                'new' => $event->changedFields['end_date']['new'],
-            ]);
+        } elseif ($event->changeType === ChangeType::LOCATION_CHANGED) {
+            $this->logger->info('Event location changed', ['uid' => $event->uid, 'fields' => array_keys($event->changedFields)]);
         }
     }
 }
