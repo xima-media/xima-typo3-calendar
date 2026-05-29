@@ -6,7 +6,6 @@ namespace Xima\XimaTypo3Calendar\EventListener;
 
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
-use TYPO3\CMS\Core\Log\LogDataTrait;
 use Xima\XimaTypo3Calendar\Event\ChangeType;
 use Xima\XimaTypo3Calendar\Event\EntryChangedEvent;
 use Xima\XimaTypo3Calendar\Event\EventChangedEvent;
@@ -22,8 +21,6 @@ use Xima\XimaTypo3Calendar\Event\RequirementBookingChangedEvent;
 )]
 readonly class ExampleDataChangeListener
 {
-    use LogDataTrait;
-
     public function __construct(
         private LoggerInterface $logger,
     ) {
