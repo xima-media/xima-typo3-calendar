@@ -12,6 +12,10 @@
 				<source />
 				<target>Veranstaltungsinformationen</target>
 			</trans-unit>
+			<trans-unit id="record_type.label">
+				<source />
+				<target>Veranstaltungstyp</target>
+			</trans-unit>
 			<trans-unit id="title.label">
 				<source />
 				<target>Titel</target>

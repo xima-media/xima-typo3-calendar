@@ -31,7 +31,7 @@ return [
     ],
     'columns' => [
         'record_type' => [
-            'label' => 'record_type',
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:record_type.label',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
