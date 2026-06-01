@@ -246,8 +246,9 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'fe_users',
-                'relationship' => 'manyToOne',
-                'maxitems' => 1,
+                'items' => [
+                    ['label' => '', 'value' => 0],
+                ],
             ],
         ],
         'status' => [
