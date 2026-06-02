@@ -82,6 +82,14 @@
 				<source />
 				<target>Zeigt anstehende Anforderungsbuchungen von Veranstaltungsterminen.</target>
 			</trans-unit>
+			<trans-unit id="widget.canceled_appointments.title">
+				<source />
+				<target>Abgesagte Termine</target>
+			</trans-unit>
+			<trans-unit id="widget.canceled_appointments.description">
+				<source />
+				<target>Zeigt abgesagte, gelöschte und verborgene Termine, die in der Zukunft stattgefunden hätten.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
