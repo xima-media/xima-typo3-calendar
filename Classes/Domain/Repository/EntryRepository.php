@@ -37,6 +37,7 @@ class EntryRepository extends Repository
                 'v.description as event_description',
                 'v.language as event_language',
                 'v.status as event_status',
+                'v.owner as event_owner',
                 'loc.name as location_name',
             )
             ->addSelectLiteral(

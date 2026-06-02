@@ -45,6 +45,7 @@ class VkurkoCalendarSerializer
                     'eventCategoryId' => isset($row['event_category_id']) ? (int)$row['event_category_id'] : null,
                     'eventStatus' => isset($row['event_status']) ? (int)$row['event_status'] : null,
                     'eventLanguage' => $row['event_language'] ?? null,
+                    'eventOwner' => $row['event_owner'] ?? null,
                     'appointmentDescription' => $row['description'] ?? null,
                     'appointmentLocation' => $row['location_name'] ?? null,
                     'appointmentCanceled' => (bool)($row['canceled'] ?? false),
