@@ -13,11 +13,17 @@
             <f:else>
                 <div class="widget-table-wrapper">
                     <table class="widget-table table-striped table-hover table">
+                        <tr>
+                            <th>Titel</th>
+                            <th>Nächster Termin</th>
+                            <th></th>
+                        </tr>
                         <f:for each="{items}" as="item">
                             <tr>
                                 <td>
                                     <strong>{item.title}</strong>
                                 </td>
+                                <td>{item.start_date -> f:format.date(format: 'd.m.Y H:i')}</td>
                                 <td class="text-end">
                                     <div class="btn-group">
                                         <be:link.editRecord

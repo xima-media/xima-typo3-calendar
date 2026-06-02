@@ -18,13 +18,25 @@ readonly class ReadyToPublishEventsDataProvider implements ListDataProviderInter
 
     public function getItems(): array
     {
-        $qb = $this->connectionPool->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_event');
-        $qb->select('uid', 'title')
-            ->from('tx_ximatypo3calendar_domain_model_event')
-            ->where(
-                $qb->expr()->eq('status', $qb->createNamedParameter(0, Connection::PARAM_INT))
+        $qb = $this->connectionPool->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_entry');
+
+        $qb
+            ->select('e.uid', 'e.title', 'en.start_date')
+            ->distinct()
+            ->from('tx_ximatypo3calendar_domain_model_entry', 'en')
+            ->innerJoin(
+                'en',
+                'tx_ximatypo3calendar_domain_model_event',
+                'e',
+                $qb->expr()->eq('en.event', $qb->quoteIdentifier('e.uid'))
             )
-            ->setMaxResults($this->limit);
+            ->where(
+                $qb->expr()->eq('e.record_type', $qb->createNamedParameter('public', Connection::PARAM_STR)),
+                $qb->expr()->gte('en.start_date', $qb->createNamedParameter(time(), Connection::PARAM_INT)),
+            )
+            ->groupBy('e.uid')
+            ->setMaxResults($this->limit)
+            ->orderBy('en.start_date', 'ASC');
 
         return $qb->executeQuery()->fetchAllAssociative();
     }
