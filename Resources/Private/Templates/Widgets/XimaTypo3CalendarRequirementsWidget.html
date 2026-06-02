@@ -51,7 +51,7 @@
                                         table="tx_ximatypo3calendar_domain_model_entry"
                                         title="{f:translate(key: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:edit_appointment')}"
                                         returnUrl="{be:moduleLink(route: 'dashboard')}">
-                                        {item.start_date -> f:format.date(format: 'd.m.Y H:i')}
+                                        {item.booking_start_date -> f:format.date(format: 'd.m.Y H:i')}
                                         <core:icon identifier="actions-open" size="small" />
                                     </be:link.editRecord>
                                 </td>
