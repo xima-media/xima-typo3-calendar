@@ -14,8 +14,14 @@
                 <div class="widget-table-wrapper">
                     <table class="widget-table table-striped table-hover table">
                         <tr>
-                            <th>Titel</th>
-                            <th>Nächster Termin</th>
+                            <th>
+                                <f:translate
+                                    id="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:title.label" />
+                            </th>
+                            <th>
+                                <f:translate
+                                    id="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang_be.xlf:next_appointment_start_date" />
+                            </th>
                             <th></th>
                         </tr>
                         <f:for each="{items}" as="item">

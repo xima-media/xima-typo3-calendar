@@ -7,6 +7,10 @@
 				<source />
 				<target>UID des Sysfolders mit den Kalender Datensätzen</target>
 			</trans-unit>
+			<trans-unit id="next_appointment_start_date">
+				<source />
+				<target>Nächster Termin</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
