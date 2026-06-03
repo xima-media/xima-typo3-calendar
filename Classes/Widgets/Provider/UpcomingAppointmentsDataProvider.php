@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\Widgets\Provider;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Dashboard\Widgets\ListDataProviderInterface;
+use Xima\XimaTypo3Calendar\Event\BeforeWidgetItemsFetchedEvent;
 
 readonly class UpcomingAppointmentsDataProvider implements ListDataProviderInterface
 {
     public function __construct(
         private ConnectionPool $connectionPool,
+        private EventDispatcherInterface $eventDispatcher,
         private int $daysInPreview = 10,
         private int $limit = 10
     ) {
@@ -46,6 +49,10 @@ readonly class UpcomingAppointmentsDataProvider implements ListDataProviderInter
             )
             ->orderBy('a.start_date', 'ASC')
             ->setMaxResults($this->limit);
+
+        $event = new BeforeWidgetItemsFetchedEvent($qb, self::class);
+        $this->eventDispatcher->dispatch($event);
+        $qb = $event->getQueryBuilder();
 
         return $qb->executeQuery()->fetchAllAssociative();
     }

@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\Widgets\Provider;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Dashboard\Widgets\ListDataProviderInterface;
+use Xima\XimaTypo3Calendar\Event\BeforeWidgetItemsFetchedEvent;
 
 readonly class ReadyToPublishEventsDataProvider implements ListDataProviderInterface
 {
     public function __construct(
         private ConnectionPool $connectionPool,
+        private EventDispatcherInterface $eventDispatcher,
         private int $limit,
     ) {
     }
@@ -37,6 +40,10 @@ readonly class ReadyToPublishEventsDataProvider implements ListDataProviderInter
             ->groupBy('e.uid')
             ->setMaxResults($this->limit)
             ->orderBy('en.start_date', 'ASC');
+
+        $event = new BeforeWidgetItemsFetchedEvent($qb, self::class);
+        $this->eventDispatcher->dispatch($event);
+        $qb = $event->getQueryBuilder();
 
         return $qb->executeQuery()->fetchAllAssociative();
     }

@@ -10,6 +10,7 @@ class BeforeWidgetItemsFetchedEvent
 {
     public function __construct(
         private QueryBuilder $queryBuilder,
+        private readonly string $dispatchingClassName,
     ) {
     }
 
@@ -21,5 +22,10 @@ class BeforeWidgetItemsFetchedEvent
     public function setQueryBuilder(QueryBuilder $queryBuilder): void
     {
         $this->queryBuilder = $queryBuilder;
+    }
+
+    public function getDispatchingClassName(): string
+    {
+        return $this->dispatchingClassName;
     }
 }

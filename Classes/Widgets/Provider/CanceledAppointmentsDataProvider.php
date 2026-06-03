@@ -67,9 +67,8 @@ readonly class CanceledAppointmentsDataProvider implements ListDataProviderInter
             )
             ->orderBy('en.start_date', 'ASC');
 
-        $event = new BeforeWidgetItemsFetchedEvent($qb);
+        $event = new BeforeWidgetItemsFetchedEvent($qb, self::class);
         $this->eventDispatcher->dispatch($event);
-
         $qb = $event->getQueryBuilder();
 
         return $qb->executeQuery()->fetchAllAssociative();
