@@ -279,6 +279,7 @@ return [
             'config' => [
                 'type' => 'datetime',
                 'readOnly' => true,
+                'nullable' => true,
             ],
         ],
     ],
