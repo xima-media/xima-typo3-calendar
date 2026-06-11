@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Xima\XimaTypo3Calendar\Domain\Model\Api\EventStatus;
+
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:title',
@@ -259,15 +261,15 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        'value' => 0,
+                        'value' => EventStatus::DRAFT->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.0.label',
                     ],
                     [
-                        'value' => 1,
+                        'value' => EventStatus::LIVE->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.1.label',
                     ],
                     [
-                        'value' => 2,
+                        'value' => EventStatus::REJECTED->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.2.label',
                     ],
                 ],
