@@ -8,6 +8,7 @@ use TYPO3\CMS\Core\Database\Query\Expression\CompositeExpression;
 use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\EnforceableQueryRestrictionInterface;
 use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionInterface;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use Xima\XimaTypo3Calendar\Domain\Model\Api\EventStatus;
@@ -30,7 +31,8 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             return $expressionBuilder->and();
         }
 
-        if (isset($GLOBALS['TSFE'])) {
+        $request = $this->getRequest();
+        if ($request && ApplicationType::fromRequest($request)->isFrontend()) {
             $qb = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_event');
             $user = $this->getFrontendUserAuthentication();
             if ($user && $user->getUserId()) {
