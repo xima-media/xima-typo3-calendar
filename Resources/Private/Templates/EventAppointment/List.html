@@ -1,0 +1,35 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+    <div class="event-appointments">
+        <f:for each="{appointments}" as="appointment" iteration="i">
+            <div class="appointment">
+                <div title="{appointment.event.title}">
+                    <f:link.action
+                        action="show"
+                        pageUid="{settings.detailPid}"
+                        arguments="{appointment: appointment}"
+                        title="{appointment.event.title}">
+                        <p class="color m-b-0">
+                            <span class="h3">
+                                <f:if condition="{appointment.allDay}">
+                                    <f:format.date pattern="dd. MMMM yyyy">{appointment.startDate}</f:format.date>
+                                </f:if>
+                                <f:if condition="{appointment.allDay} == false">
+                                    <f:format.date pattern="dd. MMMM yyyy HH:mm">{appointment.startDate}</f:format.date>
+                                    <f:if condition="{appointment.endDate}">
+                                        –
+                                        <f:format.date pattern="dd. MMMM yyyy HH:mm">{appointment.endDate}</f:format.date>
+                                    </f:if>
+                                </f:if>
+                            </span>
+                        </p>
+                        <h5 class="m-b-05">{appointment.event.title}</h5>
+                    </f:link.action>
+                    <ul class="list text-small card__tags">
+                        <li class="card__tag">{appointment.event.additionalInformation -> f:format.nl2br()}</li>
+                        <li class="card__tag">{appointment.event.description -> f:format.html()}</li>
+                    </ul>
+                </div>
+            </div>
+        </f:for>
+    </div>
+</html>

@@ -1,0 +1,26 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+    <div class="event-appointment">
+        <h2 class="m-b-0 h3 show-for-lg">{appointment.event.title}</h2>
+
+        <p class="color m-b-0">
+            <span class="h3">
+                <f:if condition="{appointment.allDay}">
+                    <f:format.date pattern="dd. MMMM yyyy">{appointment.startDate}</f:format.date>
+                </f:if>
+                <f:if condition="{appointment.allDay} == false">
+                    <f:format.date pattern="dd. MMMM yyyy HH:mm">{appointment.startDate}</f:format.date>
+                    <f:if condition="{appointment.endDate}">
+                        –
+                        <f:format.date pattern="dd. MMMM yyyy HH:mm">{appointment.endDate}</f:format.date>
+                    </f:if>
+                </f:if>
+            </span>
+        </p>
+
+        <f:format.html>{appointment.event.description}</f:format.html>
+
+        <f:if condition="{appointment.event.previewImage}">
+            <f:image image="{appointment.event.previewImage}" maxWidth="300" />
+        </f:if>
+    </div>
+</html>

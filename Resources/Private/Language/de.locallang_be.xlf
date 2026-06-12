@@ -11,6 +11,22 @@
 				<source />
 				<target>Nächster Termin</target>
 			</trans-unit>
+			<trans-unit id="plugin.event_appointment_list.title">
+				<source>Event appointment list</source>
+				<target>Terminliste</target>
+			</trans-unit>
+			<trans-unit id="plugin.event_appointment_list.description">
+				<source>List of event appointments</source>
+				<target>Liste mit Veranstaltungsterminen</target>
+			</trans-unit>
+			<trans-unit id="plugin.event_appointment_detail.title">
+				<source>Event appointment detail</source>
+				<target>Termindetails</target>
+			</trans-unit>
+			<trans-unit id="plugin.event_appointment_detail.description">
+				<source>Detail view of event appointments</source>
+				<target>Detailansicht eines Veranstaltungstermins</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
