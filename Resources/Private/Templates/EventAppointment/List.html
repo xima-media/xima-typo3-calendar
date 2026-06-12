@@ -11,13 +11,13 @@
                         <p class="color m-b-0">
                             <span class="h3">
                                 <f:if condition="{appointment.allDay}">
-                                    <f:format.date pattern="dd. MMMM yyyy">{appointment.startDate}</f:format.date>
+                                    <f:format.date format="d.m.Y">{appointment.startDate}</f:format.date>
                                 </f:if>
                                 <f:if condition="{appointment.allDay} == false">
-                                    <f:format.date pattern="dd. MMMM yyyy HH:mm">{appointment.startDate}</f:format.date>
+                                    <f:format.date format="d.m.Y H:i">{appointment.startDate}</f:format.date>
                                     <f:if condition="{appointment.endDate}">
                                         –
-                                        <f:format.date pattern="dd. MMMM yyyy HH:mm">{appointment.endDate}</f:format.date>
+                                        <f:format.date format="d.m.Y H:i">{appointment.endDate}</f:format.date>
                                     </f:if>
                                 </f:if>
                             </span>
