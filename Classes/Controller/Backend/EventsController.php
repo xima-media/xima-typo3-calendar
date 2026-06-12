@@ -6,12 +6,14 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Configuration\Features;
 use Xima\XimaTypo3Recordlist\Controller\AbstractBackendController;
 
 class EventsController extends AbstractBackendController
 {
     public function __construct(
         private readonly ExtensionConfiguration $extensionConfiguration,
+        private readonly Features $features,
     ) {
     }
 
@@ -28,7 +30,7 @@ class EventsController extends AbstractBackendController
 
     public function getTableNames(): array
     {
-        return [
+        $tableNames = [
             'tx_ximatypo3calendar_domain_model_event',
             'tx_ximatypo3calendar_domain_model_organizer',
             'tx_ximatypo3calendar_domain_model_speaker',
@@ -37,6 +39,12 @@ class EventsController extends AbstractBackendController
             'tx_ximatypo3calendar_domain_model_requirement',
             'tx_ximatypo3calendar_domain_model_calendar',
         ];
+
+        if (!$this->features->isFeatureEnabled('ximaTypo3Calendar.requirementsManagement')) {
+            $tableNames = array_diff($tableNames, ['tx_ximatypo3calendar_domain_model_requirement']);
+        }
+
+        return $tableNames;
     }
 
     protected function modifyPaginatedRecords(): void

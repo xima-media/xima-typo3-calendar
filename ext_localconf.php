@@ -11,6 +11,8 @@ $GLOBALS['TYPO3_CONF_VARS']['DB']['additionalQueryRestrictions'][Xima\XimaTypo3C
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['xima_typo3_calendar']
     = \Xima\XimaTypo3Calendar\Hooks\DataHandlerHook::class;
 
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['features']['ximaTypo3Calendar.requirementsManagement'] ??= false;
+
 ExtensionUtility::configurePlugin(
     'XimaTypo3Calendar',
     'EventAppointmentList',
