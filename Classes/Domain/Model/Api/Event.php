@@ -10,6 +10,8 @@ use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventLanguage;
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 
 /**
  * @T3api\ApiResource(

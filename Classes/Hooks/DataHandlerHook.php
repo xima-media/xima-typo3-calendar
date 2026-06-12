@@ -3,7 +3,7 @@
 namespace Xima\XimaTypo3Calendar\Hooks;
 
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use Xima\XimaTypo3Calendar\Domain\Model\Api\EventStatus;
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 
 class DataHandlerHook
 {

@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-use Xima\XimaTypo3Calendar\Domain\Model\Api\EventStatus;
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventLanguage;
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 
 return [
     'ctrl' => [
@@ -64,15 +65,15 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        'value' => '',
+                        'value' => EventLanguage::ALL->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:language.items.label',
                     ],
                     [
-                        'value' => 'de',
+                        'value' => EventLanguage::DE->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:language.items.de.label',
                     ],
                     [
-                        'value' => 'en',
+                        'value' => EventLanguage::EN->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:language.items.en.label',
                     ],
                 ],

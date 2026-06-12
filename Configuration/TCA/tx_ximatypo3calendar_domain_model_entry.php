@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventAppointmentType;
+
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:title',
@@ -131,17 +133,18 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
+                'default' => EventAppointmentType::IN_PERSON->value,
                 'items' => [
                     [
-                        'value' => 'inPerson',
+                        'value' => EventAppointmentType::IN_PERSON->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:type.items.inPerson.label',
                     ],
                     [
-                        'value' => 'online',
+                        'value' => EventAppointmentType::ONLINE->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:type.items.online.label',
                     ],
                     [
-                        'value' => 'hybrid',
+                        'value' => EventAppointmentType::HYBRID->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:type.items.hybrid.label',
                     ],
                 ],
