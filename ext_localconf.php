@@ -2,6 +2,7 @@
 
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 use Xima\XimaTypo3Calendar\Controller\EventAppointmentController;
+use Xima\XimaTypo3Calendar\Controller\EventController;
 
 defined('TYPO3') || die();
 
@@ -28,6 +29,26 @@ ExtensionUtility::configurePlugin(
     'EventAppointmentDetail',
     [
         EventAppointmentController::class => 'show',
+    ],
+    [],
+    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+);
+
+ExtensionUtility::configurePlugin(
+    'XimaTypo3Calendar',
+    'EventList',
+    [
+        EventController::class => 'list',
+    ],
+    [],
+    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+);
+
+ExtensionUtility::configurePlugin(
+    'XimaTypo3Calendar',
+    'EventDetail',
+    [
+        EventController::class => 'show',
     ],
     [],
     ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT

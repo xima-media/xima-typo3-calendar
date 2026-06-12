@@ -25,3 +25,7 @@ plugin.tx_ximatypo3calendar_listevents.settings {
 plugin.tx_ximatypo3calendar_eventappointmentlist.settings {
   detailPid = {$plugin.tx_ximatypo3calendar_eventappointmentlist.settings.detailPid}
 }
+
+plugin.tx_ximatypo3calendar_eventlist.settings {
+  detailPid = {$plugin.tx_ximatypo3calendar_eventlist.settings.detailPid}
+}

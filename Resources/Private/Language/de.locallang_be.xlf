@@ -27,6 +27,22 @@
 				<source>Detail view of event appointments</source>
 				<target>Detailansicht eines Veranstaltungstermins</target>
 			</trans-unit>
+			<trans-unit id="plugin.event_list.title">
+				<source>Event list</source>
+				<target>Veranstaltungsliste</target>
+			</trans-unit>
+			<trans-unit id="plugin.event_list.description">
+				<source>List of events</source>
+				<target>Liste mit Veranstaltungen</target>
+			</trans-unit>
+			<trans-unit id="plugin.event_detail.title">
+				<source>Event detail</source>
+				<target>Veranstaltungsdetails</target>
+			</trans-unit>
+			<trans-unit id="plugin.event_detail.description">
+				<source>Detail view of events</source>
+				<target>Detailansicht einer Veranstaltung</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
