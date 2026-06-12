@@ -23,5 +23,5 @@ plugin.tx_ximatypo3calendar_listevents.settings {
 }
 
 plugin.tx_ximatypo3calendar_eventappointmentlist.settings {
-  detailPid =
+  detailPid = {$plugin.tx_ximatypo3calendar_eventappointmentlist.settings.detailPid}
 }

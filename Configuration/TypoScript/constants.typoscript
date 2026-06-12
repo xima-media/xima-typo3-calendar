@@ -14,3 +14,7 @@ plugin.tx_ximatypo3calendar_latestevents.settings {
 plugin.tx_ximatypo3calendar_listevents.settings {
   maxItems = 10
 }
+
+plugin.tx_ximatypo3calendar_eventappointmentlist.settings {
+  detailPid =
+}
