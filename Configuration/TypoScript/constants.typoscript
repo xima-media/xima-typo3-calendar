@@ -4,6 +4,7 @@ plugin.tx_ximatypo3calendar {
     templateRootPath =
     partialRootPath =
   }
+  persistence.storagePid =
 }
 
 plugin.tx_ximatypo3calendar_latestevents.settings {
