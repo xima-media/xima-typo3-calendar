@@ -33,17 +33,18 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
 
         $request = $this->getRequest();
         if ($request && ApplicationType::fromRequest($request)->isFrontend()) {
+            $eventAlias = array_search('tx_ximatypo3calendar_domain_model_event', $queriedTables, true);
             $qb = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_event');
             $user = $this->getFrontendUserAuthentication();
             if ($user && $user->getUserId()) {
                 return $expressionBuilder->and(
                     $expressionBuilder->or(
-                        $expressionBuilder->eq('status', $qb->quote(EventStatus::LIVE->value)),
-                        $expressionBuilder->eq('owner', $user->getUserId())
+                        $expressionBuilder->eq($eventAlias . '.status', $qb->quote(EventStatus::LIVE->value)),
+                        $expressionBuilder->eq($eventAlias . '.owner', $user->getUserId())
                     )
                 );
             }
-            return $expressionBuilder->and($expressionBuilder->eq('status', $qb->quote(EventStatus::LIVE->value)));
+            return $expressionBuilder->and($expressionBuilder->eq($eventAlias . '.status', $qb->quote(EventStatus::LIVE->value)));
         }
 
         // @TODO: Check if the user has access to the event module
