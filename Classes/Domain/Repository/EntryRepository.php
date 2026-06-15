@@ -10,12 +10,11 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
 
 class EntryRepository extends Repository
 {
-
     /**
      * @param int[] $calendarUids
      * @throws Exception
      */
-    public function getBackendCalendarEntries(string $startTime, string $endTime, array $calendarUids = []): array
+    public function getBackendCalendarEntries(int $startTime, int $endTime, array $calendarUids = []): array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_entry');
         $queryBuilder
@@ -63,8 +62,8 @@ class EntryRepository extends Repository
             ->leftJoin('e', 'tx_ximatypo3calendar_domain_model_event', 'v', 'e.event = v.uid')
             ->leftJoin('e', 'tx_ximatypo3calendar_domain_model_location', 'loc', 'e.location = loc.uid')
             ->where(
-                $queryBuilder->expr()->gte('e.start_date', $queryBuilder->createNamedParameter($startTime)),
-                $queryBuilder->expr()->lte('e.start_date', $queryBuilder->createNamedParameter($endTime)),
+                $queryBuilder->expr()->gte('e.start_date', $queryBuilder->createNamedParameter($startTime, Connection::PARAM_INT)),
+                $queryBuilder->expr()->lte('e.start_date', $queryBuilder->createNamedParameter($endTime, Connection::PARAM_INT)),
                 $queryBuilder->expr()->eq('e.deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
             );
 
