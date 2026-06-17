@@ -202,9 +202,9 @@ return [
             'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:speakers.label',
             'exclude' => true,
             'config' => [
-                'type' => 'input',
-                'size' => 60,
-                'max' => 255,
+                'type' => 'text',
+                'cols' => 30,
+                'rows' => 4,
             ],
         ],
         'requirement_bookings' => [
