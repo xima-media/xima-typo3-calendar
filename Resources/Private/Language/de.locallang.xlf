@@ -30,6 +30,10 @@
 				<source />
 				<target>URL des RSS-Feeds</target>
 			</trans-unit>
+			<trans-unit id="folder.module.label">
+				<source />
+				<target>Veranstaltungen</target>
+			</trans-unit>
 			<trans-unit id="widget_group.calendar">
 				<source />
 				<target>Kalender</target>

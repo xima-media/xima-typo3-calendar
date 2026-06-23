@@ -23,6 +23,9 @@
 			<trans-unit id="settings.url">
 				<source>URL of the RSS feed</source>
 			</trans-unit>
+			<trans-unit id="folder.module.label">
+				<source>Events</source>
+			</trans-unit>
 			<trans-unit id="widget_group.calendar">
 				<source>Calendar</source>
 			</trans-unit>

@@ -52,8 +52,8 @@ use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
  *             "allowedFileExtensions": {"jpg", "jpeg", "png"},
  *             "conflictMode": DuplicationBehavior::RENAME,
  *         },
- *         "persistence"={
- *             "storagePid"="1468",
+ *         "persistence": {
+ *             "storagePid": "1468",
  *         }
  *     },
  * )

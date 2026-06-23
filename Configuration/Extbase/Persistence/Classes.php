@@ -5,6 +5,7 @@ declare(strict_types=1);
 return [
     \Xima\XimaTypo3Calendar\Domain\Model\Api\Event::class => [
         'tableName' => 'tx_ximatypo3calendar_domain_model_event',
+        'recordType' => 'event',
     ],
     \Xima\XimaTypo3Calendar\Domain\Model\Api\FileReference::class => [
         'tableName' => 'sys_file_reference',
