@@ -2,27 +2,34 @@
 
 namespace Xima\XimaTypo3Calendar\Controller\Backend;
 
-use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
-use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use Xima\XimaTypo3Recordlist\Controller\AbstractBackendController;
+use Xima\XimaTypo3Recordlist\Dto\RecordSource;
 
 class EventsController extends AbstractBackendController
 {
-    public function __construct(
-        private readonly ExtensionConfiguration $extensionConfiguration,
-    ) {
-    }
-
-    /**
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     */
     public function getRecordPid(): int
     {
-        $pid = $this->extensionConfiguration
-            ->get('xima_typo3_calendar', 'recordPid');
-        return $pid !== null ? (int)$pid : 0;
+        return 0;
+    }
+
+    protected function getRecordSources(): array
+    {
+        $qb = $this->connectionPool->getQueryBuilderForTable('pages');
+        $folders = $qb->select('uid', 'title')
+            ->from('pages')
+            ->where($qb->expr()->eq('module', $qb->createNamedParameter('events')))
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        $recordSources = [];
+        foreach ($folders as $folder) {
+            $recordSources[] = new RecordSource(
+                pid: (int)$folder['uid'],
+                includeSubpages: true,
+                depth: 1
+            );
+        }
+        return $recordSources;
     }
 
     public function getTableNames(): array
