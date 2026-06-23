@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>apps-pagetree-folder-contains</title>
+    <g id="apps-pagetree-folder-contains" stroke="none" fill="none" fill-rule="evenodd">
+        <polygon id="Path" fill="#888888" points="0 2 0 14 12.69 14 12.69 3.81 5.08 3.81 3.95 2"></polygon>
+        <g id="Group" stroke-width="1" transform="translate(1.6744, 0)">
+            <polygon id="Path" fill="#9F6358" points="8.57142857 12 1.71428571 12 0.428571429 1.71428571 9.85714286 1.71428571"></polygon>
+            <polygon id="Path" fill="#FFFFFF" opacity="0.3" points="8.57142857 9.42857143 1.71428571 9.42857143 0.857142857 4.28571429 9.42857143 4.28571429"></polygon>
+            <path d="M8.91428571,2.57142857 L7.8,11.1428571 L2.48571429,11.1428571 L1.37142857,2.57142857 L8.91428571,2.57142857 M9.85714286,1.71428571 L0.428571429,1.71428571 L1.71428571,12 L8.57142857,12 L9.85714286,1.71428571 Z" id="Shape" fill="#6F453E" fill-rule="nonzero"></path>
+            <circle id="Oval" fill="#FFFFFF" cx="5.14285714" cy="6.85714286" r="2.14285714"></circle>
+            <polygon id="Path" fill="#212121" points="0 1.71428571 10.2857143 1.71428571 10.2857143 2.57142857 0 2.57142857"></polygon>
+            <polygon id="Path" fill="#333333" points="1.71428571 0 8.57142857 0 8.57142857 1.71428571 1.71428571 1.71428571"></polygon>
+            <ellipse id="Oval" fill="#9F6358" transform="translate(5.1429, 6.8571) rotate(-70.001) translate(-5.1429, -6.8571)" cx="5.14285714" cy="6.85714286" rx="1.28571429" ry="1"></ellipse>
+            <polygon id="Path" fill="#FFFFFF" points="5.79514286 4.81371429 6.03685714 4.902 4.57114286 8.92971429 4.32942857 8.84142857"></polygon>
+        </g>
+        <polygon id="Path" fill="#AAAAAA" points="8.26 6.08 6.55 7.4 2.53 7.4 0 14 12.96 14 16 6.08"></polygon>
+    </g>
+</svg>
