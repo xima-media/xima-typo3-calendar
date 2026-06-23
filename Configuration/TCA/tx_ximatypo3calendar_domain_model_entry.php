@@ -122,7 +122,7 @@ return [
         ],
         'modified_fields' => [
             'config' => [
-                'type' => 'passthrough'
+                'type' => 'passthrough',
             ],
         ],
         'description' => [

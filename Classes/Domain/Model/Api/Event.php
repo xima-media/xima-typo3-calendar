@@ -50,8 +50,8 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *             "allowedFileExtensions": {"jpg", "jpeg", "png"},
  *             "conflictMode": DuplicationBehavior::RENAME,
  *         },
- *         "persistence"={
- *             "storagePid"="1468",
+ *         "persistence": {
+ *             "storagePid": "1468",
  *         }
  *     },
  * )

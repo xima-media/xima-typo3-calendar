@@ -10,7 +10,6 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
 
 class EntryRepository extends Repository
 {
-
     /**
      * @param int[] $calendarUids
      * @throws Exception
