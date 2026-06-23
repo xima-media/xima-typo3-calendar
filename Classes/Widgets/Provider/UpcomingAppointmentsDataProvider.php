@@ -8,6 +8,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Dashboard\Widgets\ListDataProviderInterface;
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 use Xima\XimaTypo3Calendar\Event\BeforeWidgetItemsFetchedEvent;
 
 readonly class UpcomingAppointmentsDataProvider implements ListDataProviderInterface
@@ -45,7 +46,7 @@ readonly class UpcomingAppointmentsDataProvider implements ListDataProviderInter
             ->where(
                 $qb->expr()->gt('a.start_date', $qb->createNamedParameter($nowTimestap, Connection::PARAM_INT)),
                 $qb->expr()->lt('a.start_date', $qb->createNamedParameter($upperBoundTimestamp, Connection::PARAM_INT)),
-                $qb->expr()->eq('e.status', $qb->createNamedParameter(1, Connection::PARAM_INT))
+                $qb->expr()->eq('e.status', $qb->createNamedParameter(EventStatus::LIVE->value, Connection::PARAM_INT))
             )
             ->orderBy('a.start_date', 'ASC')
             ->setMaxResults($this->limit);

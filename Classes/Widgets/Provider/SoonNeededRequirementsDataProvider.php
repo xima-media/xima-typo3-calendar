@@ -8,6 +8,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Dashboard\Widgets\ListDataProviderInterface;
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 use Xima\XimaTypo3Calendar\Event\BeforeWidgetItemsFetchedEvent;
 
 readonly class SoonNeededRequirementsDataProvider implements ListDataProviderInterface
@@ -87,7 +88,7 @@ readonly class SoonNeededRequirementsDataProvider implements ListDataProviderInt
             ->where(
                 $bookingStartDateExpr . ' > ' . $qb->createNamedParameter($nowTimestamp, Connection::PARAM_INT),
                 $bookingStartDateExpr . ' < ' . $qb->createNamedParameter($upperBoundTimestamp, Connection::PARAM_INT),
-                $qb->expr()->eq('e.status', $qb->createNamedParameter(1, Connection::PARAM_INT))
+                $qb->expr()->eq('e.status', $qb->createNamedParameter(EventStatus::LIVE->value, Connection::PARAM_INT))
             )
             ->orderBy('booking_start_date', 'ASC')
             ->setMaxResults($this->limit);
