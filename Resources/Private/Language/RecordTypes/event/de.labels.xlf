@@ -20,6 +20,10 @@
 				<source />
 				<target>Titel</target>
 			</trans-unit>
+			<trans-unit id="slug.label">
+				<source />
+				<target>URL Pfadsegment</target>
+			</trans-unit>
 			<trans-unit id="language.label">
 				<source />
 				<target>Sprache</target>

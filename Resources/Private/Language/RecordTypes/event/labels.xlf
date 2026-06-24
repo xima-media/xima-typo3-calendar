@@ -13,6 +13,9 @@
 			<trans-unit id="title.label">
 				<source>Title</source>
 			</trans-unit>
+			<trans-unit id="slug.label">
+				<source>URL Slug</source>
+			</trans-unit>
 			<trans-unit id="language.label">
 				<source>Language</source>
 			</trans-unit>

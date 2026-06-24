@@ -60,6 +60,18 @@ return [
                 'max' => 255,
             ],
         ],
+        'slug' => [
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:slug.label',
+            'config' => [
+                'type' => 'slug',
+                'generatorOptions' => [
+                    'fields' => ['title'],
+                    'replacements' => ['/' => '-'],
+                ],
+                'fallbackCharacter' => '-',
+                'eval' => 'uniqueInSite',
+            ],
+        ],
         'language' => [
             'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:language.label',
             'exclude' => true,
@@ -291,7 +303,7 @@ return [
     ],
     'types' => [
         'event' => [
-            'showitem' => '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,record_type,--palette--;;event_info_palette,description,additional_information,location,url,preview_image,files,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.publishing_tab,--palette--;;publishing_palette,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.appointments_tab,appointments,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.organizer_tab,organizer,hosts,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.category_tab,categories,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.registration_tab,--palette--;;registration_palette,registration_address,--palette--;;participants_palette,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.related_tab,related_events,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.workflow_tab,--palette--;;workflow_palette,approval_date,--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,--palette--;;hidden,--palette--;;access',
+            'showitem' => '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,record_type,--palette--;;event_info_palette,slug,description,additional_information,location,url,preview_image,files,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.publishing_tab,--palette--;;publishing_palette,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.appointments_tab,appointments,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.organizer_tab,organizer,hosts,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.category_tab,categories,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.registration_tab,--palette--;;registration_palette,registration_address,--palette--;;participants_palette,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.related_tab,related_events,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.workflow_tab,--palette--;;workflow_palette,approval_date,--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,--palette--;;hidden,--palette--;;access',
         ],
     ],
 ];
