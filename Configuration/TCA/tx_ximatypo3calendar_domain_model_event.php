@@ -288,6 +288,10 @@ return [
                         'value' => 2,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.2.label',
                     ],
+                    [
+                        'value' => 3,
+                        'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.3.label',
+                    ],
                 ],
             ],
         ],

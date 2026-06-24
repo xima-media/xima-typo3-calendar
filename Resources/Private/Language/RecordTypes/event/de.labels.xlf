@@ -170,9 +170,13 @@
 			</trans-unit>
 			<trans-unit id="status.items.1.label">
 				<source />
-				<target>Live</target>
+				<target>Prüfung</target>
 			</trans-unit>
 			<trans-unit id="status.items.2.label">
+				<source />
+				<target>Live</target>
+			</trans-unit>
+			<trans-unit id="status.items.3.label">
 				<source />
 				<target>Abgelehnt</target>
 			</trans-unit>
