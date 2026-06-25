@@ -17,7 +17,7 @@ class DataHandlerHook
         if ($status === 'update' && $table === 'tx_ximatypo3calendar_domain_model_event' && array_key_exists('status', $fieldArray)) {
             if ($fieldArray['status'] == EventStatus::LIVE->value) {
                 $currentDateTime = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'full');
-                $fieldArray['approval_date'] = $currentDateTime;
+                $fieldArray['approval_date'] = $currentDateTime->getTimestamp();
             } else {
                 $fieldArray['approval_date'] = null;
             }
@@ -37,7 +37,7 @@ class DataHandlerHook
                         $event = array_pop($parentObject->datamap['tx_ximatypo3calendar_domain_model_event']);
                         if ($event['status'] == EventStatus::LIVE->value) {
                             $currentDateTime = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'full');
-                            $fieldArray['modified_date'] = $currentDateTime;
+                            $fieldArray['modified_date'] = $currentDateTime->getTimestamp();
                             $history = [];
                             foreach ($modifiedFields as $fieldName => $key) {
                                 $history[$fieldName] = $parentObject->getHistoryRecords()[$table . ':' . $id]['oldRecord'][$fieldName] ?? $fieldArray[$fieldName];
