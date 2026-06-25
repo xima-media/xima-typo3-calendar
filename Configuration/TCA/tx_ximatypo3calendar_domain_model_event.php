@@ -281,15 +281,15 @@ return [
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.0.label',
                     ],
                     [
-                        'value' => EventStatus::LIVE->value,
+                        'value' => EventStatus::REVIEW->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.1.label',
                     ],
                     [
-                        'value' => EventStatus::REJECTED->value,
+                        'value' => EventStatus::LIVE->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.2.label',
                     ],
                     [
-                        'value' => 3,
+                        'value' => EventStatus::REJECTED->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.3.label',
                     ],
                 ],
