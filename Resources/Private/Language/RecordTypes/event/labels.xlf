@@ -116,9 +116,12 @@
 				<source>Draft</source>
 			</trans-unit>
 			<trans-unit id="status.items.1.label">
-				<source>Live</source>
+				<source>Review</source>
 			</trans-unit>
 			<trans-unit id="status.items.2.label">
+				<source>Live</source>
+			</trans-unit>
+			<trans-unit id="status.items.3.label">
 				<source>Rejected</source>
 			</trans-unit>
 			<trans-unit id="approval_date.label">
