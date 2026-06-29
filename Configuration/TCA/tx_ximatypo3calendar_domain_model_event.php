@@ -20,6 +20,7 @@ return [
         'crdate' => 'crdate',
         'tstamp' => 'tstamp',
         'sortby' => 'sorting',
+        'default_sortby' => 'tstamp DESC',
         'editlock' => 'editlock',
         'enablecolumns' => [
             'disabled' => 'hidden',
