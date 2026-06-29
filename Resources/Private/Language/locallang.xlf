@@ -26,6 +26,51 @@
 			<trans-unit id="folder.module.label">
 				<source>Events</source>
 			</trans-unit>
+			<trans-unit id="widget_group.calendar">
+				<source>Calendar</source>
+			</trans-unit>
+			<trans-unit id="widget.ready_to_publish_events.title">
+				<source>Ready to publish events</source>
+			</trans-unit>
+			<trans-unit id="widget.ready_to_publish_events.description">
+				<source>Shows events that are ready to be published.</source>
+			</trans-unit>
+			<trans-unit id="widget.no_entries">
+				<source>Currently nothing to show.</source>
+			</trans-unit>
+			<trans-unit id="widget.button.calendar_events">
+				<source>Show events module</source>
+			</trans-unit>
+			<trans-unit id="widget.button.calendar_appointments">
+				<source>Show appointments in events module</source>
+			</trans-unit>
+			<trans-unit id="widget.upcoming_appointments.title">
+				<source>Upcoming appointments</source>
+			</trans-unit>
+			<trans-unit id="widget.upcoming_appointments.description">
+				<source>Shows upcoming appointments of events.</source>
+			</trans-unit>
+			<trans-unit id="edit_appointment">
+				<source>Edit appointment</source>
+			</trans-unit>
+			<trans-unit id="edit_requirementbooking">
+				<source>Edit requirement booking</source>
+			</trans-unit>
+			<trans-unit id="edit_event">
+				<source>Edit event</source>
+			</trans-unit>
+			<trans-unit id="widget.soon_needed_requirements.title">
+				<source>Soon needed requirements</source>
+			</trans-unit>
+			<trans-unit id="widget.soon_needed_requirements.description">
+				<source>Shows upcoming requirements bookings of event appointments.</source>
+			</trans-unit>
+			<trans-unit id="widget.canceled_appointments.title">
+				<source>Canceled appointments</source>
+			</trans-unit>
+			<trans-unit id="widget.canceled_appointments.description">
+				<source>Shows canceled, deleted or hidden appointments that would have taken place in the future.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

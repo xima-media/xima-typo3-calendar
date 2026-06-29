@@ -22,7 +22,7 @@ return [
     'palettes' => [
         'hidden' => ['showitem' => 'hidden'],
         'access' => ['showitem' => 'editlock'],
-        'amount_palette' => ['showitem' => 'amount,start,end'],
+        'amount_palette' => ['showitem' => 'amount,start_date,end_date'],
     ],
     'columns' => [
         'foreign_table_parent_uid' => [
@@ -49,15 +49,15 @@ return [
                 'default' => 1,
             ],
         ],
-        'start' => [
-            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/requirement-booking/labels.xlf:start.label',
+        'start_date' => [
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/requirement-booking/labels.xlf:start_date.label',
             'exclude' => true,
             'config' => [
                 'type' => 'datetime',
             ],
         ],
-        'end' => [
-            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/requirement-booking/labels.xlf:end.label',
+        'end_date' => [
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/requirement-booking/labels.xlf:end_date.label',
             'exclude' => true,
             'config' => [
                 'type' => 'datetime',

@@ -34,6 +34,66 @@
 				<source />
 				<target>Veranstaltungen</target>
 			</trans-unit>
+			<trans-unit id="widget_group.calendar">
+				<source />
+				<target>Kalender</target>
+			</trans-unit>
+			<trans-unit id="widget.ready_to_publish_events.title">
+				<source />
+				<target>Freizugebende Veranstaltungen</target>
+			</trans-unit>
+			<trans-unit id="widget.ready_to_publish_events.description">
+				<source />
+				<target>Zeigt eine Liste mit Veranstaltungen, die bereit zum Veröffentlichen sind.</target>
+			</trans-unit>
+			<trans-unit id="widget.no_entries">
+				<source />
+				<target>Momentan nichts anzuzeigen.</target>
+			</trans-unit>
+			<trans-unit id="widget.button.calendar_events">
+				<source />
+				<target>Zum Veranstaltungsmodul</target>
+			</trans-unit>
+			<trans-unit id="widget.button.calendar_appointments">
+				<source />
+				<target>Zu den Veranstaltungsterminen</target>
+			</trans-unit>
+			<trans-unit id="widget.upcoming_appointments.title">
+				<source />
+				<target>Anstehende Termine</target>
+			</trans-unit>
+			<trans-unit id="widget.upcoming_appointments.description">
+				<source />
+				<target>Zeigt kommende Veranstaltungstermine</target>
+			</trans-unit>
+			<trans-unit id="edit_appointment">
+				<source />
+				<target>Termin bearbeiten</target>
+			</trans-unit>
+			<trans-unit id="edit_requirementbooking">
+				<source />
+				<target>Anforderungsbuchung bearbeiten</target>
+			</trans-unit>
+			<trans-unit id="edit_event">
+				<source />
+				<target>Veranstaltung bearbeiten</target>
+			</trans-unit>
+			<trans-unit id="widget.soon_needed_requirements.title">
+				<source />
+				<target>Demnächst benötigte Anforderungen</target>
+			</trans-unit>
+			<trans-unit id="widget.soon_needed_requirements.description">
+				<source />
+				<target>Zeigt anstehende Anforderungsbuchungen von Veranstaltungsterminen.</target>
+			</trans-unit>
+			<trans-unit id="widget.canceled_appointments.title">
+				<source />
+				<target>Abgesagte Termine</target>
+			</trans-unit>
+			<trans-unit id="widget.canceled_appointments.description">
+				<source />
+				<target>Zeigt abgesagte, gelöschte und verborgene Termine, die in der Zukunft stattgefunden hätten.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -41,6 +41,22 @@ return [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
         'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/recordtype-speaker.svg',
     ],
+    'tx-ximatypo3calendar-plugin-event-appointment-list' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/recordtype-calendar.svg',
+    ],
+    'tx-ximatypo3calendar-plugin-event-appointment-detail' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/recordtype-calendar.svg',
+    ],
+    'tx-ximatypo3calendar-plugin-event-list' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/recordtype-calendar.svg',
+    ],
+    'tx-ximatypo3calendar-plugin-event-detail' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/recordtype-calendar.svg',
+    ],
     'apps-pagetree-folder-contains-events' => [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
         'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/apps-pagetree-folder-contains-events.svg',

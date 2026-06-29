@@ -13,7 +13,7 @@ use TYPO3\CMS\Core\Database\Query\Restriction\EnforceableQueryRestrictionInterfa
 use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionInterface;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
-use Xima\XimaTypo3Calendar\Domain\Model\Api\EventStatus;
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 
 #[Autoconfigure(public: true)]
 class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRestrictionInterface

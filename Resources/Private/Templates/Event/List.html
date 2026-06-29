@@ -1,29 +1,58 @@
-<div class="events">
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+    <div class="events">
+        <f:if condition="{events}">
+            <ul class="events__list">
+                <f:for each="{events}" as="event">
+                    <li class="events__item">
+                        <article class="event-card">
+                            <header class="event-card__header">
+                                <h3 class="event-card__title">{event.title}</h3>
+                                <f:if condition="{event.publishDate}">
+                                    <p class="event-card__date">
+                                        Published on
+                                        <time datetime="{event.publishDate -> f:format.date(format: 'c')}">
+                                            {event.publishDate -> f:format.date(format: 'd.m.Y')}
+                                        </time>
+                                    </p>
+                                </f:if>
+                            </header>
 
-    <h2 class="m-b-0 h3 show-for-lg">{header}</h2>
+                            <f:if condition="{event.description}">{event.description -> f:format.html()}</f:if>
 
-    <div class="events__items">
+                            <p class="event-card__meta">
+                                <f:if condition="{event.language}">
+                                    <span class="event-card__tag">Language: {event.language.value}</span>
+                                </f:if>
+                                <f:if condition="{event.requiresRegistration}">
+                                    <span class="event-card__tag">Registration required</span>
+                                </f:if>
+                                <f:if condition="{event.publishToFeed}">
+                                    <span class="event-card__tag">Listed in feed</span>
+                                </f:if>
+                            </p>
 
-        <f:for each="{events}" as="event" iteration="i">
-            <div class="event">
-                <div title="{event.title}">
-                    <a href="{event.link}" title="{event.title}">
-                        <p class="color m-b-0">
-                            <span class="h3">
-                                <f:format.date format="%d. %B">{event.eventdate}</f:format.date>
-                            </span>
-                            <span class="h3 text-intro">{event.eventtime}</span>
-                        </p>
-                        <h5 class="m-b-05">{event.title}</h5>
-                    </a>
-                    <ul class="list text-small card__tags">
-                        <li class="card__tag">{event.eventlanguage}</li>
-                        <li class="card__tag">{event.description->f:format.raw()}</li>
-                    </ul>
-                </div>
-            </div>
-        </f:for>
+                            <footer class="event-card__footer">
+                                <f:if condition="{event.url}">
+                                    <a class="event-card__link" href="{event.url}" target="_blank" rel="noopener noreferrer">
+                                        External event page
+                                    </a>
+                                </f:if>
+                                <f:link.action
+                                    action="show"
+                                    pageUid="{settings.detailPid}"
+                                    arguments="{event: event}"
+                                    class="event-card__link">
+                                    Event details
+                                </f:link.action>
+                            </footer>
+                        </article>
+                    </li>
+                </f:for>
+            </ul>
+        </f:if>
 
+        <f:if condition="{events -> f:count()} == 0">
+            <p>No events are currently available.</p>
+        </f:if>
     </div>
-
-</div>
+</html>

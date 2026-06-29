@@ -8,10 +8,10 @@ class VkurkoCalendarSerializer
     {
         $events = array_map(function (array $row): array {
             $start = ($row['start_date'] && $row['start_date'] !== '0000-00-00 00:00:00')
-                ? (new \DateTime($row['start_date']))->format('Y-m-d\TH:i:s')
+                ? (new \DateTime('@' . $row['start_date']))->format('Y-m-d\TH:i:s')
                 : null;
             $end = ($row['end_date'] && $row['end_date'] !== '0000-00-00 00:00:00')
-                ? (new \DateTime($row['end_date']))->format('Y-m-d\TH:i:s')
+                ? (new \DateTime('@' . $row['end_date']))->format('Y-m-d\TH:i:s')
                 : null;
 
             // If end date is missing and it's not an all-day event, assume a default duration of 30 minutes

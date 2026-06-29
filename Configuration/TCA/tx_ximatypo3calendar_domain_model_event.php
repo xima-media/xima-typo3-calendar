@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventLanguage;
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
+
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:title',
@@ -29,7 +32,6 @@ return [
         'event_info_palette' => ['showitem' => 'title,language'],
         'publishing_palette' => ['showitem' => 'publish_to_website,publish_to_feed,publish_date'],
         'registration_palette' => ['showitem' => 'requires_registration,registration_link,registration_deadline,fee'],
-        'participants_palette' => ['showitem' => 'max_participants,number_of_persons_group'],
         'workflow_palette' => ['showitem' => 'owner,status'],
     ],
     'columns' => [
@@ -58,6 +60,18 @@ return [
                 'max' => 255,
             ],
         ],
+        'slug' => [
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:slug.label',
+            'config' => [
+                'type' => 'slug',
+                'generatorOptions' => [
+                    'fields' => ['title'],
+                    'replacements' => ['/' => '-'],
+                ],
+                'fallbackCharacter' => '-',
+                'eval' => 'uniqueInSite',
+            ],
+        ],
         'language' => [
             'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:language.label',
             'exclude' => true,
@@ -66,15 +80,15 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        'value' => '',
+                        'value' => EventLanguage::ALL->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:language.items.label',
                     ],
                     [
-                        'value' => 'de',
+                        'value' => EventLanguage::DE->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:language.items.de.label',
                     ],
                     [
-                        'value' => 'en',
+                        'value' => EventLanguage::EN->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:language.items.en.label',
                     ],
                 ],
@@ -217,7 +231,6 @@ return [
             'exclude' => true,
             'config' => [
                 'type' => 'datetime',
-                'dbType' => 'datetime',
             ],
         ],
         'fee' => [
@@ -233,20 +246,6 @@ return [
             'config' => [
                 'type' => 'text',
                 'rows' => 3,
-            ],
-        ],
-        'max_participants' => [
-            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:max_participants.label',
-            'exclude' => true,
-            'config' => [
-                'type' => 'number',
-            ],
-        ],
-        'number_of_persons_group' => [
-            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:number_of_persons_group.label',
-            'exclude' => true,
-            'config' => [
-                'type' => 'number',
             ],
         ],
         'related_events' => [
@@ -265,8 +264,9 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'fe_users',
-                'relationship' => 'manyToOne',
-                'maxitems' => 1,
+                'items' => [
+                    ['label' => '', 'value' => 0],
+                ],
             ],
         ],
         'status' => [
@@ -277,19 +277,19 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        'value' => 0,
+                        'value' => EventStatus::DRAFT->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.0.label',
                     ],
                     [
-                        'value' => 1,
+                        'value' => EventStatus::REVIEW->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.1.label',
                     ],
                     [
-                        'value' => 2,
+                        'value' => EventStatus::LIVE->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.2.label',
                     ],
                     [
-                        'value' => 3,
+                        'value' => EventStatus::REJECTED->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.3.label',
                     ],
                 ],
@@ -300,14 +300,14 @@ return [
             'exclude' => true,
             'config' => [
                 'type' => 'datetime',
-                'dbType' => 'datetime',
                 'readOnly' => true,
+                'nullable' => true,
             ],
         ],
     ],
     'types' => [
         'event' => [
-            'showitem' => '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,record_type,--palette--;;event_info_palette,description,additional_information,location,url,preview_image,files,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.publishing_tab,--palette--;;publishing_palette,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.appointments_tab,appointments,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.organizer_tab,organizer,hosts,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.category_tab,categories,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.registration_tab,--palette--;;registration_palette,registration_address,--palette--;;participants_palette,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.related_tab,related_events,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.workflow_tab,--palette--;;workflow_palette,approval_date,--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,--palette--;;hidden,--palette--;;access',
+            'showitem' => '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,record_type,--palette--;;event_info_palette,slug,description,additional_information,location,url,preview_image,files,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.publishing_tab,--palette--;;publishing_palette,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.appointments_tab,appointments,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.organizer_tab,organizer,hosts,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.category_tab,categories,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.registration_tab,--palette--;;registration_palette,registration_address,--palette--;;participants_palette,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.related_tab,related_events,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:tabs.workflow_tab,--palette--;;workflow_palette,approval_date,--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,--palette--;;hidden,--palette--;;access',
         ],
     ],
 ];
