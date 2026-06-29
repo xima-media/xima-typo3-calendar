@@ -2,19 +2,26 @@
 
 namespace Xima\XimaTypo3Calendar\Database;
 
+use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Authentication\CommandLineUserAuthentication;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\CompositeExpression;
 use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\EnforceableQueryRestrictionInterface;
 use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionInterface;
 use TYPO3\CMS\Core\Http\ApplicationType;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 
+#[Autoconfigure(public: true)]
 class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRestrictionInterface
 {
+    public function __construct(protected Context $context, protected ConnectionPool $connectionPool)
+    {
+    }
+
     public function isEnforced(): bool
     {
         return true;
@@ -26,15 +33,16 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             return $expressionBuilder->and();
         }
 
+        $applicationType = ApplicationType::fromRequest($this->getRequest());
+
         // In CLI context, we do not restrict events
         if (isset($GLOBALS['BE_USER']) && $GLOBALS['BE_USER'] instanceof CommandLineUserAuthentication) {
             return $expressionBuilder->and();
         }
 
-        $request = $this->getRequest();
-        if ($request && ApplicationType::fromRequest($request)->isFrontend()) {
+        if ($applicationType->isFrontend()) {
             $eventAlias = array_search('tx_ximatypo3calendar_domain_model_event', $queriedTables, true);
-            $qb = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_event');
+            $qb = $this->connectionPool->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_event');
             $user = $this->getFrontendUserAuthentication();
             if ($user && $user->getUserId()) {
                 return $expressionBuilder->and(
@@ -48,7 +56,7 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
         }
 
         // @TODO: Check if the user has access to the event module
-        if (isset($GLOBALS['BE_USER'])) {
+        if ($applicationType->isBackend()) {
         }
 
         return $expressionBuilder->and();
@@ -59,8 +67,8 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
         return $this->getRequest()?->getAttribute('frontend.user') ?? null;
     }
 
-    private function getRequest(): ?\Psr\Http\Message\ServerRequestInterface
+    private function getRequest(): ServerRequestInterface
     {
-        return $GLOBALS['TYPO3_REQUEST'] ?? null;
+        return $GLOBALS['TYPO3_REQUEST'];
     }
 }

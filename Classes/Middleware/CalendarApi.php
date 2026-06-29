@@ -24,6 +24,8 @@ class CalendarApi implements MiddlewareInterface
             return $handler->handle($request);
         }
 
+        $GLOBALS['TYPO3_REQUEST'] ??= $request;
+
         $start = $params['start'] ?? null;
         $end = $params['end'] ?? null;
         $startDatetime = $start ? (new \DateTime($start))->format('Y-m-d H:i:s') : '1970-01-01 00:00:00';
