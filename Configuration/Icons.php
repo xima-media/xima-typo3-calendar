@@ -65,20 +65,20 @@ return [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
         'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/apps-pagetree-folder-contains-events.svg',
     ],
-    'status-draft' => [
+    'status-0' => [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/status-draft.svg',
+        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/status-0.svg',
     ],
-    'status-live' => [
+    'status-1' => [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/status-live.svg',
+        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/status-1.svg',
     ],
-    'status-rejected' => [
+    'status-2' => [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/status-rejected.svg',
+        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/status-2.svg',
     ],
-    'status-review' => [
+    'status-3' => [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/status-review.svg',
+        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/status-3.svg',
     ],
 ];
