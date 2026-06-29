@@ -279,18 +279,27 @@ return [
                     [
                         'value' => EventStatus::DRAFT->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.0.label',
+                        'icon' => 'status-draft',
                     ],
                     [
                         'value' => EventStatus::REVIEW->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.1.label',
+                        'icon' => 'status-review',
                     ],
                     [
                         'value' => EventStatus::LIVE->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.2.label',
+                        'icon' => 'status-live',
                     ],
                     [
                         'value' => EventStatus::REJECTED->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.3.label',
+                        'icon' => 'status-rejected',
+                    ],
+                ],
+                'fieldWizard' => [
+                    'selectIcons' => [
+                        'disabled' => false,
                     ],
                 ],
             ],

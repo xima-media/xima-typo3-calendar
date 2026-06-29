@@ -65,4 +65,20 @@ return [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
         'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/apps-pagetree-folder-contains-events.svg',
     ],
+    'status-draft' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/status-draft.svg',
+    ],
+    'status-live' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/status-live.svg',
+    ],
+    'status-rejected' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/status-rejected.svg',
+    ],
+    'status-review' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/status-review.svg',
+    ],
 ];
