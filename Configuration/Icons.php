@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'module-group-calendar' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/module-group-calendar.svg',
+    ],
     'module-calendar-calendar' => [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
         'source' => 'EXT:xima_typo3_calendar/Resources/Public/Icons/module-calendar.svg',
