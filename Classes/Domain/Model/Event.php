@@ -62,6 +62,14 @@ class Event extends AbstractEntity
 
     protected ?Location $location = null;
 
+    protected string $registrationLink = '';
+
+    protected ?\DateTime $registrationDeadline = null;
+
+    protected string $fee = '';
+
+    protected string $registrationAddress = '';
+
     /**
      * @var ObjectStorage<Event>|null
      */
@@ -79,6 +87,46 @@ class Event extends AbstractEntity
         $this->hosts = new ObjectStorage();
         $this->categories = new ObjectStorage();
         $this->relatedEvents = new ObjectStorage();
+    }
+
+    public function getRegistrationLink(): string
+    {
+        return $this->registrationLink;
+    }
+
+    public function setRegistrationLink(string $registrationLink): void
+    {
+        $this->registrationLink = $registrationLink;
+    }
+
+    public function getRegistrationDeadline(): ?\DateTime
+    {
+        return $this->registrationDeadline;
+    }
+
+    public function setRegistrationDeadline(?\DateTime $registrationDeadline): void
+    {
+        $this->registrationDeadline = $registrationDeadline;
+    }
+
+    public function getFee(): string
+    {
+        return $this->fee;
+    }
+
+    public function setFee(string $fee): void
+    {
+        $this->fee = $fee;
+    }
+
+    public function getRegistrationAddress(): string
+    {
+        return $this->registrationAddress;
+    }
+
+    public function setRegistrationAddress(string $registrationAddress): void
+    {
+        $this->registrationAddress = $registrationAddress;
     }
 
     public function getTitle(): string
