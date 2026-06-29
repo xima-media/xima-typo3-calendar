@@ -168,17 +168,33 @@
 				<source />
 				<target>Entwurf</target>
 			</trans-unit>
+			<trans-unit id="status.items.0.description">
+				<source />
+				<target>Wird noch bearbeitet und ist nicht öffentlich sichtbar.</target>
+			</trans-unit>
 			<trans-unit id="status.items.1.label">
 				<source />
 				<target>Prüfung</target>
+			</trans-unit>
+			<trans-unit id="status.items.1.description">
+				<source />
+				<target>Wartet auf Freigabe und ist noch nicht öffentlich sichtbar.</target>
 			</trans-unit>
 			<trans-unit id="status.items.2.label">
 				<source />
 				<target>Live</target>
 			</trans-unit>
+			<trans-unit id="status.items.2.description">
+				<source />
+				<target>Ist freigegeben und wird auf der Website angezeigt.</target>
+			</trans-unit>
 			<trans-unit id="status.items.3.label">
 				<source />
 				<target>Abgelehnt</target>
+			</trans-unit>
+			<trans-unit id="status.items.3.description">
+				<source />
+				<target>Wurde abgelehnt und kann erneut bearbeitet werden.</target>
 			</trans-unit>
 			<trans-unit id="approval_date.label">
 				<source />

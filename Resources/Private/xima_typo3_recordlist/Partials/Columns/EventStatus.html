@@ -1,0 +1,44 @@
+{namespace xm=Xima\XimaTypo3Recordlist\ViewHelpers}
+<f:be.pageRenderer includeJavaScriptModules="{0: '@xima/xima-typo3-calendar/recordlist-event-status-modal.js'}" />
+
+<f:variable name="ll">LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.</f:variable>
+<f:variable name="l0">{f:translate(key: '{ll}0.label')}</f:variable>
+<f:variable name="d0">{f:translate(key: '{ll}0.description')}</f:variable>
+<f:variable name="l1">{f:translate(key: '{ll}1.label')}</f:variable>
+<f:variable name="d1">{f:translate(key: '{ll}1.description')}</f:variable>
+<f:variable name="l2">{f:translate(key: '{ll}2.label')}</f:variable>
+<f:variable name="d2">{f:translate(key: '{ll}2.description')}</f:variable>
+<f:variable name="l3">{f:translate(key: '{ll}3.label')}</f:variable>
+<f:variable name="d3">{f:translate(key: '{ll}3.description')}</f:variable>
+<f:variable name="statusItems" value="{0: {value: 0, label: l0, description: d0}, 1: {value: 1, label: l1, description: d1}, 2: {value: 2, label: l2, description: d2}, 3: {value: 3, label: l3, description: d3}}" />
+
+<span class="badge-container select-badge-container" data-column-name="{colConfig.columnName}" data-item-status-{item.status}>
+    <a
+        href="#"
+        title="{relation.label}"
+        class="badge badge-pill event-status-badge"
+        data-bs-toggle="tooltip"
+        data-field-name="{colConfig.columnName}"
+        data-value="{item.status}"
+        data-status-items="{statusItems -> f:format.json()}">
+        <core:icon identifier="status-{item.status}" size="small" />
+        <span>
+            {f:translate(key:'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.{item.status}.label')}
+        </span>
+    </a>
+</span>
+
+
+<f:asset.css identifier="event-status">
+    .recordlist table.table tr:has([data-item-status-0]) td {
+        background-color: color-mix(in srgb, #888 15%, transparent) !important;
+    }
+
+    .recordlist table.table tr:has([data-item-status-1]) td {
+        background-color: color-mix(in srgb, #0d6efd 15%, transparent) !important;
+    }
+
+    .recordlist table.table tr:has([data-item-status-3]) td {
+        background-color: color-mix(in srgb, #e74c3c 15%, transparent) !important;
+    }
+</f:asset.css>
