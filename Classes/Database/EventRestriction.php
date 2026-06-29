@@ -8,9 +8,10 @@ use TYPO3\CMS\Core\Database\Query\Expression\CompositeExpression;
 use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\EnforceableQueryRestrictionInterface;
 use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionInterface;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
-use Xima\XimaTypo3Calendar\Domain\Model\Api\EventStatus;
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 
 class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRestrictionInterface
 {
@@ -30,21 +31,23 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             return $expressionBuilder->and();
         }
 
-        if (isset($GLOBALS['TSFE'])) {
+        $request = $this->getRequest();
+        if ($request && ApplicationType::fromRequest($request)->isFrontend()) {
+            $eventAlias = array_search('tx_ximatypo3calendar_domain_model_event', $queriedTables, true);
             $qb = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_event');
             $user = $this->getFrontendUserAuthentication();
             if ($user && $user->getUserId()) {
                 return $expressionBuilder->and(
                     $expressionBuilder->or(
-                        $expressionBuilder->eq('status', $qb->quote(EventStatus::LIVE->value)),
-                        $expressionBuilder->eq('owner', $user->getUserId())
+                        $expressionBuilder->eq($eventAlias . '.status', $qb->quote(EventStatus::LIVE->value)),
+                        $expressionBuilder->eq($eventAlias . '.owner', $user->getUserId())
                     )
                 );
             }
-            return $expressionBuilder->and($expressionBuilder->eq('status', $qb->quote(EventStatus::LIVE->value)));
+            return $expressionBuilder->and($expressionBuilder->eq($eventAlias . '.status', $qb->quote(EventStatus::LIVE->value)));
         }
 
-        // @TODO: Check if the user has access to the event
+        // @TODO: Check if the user has access to the event module
         if (isset($GLOBALS['BE_USER'])) {
         }
 

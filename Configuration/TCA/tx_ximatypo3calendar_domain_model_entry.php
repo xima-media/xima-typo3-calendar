@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventAppointmentType;
+
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:title',
@@ -24,7 +26,7 @@ return [
     ],
     'palettes' => [
         'hidden' => ['showitem' => 'hidden'],
-        'datetime_palette' => ['showitem' => 'start_date,end_date,all_day'],
+        'datetime_palette' => ['showitem' => 'start_date,end_date,all_day,--linebreak--,doors_open'],
         'attendance_palette' => ['showitem' => 'online_link,ticket_link'],
     ],
     'columns' => [
@@ -79,7 +81,6 @@ return [
             'exclude' => true,
             'config' => [
                 'type' => 'datetime',
-                'dbType' => 'datetime',
                 'required' => true,
                 'format' => 'datetime',
                 'disableAgeDisplay' => true,
@@ -90,7 +91,6 @@ return [
             'exclude' => true,
             'config' => [
                 'type' => 'datetime',
-                'dbType' => 'datetime',
                 'format' => 'datetime',
                 'disableAgeDisplay' => true,
             ],
@@ -116,8 +116,12 @@ return [
             'exclude' => true,
             'config' => [
                 'type' => 'datetime',
-                'dbType' => 'datetime',
                 'readOnly' => true,
+            ],
+        ],
+        'modified_fields' => [
+            'config' => [
+                'type' => 'passthrough',
             ],
         ],
         'description' => [
@@ -134,17 +138,18 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
+                'default' => EventAppointmentType::IN_PERSON->value,
                 'items' => [
                     [
-                        'value' => 'inPerson',
+                        'value' => EventAppointmentType::IN_PERSON->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:type.items.inPerson.label',
                     ],
                     [
-                        'value' => 'online',
+                        'value' => EventAppointmentType::ONLINE->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:type.items.online.label',
                     ],
                     [
-                        'value' => 'hybrid',
+                        'value' => EventAppointmentType::HYBRID->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:type.items.hybrid.label',
                     ],
                 ],
@@ -197,9 +202,9 @@ return [
             'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:speakers.label',
             'exclude' => true,
             'config' => [
-                'type' => 'input',
-                'size' => 60,
-                'max' => 255,
+                'type' => 'text',
+                'cols' => 30,
+                'rows' => 4,
             ],
         ],
         'requirement_bookings' => [
@@ -215,29 +220,45 @@ return [
                 ],
             ],
         ],
-        //'t3_origuid' => [
-        //    'config' => [
-        //        'type' => 'passthrough',
-        //    ],
-        //],
-        //'hidden' => [
-        //    'exclude' => true,
-        //    'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.enabled',
-        //    'config' => [
-        //        'type' => 'check',
-        //        'renderType' => 'checkboxToggle',
-        //        'items' => [
-        //            [
-        //                'label' => '',
-        //                'invertStateDisplay' => true,
-        //            ],
-        //        ],
-        //    ],
-        //],
+        'contact' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:contact.label',
+            'config' => [
+                'type' => 'group',
+                'allowed' => 'fe_users',
+                'foreign_table' => 'fe_users',
+                'size' => 1,
+                'maxitems' => 1,
+            ],
+        ],
+        'doors_open' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:doors_open.label',
+            'config' => [
+                'type' => 'datetime',
+                'format' => 'time',
+                'disableAgeDisplay' => true,
+            ],
+        ],
+        'notes' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:notes.label',
+            'config' => [
+                'type' => 'text',
+                'rows' => 3,
+            ],
+        ],
+        'max_participants' => [
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:max_participants.label',
+            'exclude' => true,
+            'config' => [
+                'type' => 'number',
+            ],
+        ],
     ],
     'types' => [
         'event-appointment' => [
-            'showitem' => '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,record_type,calendar,event,title,--palette--;;datetime_palette,canceled,modified_date,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.content_tab,description,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.location_tab,type,--palette--;;attendance_palette,location,address,directions,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.speakers_tab,speakers,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.requirements_tab,requirement_bookings,--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,--palette--;;hidden',
+            'showitem' => '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,record_type,calendar,event,title,--palette--;;datetime_palette,canceled,modified_date,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.content_tab,description,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.location_tab,type,--palette--;;attendance_palette,location,address,directions,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.speakers_tab,speakers,contact,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.participants_tab,max_participants,--div--;LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:tabs.requirements_tab,requirement_bookings,notes,--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,--palette--;;hidden',
         ],
     ],
 ];
