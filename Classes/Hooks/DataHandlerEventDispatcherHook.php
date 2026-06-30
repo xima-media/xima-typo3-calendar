@@ -51,24 +51,6 @@ class DataHandlerEventDispatcherHook
         array &$fieldArray,
         DataHandler $parentObject
     ): void {
-        // Save approvalDate of an event if status was updated
-        if ($status === 'update' && $table === self::TABLE_EVENT) {
-            if (array_key_exists('status', $fieldArray)) {
-                if ($fieldArray['status'] == EventStatus::LIVE->value) {
-                    $fieldArray['approval_date'] = time();
-                } else {
-                    $fieldArray['approval_date'] = null;
-                }
-            }
-        }
-
-        // Save modifiedDate of an event appointment if startDate/endDate/canceled was changed
-        if ($status === 'update' && $table === self::TABLE_ENTRY) {
-            if (array_intersect_key(array_flip(['start_date', 'end_date', 'canceled']), $fieldArray)) {
-                $fieldArray['modified_date'] = time();
-            }
-        }
-
         if ($status !== 'update' || !in_array($table, [self::TABLE_EVENT, self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], true)) {
             return;
         }
