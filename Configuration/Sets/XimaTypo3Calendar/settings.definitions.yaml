@@ -3,15 +3,22 @@ categories:
   XimaTypo3Calendar:
     label: 'XIMA TYPO3 Calendar'
 
-  XimaTypo3Calendar.notifications:
-    label: 'Notifications'
+  XimaTypo3Calendar.pages:
+    label: 'Pages'
     parent: XimaTypo3Calendar
 
 settings:
 
-  xima_typo3_calendar.notifications.parentCategory:
-    label: 'Parent category for notification filtering'
-    description: 'Optional sys_category UID. When set, only categories below this one can be chosen in the backend user notification settings. 0 (default) offers all categories.'
-    category: XimaTypo3Calendar.notifications
+  xima_typo3_calendar.pages.eventSinglePid:
+    label: 'Single page for calendar events'
+    description: 'The page where the single view of a calendar event is displayed.'
+    category: XimaTypo3Calendar.pages
+    type: int
+    default: 0
+
+  xima_typo3_calendar.pages.eventAppointmentSinglePid:
+    label: 'Single page for event appointments'
+    description: 'The page where the single view of an event appointment is displayed.'
+    category: XimaTypo3Calendar.pages
     type: int
     default: 0
