@@ -12,7 +12,7 @@ abstract readonly class AbstractRecordChangedEvent
     public function __construct(
         public int $uid,
         public string $table,
-        public string $changeType,
+        public ChangeType $changeType,
         public array $changedFields
     ) {
     }

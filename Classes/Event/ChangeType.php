@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\Event;
 
-final class ChangeType
+enum ChangeType: string
 {
-    public const CREATED = 'created';
-    public const UPDATED = 'updated';
-    public const HIDDEN = 'hidden';
-    public const DELETED = 'deleted';
-    public const REACTIVATED = 'reactivated';
-    public const LOCATION_CHANGED = 'location_changed';
-    public const DATE_RANGE_CHANGED = 'date_range_changed';
-
-    private function __construct()
-    {
-    }
+    case CREATED = 'created';
+    case UPDATED = 'updated';
+    case HIDDEN = 'hidden';
+    case DELETED = 'deleted';
+    case REACTIVATED = 'reactivated';
+    case LOCATION_CHANGED = 'location_changed';
+    case DATE_RANGE_CHANGED = 'date_range_changed';
 }

@@ -270,7 +270,7 @@ class DataHandlerEventDispatcherHook
         return $changedFields;
     }
 
-    private function dispatchPendingDatamapEvent(string $table, mixed $rawId, int $uid, string $changeType): void
+    private function dispatchPendingDatamapEvent(string $table, mixed $rawId, int $uid, ChangeType $changeType): void
     {
         $key = $this->buildDatamapKey($table, $rawId, $changeType);
         if (!array_key_exists($key, $this->pendingDatamapEvents)) {
@@ -290,7 +290,7 @@ class DataHandlerEventDispatcherHook
     /**
      * @param array<string, array{old: mixed, new: mixed}> $changedFields
      */
-    private function dispatchLifecycleEvent(string $table, int $uid, string $changeType, array $changedFields): void
+    private function dispatchLifecycleEvent(string $table, int $uid, ChangeType $changeType, array $changedFields): void
     {
         if ($table === self::TABLE_EVENT && $changeType === ChangeType::UPDATED) {
             return;
@@ -314,14 +314,14 @@ class DataHandlerEventDispatcherHook
         }
     }
 
-    private function rememberDatamapEvent(string $table, mixed $id, string $changeType, array $changedFields): void
+    private function rememberDatamapEvent(string $table, mixed $id, ChangeType $changeType, array $changedFields): void
     {
         $this->pendingDatamapEvents[$this->buildDatamapKey($table, $id, $changeType)] = $changedFields;
     }
 
-    private function buildDatamapKey(string $table, mixed $id, string $changeType): string
+    private function buildDatamapKey(string $table, mixed $id, ChangeType $changeType): string
     {
-        return $table . ':' . (string)$id . ':' . $changeType;
+        return $table . ':' . (string)$id . ':' . $changeType->value;
     }
 
     private function buildCmdKey(string $command, string $table, mixed $id): string
@@ -329,9 +329,9 @@ class DataHandlerEventDispatcherHook
         return $command . ':' . $table . ':' . (string)$id;
     }
 
-    private function registerDispatch(string $table, int $uid, string $changeType): bool
+    private function registerDispatch(string $table, int $uid, ChangeType $changeType): bool
     {
-        $eventKey = $table . ':' . $uid . ':' . $changeType;
+        $eventKey = $table . ':' . $uid . ':' . $changeType->value;
         if (isset(self::$dispatchedEventKeys[$eventKey])) {
             return false;
         }

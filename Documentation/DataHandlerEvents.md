@@ -7,7 +7,7 @@ This extension dispatches custom events when records in the calendar tables are 
 All events follow a consistent payload structure:
 - `uid` (int): The affected record UID
 - `table` (string): The table name (e.g., `tx_ximatypo3calendar_domain_model_entry`)
-- `changeType` (string): The type of change (`created`, `updated`, `hidden`, `deleted`, `reactivated`, `location_changed`, `date_range_changed`)
+- `changeType` (`ChangeType`): The type of change as a backed enum case — `ChangeType::CREATED`, `UPDATED`, `HIDDEN`, `DELETED`, `REACTIVATED`, `LOCATION_CHANGED`, `DATE_RANGE_CHANGED` (use `->value` for the string form, e.g. `'created'`)
 - `changedFields` (array): Dictionary of field changes in format `fieldName => ['old' => <oldValue>, 'new' => <newValue>]`
 
 Only fields that actually changed are included. No-op updates (where `old === new`) are automatically filtered out.
@@ -91,7 +91,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['eventDispatcher']['listeners'][
 ```php
 $event->uid // 123
 $event->table // 'tx_ximatypo3calendar_domain_model_requirementbooking'
-$event->changeType // 'created'
+$event->changeType // ChangeType::CREATED
 $event->changedFields // [
 //     'requirement' => ['old' => null, 'new' => '5'],
 //     'amount' => ['old' => null, 'new' => '2'],
@@ -104,7 +104,7 @@ $event->changedFields // [
 ```php
 $event->uid // 456
 $event->table // 'tx_ximatypo3calendar_domain_model_entry'
-$event->changeType // 'updated' or 'date_range_changed' or 'location_changed'
+$event->changeType // ChangeType::UPDATED, ChangeType::DATE_RANGE_CHANGED or ChangeType::LOCATION_CHANGED
 $event->changedFields // [
 //     'start_date' => ['old' => 1622505600, 'new' => 1622592000],
 //     'title' => ['old' => 'Old Title', 'new' => 'New Title'],
