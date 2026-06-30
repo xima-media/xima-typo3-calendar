@@ -1,8 +1,13 @@
 <?php
 
 return [
+    'calendar_modules' => [
+        'labels' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang_mod_group_calendar.xlf',
+        'iconIdentifier' => 'module-group-calendar',
+        'position' => ['after' => 'web'],
+    ],
     'calendar_events' => [
-        'parent' => 'web',
+        'parent' => 'calendar_modules',
         'position' => ['after' => 'list'],
         'access' => 'user',
         'iconIdentifier' => 'module-calendar-events',
@@ -17,7 +22,7 @@ return [
         'inheritNavigationComponentFromMainModule' => false,
     ],
     'calendar_calendar' => [
-        'parent' => 'web',
+        'parent' => 'calendar_modules',
         'position' => ['after' => 'calendar_events'],
         'access' => 'user',
         'iconIdentifier' => 'module-calendar-calendar',

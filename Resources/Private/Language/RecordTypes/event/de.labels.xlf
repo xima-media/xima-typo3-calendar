@@ -12,9 +12,17 @@
 				<source />
 				<target>Veranstaltungsinformationen</target>
 			</trans-unit>
+			<trans-unit id="record_type.label">
+				<source />
+				<target>Veranstaltungstyp</target>
+			</trans-unit>
 			<trans-unit id="title.label">
 				<source />
 				<target>Titel</target>
+			</trans-unit>
+			<trans-unit id="slug.label">
+				<source />
+				<target>URL Pfadsegment</target>
 			</trans-unit>
 			<trans-unit id="language.label">
 				<source />
@@ -160,13 +168,33 @@
 				<source />
 				<target>Entwurf</target>
 			</trans-unit>
+			<trans-unit id="status.items.0.description">
+				<source />
+				<target>Wird noch bearbeitet und ist nicht öffentlich sichtbar.</target>
+			</trans-unit>
 			<trans-unit id="status.items.1.label">
 				<source />
-				<target>Live</target>
+				<target>Prüfung</target>
+			</trans-unit>
+			<trans-unit id="status.items.1.description">
+				<source />
+				<target>Wartet auf Freigabe und ist noch nicht öffentlich sichtbar.</target>
 			</trans-unit>
 			<trans-unit id="status.items.2.label">
 				<source />
+				<target>Live</target>
+			</trans-unit>
+			<trans-unit id="status.items.2.description">
+				<source />
+				<target>Ist freigegeben und wird auf der Website angezeigt.</target>
+			</trans-unit>
+			<trans-unit id="status.items.3.label">
+				<source />
 				<target>Abgelehnt</target>
+			</trans-unit>
+			<trans-unit id="status.items.3.description">
+				<source />
+				<target>Wurde abgelehnt und kann erneut bearbeitet werden.</target>
 			</trans-unit>
 			<trans-unit id="approval_date.label">
 				<source />

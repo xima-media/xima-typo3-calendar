@@ -7,8 +7,14 @@
 			<trans-unit id="title">
 				<source>Event</source>
 			</trans-unit>
+			<trans-unit id="record_type.label">
+				<source>Event type</source>
+			</trans-unit>
 			<trans-unit id="title.label">
 				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="slug.label">
+				<source>URL Slug</source>
 			</trans-unit>
 			<trans-unit id="language.label">
 				<source>Language</source>
@@ -109,11 +115,26 @@
 			<trans-unit id="status.items.0.label">
 				<source>Draft</source>
 			</trans-unit>
+			<trans-unit id="status.items.0.description">
+				<source>Still being edited and not publicly visible.</source>
+			</trans-unit>
 			<trans-unit id="status.items.1.label">
-				<source>Live</source>
+				<source>Review</source>
+			</trans-unit>
+			<trans-unit id="status.items.1.description">
+				<source>Submitted for approval and not yet publicly visible.</source>
 			</trans-unit>
 			<trans-unit id="status.items.2.label">
+				<source>Live</source>
+			</trans-unit>
+			<trans-unit id="status.items.2.description">
+				<source>Approved and shown on the website.</source>
+			</trans-unit>
+			<trans-unit id="status.items.3.label">
 				<source>Rejected</source>
+			</trans-unit>
+			<trans-unit id="status.items.3.description">
+				<source>Rejected and can be edited again.</source>
 			</trans-unit>
 			<trans-unit id="approval_date.label">
 				<source>Approval date</source>

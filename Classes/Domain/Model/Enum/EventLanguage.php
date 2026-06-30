@@ -1,6 +1,6 @@
 <?php
 
-namespace Xima\XimaTypo3Calendar\Domain\Model\Api;
+namespace Xima\XimaTypo3Calendar\Domain\Model\Enum;
 
 enum EventLanguage: string
 {

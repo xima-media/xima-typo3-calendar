@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-	<file source-language="en" datatype="plaintext" original="messages" date="2021-10-17T12:43:45Z" product-name="xm_dkfz_net_jobs">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2021-10-17T12:43:45Z" product-name="xm_dkfz_net_jobs">
 		<body>
 			<trans-unit id="latestEvents.title">
 				<source />
@@ -29,6 +29,10 @@
 			<trans-unit id="settings.url">
 				<source />
 				<target>URL des RSS-Feeds</target>
+			</trans-unit>
+			<trans-unit id="folder.module.label">
+				<source />
+				<target>Veranstaltungen</target>
 			</trans-unit>
 			<trans-unit id="widget_group.calendar">
 				<source />
@@ -81,6 +85,14 @@
 			<trans-unit id="widget.soon_needed_requirements.description">
 				<source />
 				<target>Zeigt anstehende Anforderungsbuchungen von Veranstaltungsterminen.</target>
+			</trans-unit>
+			<trans-unit id="widget.canceled_appointments.title">
+				<source />
+				<target>Abgesagte Termine</target>
+			</trans-unit>
+			<trans-unit id="widget.canceled_appointments.description">
+				<source />
+				<target>Zeigt abgesagte, gelöschte und verborgene Termine, die in der Zukunft stattgefunden hätten.</target>
 			</trans-unit>
 		</body>
 	</file>

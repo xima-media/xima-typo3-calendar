@@ -1,0 +1,260 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true" lang="de">
+    <article class="event-detail" itemscope itemtype="https://schema.org/Event">
+        <header class="event-detail__header">
+            <h1 class="event-detail__title" itemprop="name">{event.title}</h1>
+
+            <div class="event-detail__meta">
+                <f:if condition="{event.publishDate}">
+                    <p class="event-detail__meta-item">
+                        Published on
+                        <time itemprop="datePublished" datetime="{event.publishDate -> f:format.date(format: 'c')}">
+                            {event.publishDate -> f:format.date(format: 'd.m.Y')}
+                        </time>
+                    </p>
+                </f:if>
+
+                <f:if condition="{event.language}">
+                    <p class="event-detail__meta-item">Language: {event.language.value}</p>
+                    <meta itemprop="inLanguage" content="{event.language.value}" />
+                </f:if>
+
+                <f:if condition="{event.requiresRegistration}">
+                    <p class="event-detail__meta-item">Registration is required for this event.</p>
+                </f:if>
+            </div>
+        </header>
+
+        <f:if condition="{event.previewImage}">
+            <figure class="event-detail__media">
+                <f:image image="{event.previewImage}" maxWidth="1200" additionalAttributes="{itemprop: 'image'}" />
+            </figure>
+        </f:if>
+
+        <div class="event-detail__content">
+            <f:if condition="{event.description}">
+                <section class="event-detail__section event-detail__section--description">
+                    <h2>Description</h2>
+                    <div itemprop="description">
+                        <f:format.html>{event.description}</f:format.html>
+                    </div>
+                </section>
+            </f:if>
+
+            <f:if condition="{event.additionalInformation}">
+                <section class="event-detail__section event-detail__section--additional-information">
+                    <h2>Additional information</h2>
+                    <f:format.html>{event.additionalInformation}</f:format.html>
+                </section>
+            </f:if>
+
+            <section class="event-detail__section event-detail__section--facts">
+                <h2>At a glance</h2>
+                <dl class="event-detail__facts">
+                    <f:if condition="{event.organizer}">
+                        <div class="event-detail__fact">
+                            <dt>Organizer</dt>
+                            <dd itemprop="organizer" itemscope itemtype="https://schema.org/Person">
+                                <f:if condition="{event.organizer.firstName} || {event.organizer.lastName}">
+                                    <f:then>
+                                        <span itemprop="name">{event.organizer.firstName} {event.organizer.lastName}</span>
+                                    </f:then>
+                                    <f:else>
+                                        <span itemprop="name">{event.organizer.username}</span>
+                                    </f:else>
+                                </f:if>
+                                <f:if condition="{event.organizer.email}">
+                                    <meta itemprop="email" content="{event.organizer.email}" />
+                                </f:if>
+                            </dd>
+                        </div>
+                    </f:if>
+
+                    <f:if condition="{event.location}">
+                        <div class="event-detail__fact">
+                            <dt>Location</dt>
+                            <dd itemprop="location" itemscope itemtype="https://schema.org/Place">
+                                <span itemprop="name">{event.location.name}</span>
+                            </dd>
+                        </div>
+                    </f:if>
+
+                    <f:if condition="{event.url}">
+                        <div class="event-detail__fact">
+                            <dt>Event website</dt>
+                            <dd>
+                                <a itemprop="url" href="{event.url}" target="_blank" rel="noopener noreferrer">Visit external event page</a>
+                            </dd>
+                        </div>
+                    </f:if>
+                </dl>
+            </section>
+
+            <f:if condition="{event.categories}">
+                <section class="event-detail__section event-detail__section--categories">
+                    <h2>Categories</h2>
+                    <ul class="event-detail__tags">
+                        <f:for each="{event.categories}" as="category">
+                            <li class="event-detail__tag">{category.title}</li>
+                            <meta itemprop="keywords" content="{category.title}" />
+                        </f:for>
+                    </ul>
+                </section>
+            </f:if>
+
+            <f:if condition="{event.appointments}">
+                <section class="event-detail__section event-detail__section--appointments">
+                    <h2>Appointments</h2>
+                    <div class="event-detail__appointments">
+                        <f:for each="{event.appointments}" as="appointment">
+                            <article class="event-appointment-card" itemprop="subEvent" itemscope itemtype="https://schema.org/Event">
+                                <header class="event-appointment-card__header">
+                                    <h3 class="event-appointment-card__title">
+                                        <f:if condition="{appointment.title}">
+                                            <f:then>
+                                                <span itemprop="name">{appointment.title}</span>
+                                            </f:then>
+                                            <f:else>
+                                                <span itemprop="name">{event.title}</span>
+                                            </f:else>
+                                        </f:if>
+                                    </h3>
+
+                                    <f:if condition="{appointment.canceled}">
+                                        <f:then>
+                                            <p class="event-appointment-card__status">Canceled</p>
+                                            <meta itemprop="eventStatus" content="https://schema.org/EventCancelled" />
+                                        </f:then>
+                                        <f:else>
+                                            <meta itemprop="eventStatus" content="https://schema.org/EventScheduled" />
+                                        </f:else>
+                                    </f:if>
+                                </header>
+
+                                <div class="event-appointment-card__meta">
+                                    <f:if condition="{appointment.startDate}">
+                                        <p>
+                                            <strong>Date:</strong>
+                                            <f:if condition="{appointment.allDay}">
+                                                <f:then>
+                                                    <time
+                                                        itemprop="startDate"
+                                                        datetime="{appointment.startDate -> f:format.date(format: 'c')}">
+                                                        {appointment.startDate -> f:format.date(format: 'd.m.Y')}
+                                                    </time>
+                                                    <span>(all day)</span>
+                                                </f:then>
+                                                <f:else>
+                                                    <time
+                                                        itemprop="startDate"
+                                                        datetime="{appointment.startDate -> f:format.date(format: 'c')}">
+                                                        {appointment.startDate -> f:format.date(format: 'd.m.Y H:i')}
+                                                    </time>
+                                                    <f:if condition="{appointment.endDate}">
+                                                        –
+                                                        <time
+                                                            itemprop="endDate"
+                                                            datetime="{appointment.endDate -> f:format.date(format: 'c')}">
+                                                            {appointment.endDate -> f:format.date(format: 'd.m.Y H:i')}
+                                                        </time>
+                                                    </f:if>
+                                                </f:else>
+                                            </f:if>
+                                        </p>
+                                    </f:if>
+
+                                    <f:if condition="{appointment.doorsOpen}">
+                                        <p>
+                                            <strong>Doors open:</strong>
+                                            <time itemprop="doorTime" datetime="{appointment.doorsOpen -> f:format.date(format: 'c')}">
+                                                {appointment.doorsOpen -> f:format.date(format: 'd.m.Y H:i')}
+                                            </time>
+                                        </p>
+                                    </f:if>
+
+                                    <f:if condition="{appointment.location}">
+                                        <p>
+                                            <strong>Venue:</strong>
+                                            <span itemprop="location" itemscope itemtype="https://schema.org/Place">
+                                                <span itemprop="name">{appointment.location.name}</span>
+                                            </span>
+                                        </p>
+                                    </f:if>
+
+                                    <f:if condition="{appointment.address}">
+                                        <p>
+                                            <strong>Address:</strong>
+                                            <span itemprop="location" itemscope itemtype="https://schema.org/Place">
+                                                <span itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+                                                    <span itemprop="streetAddress">{appointment.address}</span>
+                                                </span>
+                                            </span>
+                                        </p>
+                                    </f:if>
+
+                                    <f:if condition="{appointment.speakers}">
+                                        <p>
+                                            <strong>Speakers:</strong>
+                                            <span itemprop="performer" itemscope itemtype="https://schema.org/Person">
+                                                <span itemprop="name">{appointment.speakers}</span>
+                                            </span>
+                                        </p>
+                                    </f:if>
+
+                                    <f:if condition="{appointment.maxParticipants}">
+                                        <p>
+                                            <strong>Max. participants:</strong>
+                                            <span itemprop="maximumAttendeeCapacity">{appointment.maxParticipants}</span>
+                                        </p>
+                                    </f:if>
+                                </div>
+
+                                <f:if condition="{appointment.description}">
+                                    <div class="event-appointment-card__description" itemprop="description">
+                                        <f:format.html>{appointment.description}</f:format.html>
+                                    </div>
+                                </f:if>
+
+                                <f:if condition="{appointment.directions}">
+                                    <div class="event-appointment-card__directions">
+                                        <strong>Directions:</strong>
+                                        <f:format.nl2br>{appointment.directions}</f:format.nl2br>
+                                    </div>
+                                </f:if>
+
+                                <footer class="event-appointment-card__footer">
+                                    <f:if condition="{appointment.onlineLink}">
+                                        <meta itemprop="eventAttendanceMode" content="https://schema.org/OnlineEventAttendanceMode" />
+                                        <span itemprop="location" itemscope itemtype="https://schema.org/VirtualLocation">
+                                            <meta itemprop="url" content="{appointment.onlineLink}" />
+                                        </span>
+                                        <a href="{appointment.onlineLink}" target="_blank" rel="noopener noreferrer">Join online</a>
+                                    </f:if>
+                                    <f:if condition="{appointment.ticketLink}">
+                                        <span itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                                            <meta itemprop="availability" content="https://schema.org/InStock" />
+                                            <meta itemprop="url" content="{appointment.ticketLink}" />
+                                        </span>
+                                        <a href="{appointment.ticketLink}" target="_blank" rel="noopener noreferrer">Get tickets</a>
+                                    </f:if>
+                                </footer>
+                            </article>
+                        </f:for>
+                    </div>
+                </section>
+            </f:if>
+
+            <f:if condition="{event.relatedEvents}">
+                <section class="event-detail__section event-detail__section--related-events">
+                    <h2>Related events</h2>
+                    <ul class="event-detail__related-list">
+                        <f:for each="{event.relatedEvents}" as="relatedEvent">
+                            <li>
+                                <f:link.action action="show" arguments="{event: relatedEvent}">{relatedEvent.title}</f:link.action>
+                            </li>
+                        </f:for>
+                    </ul>
+                </section>
+            </f:if>
+        </div>
+    </article>
+</html>

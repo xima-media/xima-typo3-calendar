@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\Widgets\Provider;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Dashboard\Widgets\ListDataProviderInterface;
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
+use Xima\XimaTypo3Calendar\Event\BeforeWidgetItemsFetchedEvent;
 
 readonly class SoonNeededRequirementsDataProvider implements ListDataProviderInterface
 {
     public function __construct(
         private ConnectionPool $connectionPool,
+        private EventDispatcherInterface $eventDispatcher,
         private int $daysInPreview = 2,
         private int $limit = 10
     ) {
@@ -27,6 +31,8 @@ readonly class SoonNeededRequirementsDataProvider implements ListDataProviderInt
         $upperBoundDate->add(new \DateInterval('P' . $this->daysInPreview . 'D'))->setTime(23, 59, 59);
         $upperBoundTimestamp = $upperBoundDate->getTimestamp();
 
+        $bookingStartDateExpr = 'COALESCE(NULLIF(rb.start_date, 0), en.start_date)';
+
         $qb = $this->connectionPool->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_requirementbooking');
         $qb->select(
             'rb.uid AS booking_uid',
@@ -41,7 +47,7 @@ readonly class SoonNeededRequirementsDataProvider implements ListDataProviderInt
             'l.name AS entry_location',
             'l2.name AS event_location',
         )
-            ->addSelectLiteral('COALESCE(NULLIF(rb.start_date, 0), en.start_date) AS start_date')
+            ->addSelectLiteral($bookingStartDateExpr . ' AS booking_start_date')
             ->from('tx_ximatypo3calendar_domain_model_requirementbooking', 'rb')
             ->innerJoin(
                 'rb',
@@ -80,12 +86,16 @@ readonly class SoonNeededRequirementsDataProvider implements ListDataProviderInt
                 $qb->expr()->eq('r.assignee', $qb->quoteIdentifier('u.uid'))
             )
             ->where(
-                $qb->expr()->gt('en.start_date', $qb->createNamedParameter($nowTimestamp, Connection::PARAM_INT)),
-                $qb->expr()->lt('en.start_date', $qb->createNamedParameter($upperBoundTimestamp, Connection::PARAM_INT)),
-                $qb->expr()->eq('e.status', $qb->createNamedParameter(1, Connection::PARAM_INT))
+                $bookingStartDateExpr . ' > ' . $qb->createNamedParameter($nowTimestamp, Connection::PARAM_INT),
+                $bookingStartDateExpr . ' < ' . $qb->createNamedParameter($upperBoundTimestamp, Connection::PARAM_INT),
+                $qb->expr()->eq('e.status', $qb->createNamedParameter(EventStatus::LIVE->value, Connection::PARAM_INT))
             )
-            ->orderBy('start_date', 'ASC')
+            ->orderBy('booking_start_date', 'ASC')
             ->setMaxResults($this->limit);
+
+        $event = new BeforeWidgetItemsFetchedEvent($qb, self::class);
+        $this->eventDispatcher->dispatch($event);
+        $qb = $event->getQueryBuilder();
 
         return $qb->executeQuery()->fetchAllAssociative();
     }

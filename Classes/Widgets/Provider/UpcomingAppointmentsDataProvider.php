@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\Widgets\Provider;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Dashboard\Widgets\ListDataProviderInterface;
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
+use Xima\XimaTypo3Calendar\Event\BeforeWidgetItemsFetchedEvent;
 
 readonly class UpcomingAppointmentsDataProvider implements ListDataProviderInterface
 {
     public function __construct(
         private ConnectionPool $connectionPool,
+        private EventDispatcherInterface $eventDispatcher,
         private int $daysInPreview = 10,
         private int $limit = 10
     ) {
@@ -42,10 +46,14 @@ readonly class UpcomingAppointmentsDataProvider implements ListDataProviderInter
             ->where(
                 $qb->expr()->gt('a.start_date', $qb->createNamedParameter($nowTimestap, Connection::PARAM_INT)),
                 $qb->expr()->lt('a.start_date', $qb->createNamedParameter($upperBoundTimestamp, Connection::PARAM_INT)),
-                $qb->expr()->eq('e.status', $qb->createNamedParameter(1, Connection::PARAM_INT))
+                $qb->expr()->eq('e.status', $qb->createNamedParameter(EventStatus::LIVE->value, Connection::PARAM_INT))
             )
             ->orderBy('a.start_date', 'ASC')
             ->setMaxResults($this->limit);
+
+        $event = new BeforeWidgetItemsFetchedEvent($qb, self::class);
+        $this->eventDispatcher->dispatch($event);
+        $qb = $event->getQueryBuilder();
 
         return $qb->executeQuery()->fetchAllAssociative();
     }

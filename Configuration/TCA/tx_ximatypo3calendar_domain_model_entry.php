@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventAppointmentType;
+
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:title',
@@ -117,6 +119,11 @@ return [
                 'readOnly' => true,
             ],
         ],
+        'modified_fields' => [
+            'config' => [
+                'type' => 'passthrough',
+            ],
+        ],
         'description' => [
             'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:description.label',
             'exclude' => true,
@@ -131,17 +138,18 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
+                'default' => EventAppointmentType::IN_PERSON->value,
                 'items' => [
                     [
-                        'value' => 'inPerson',
+                        'value' => EventAppointmentType::IN_PERSON->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:type.items.inPerson.label',
                     ],
                     [
-                        'value' => 'online',
+                        'value' => EventAppointmentType::ONLINE->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:type.items.online.label',
                     ],
                     [
-                        'value' => 'hybrid',
+                        'value' => EventAppointmentType::HYBRID->value,
                         'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:type.items.hybrid.label',
                     ],
                 ],
@@ -194,9 +202,9 @@ return [
             'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event-appointment/labels.xlf:speakers.label',
             'exclude' => true,
             'config' => [
-                'type' => 'input',
-                'size' => 60,
-                'max' => 255,
+                'type' => 'text',
+                'cols' => 30,
+                'rows' => 4,
             ],
         ],
         'requirement_bookings' => [

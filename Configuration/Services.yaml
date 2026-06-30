@@ -91,3 +91,20 @@ services:
         iconIdentifier: 'content-widget-list'
         height: 'medium'
         width: 'large'
+
+  dashboard.widget.xima_canceledappointments:
+    class: 'Xima\XimaTypo3Calendar\Widgets\CalendarWidget'
+    arguments:
+      $buttonProvider: '@xima_typo3_calendar_widget.button.calendar_events_event'
+      $dataProvider: '@Xima\XimaTypo3Calendar\Widgets\Provider\CanceledAppointmentsDataProvider'
+      $options:
+        refreshAvailable: true
+    tags:
+      - name: dashboard.widget
+        identifier: 'xima_canceledappointments'
+        groupNames: 'xima_typo3_calendar'
+        title: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:widget.canceled_appointments.title'
+        description: 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:widget.canceled_appointments.description'
+        iconIdentifier: 'content-widget-list'
+        height: 'medium'
+        width: 'large'

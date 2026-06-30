@@ -47,6 +47,8 @@ class CalendarWidget implements WidgetInterface, RequestAwareWidgetInterface
             Provider\ReadyToPublishEventsDataProvider::class => 'Widgets/XimaTypo3CalendarEventsWidget',
             Provider\UpcomingAppointmentsDataProvider::class => 'Widgets/XimaTypo3CalendarAppointmentsWidget',
             Provider\SoonNeededRequirementsDataProvider::class => 'Widgets/XimaTypo3CalendarRequirementsWidget',
+            Provider\CanceledAppointmentsDataProvider::class => 'Widgets/XimaTypo3CalendarCanceledAppointmentsWidget',
+            default => throw new \UnexpectedValueException('No template defined for data provider ' . get_class($this->dataProvider)),
         };
 
         return $view->render($template);

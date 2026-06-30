@@ -5,13 +5,14 @@ namespace Xima\XimaTypo3Calendar\Controller\Backend;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Configuration\Features;
 use Xima\XimaTypo3Recordlist\Controller\AbstractBackendController;
+use Xima\XimaTypo3Recordlist\Dto\RecordSource;
 
 class EventsController extends AbstractBackendController
 {
     public function __construct(
-        private readonly ExtensionConfiguration $extensionConfiguration,
+        private readonly Features $features,
     ) {
     }
 
@@ -21,14 +22,32 @@ class EventsController extends AbstractBackendController
      */
     public function getRecordPid(): int
     {
-        $pid = $this->extensionConfiguration
-            ->get('xima_typo3_calendar', 'recordPid');
-        return $pid !== null ? (int)$pid : 0;
+        return 0;
+    }
+
+    protected function getRecordSources(): array
+    {
+        $qb = $this->connectionPool->getQueryBuilderForTable('pages');
+        $folders = $qb->select('uid', 'title')
+            ->from('pages')
+            ->where($qb->expr()->eq('module', $qb->createNamedParameter('events')))
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        $recordSources = [];
+        foreach ($folders as $folder) {
+            $recordSources[] = new RecordSource(
+                pid: (int)$folder['uid'],
+                includeSubpages: true,
+                depth: 1
+            );
+        }
+        return $recordSources;
     }
 
     public function getTableNames(): array
     {
-        return [
+        $tableNames = [
             'tx_ximatypo3calendar_domain_model_event',
             'tx_ximatypo3calendar_domain_model_organizer',
             'tx_ximatypo3calendar_domain_model_speaker',
@@ -37,6 +56,12 @@ class EventsController extends AbstractBackendController
             'tx_ximatypo3calendar_domain_model_requirement',
             'tx_ximatypo3calendar_domain_model_calendar',
         ];
+
+        if (!$this->features->isFeatureEnabled('ximaTypo3Calendar.requirementsManagement')) {
+            $tableNames = array_diff($tableNames, ['tx_ximatypo3calendar_domain_model_requirement']);
+        }
+
+        return $tableNames;
     }
 
     protected function modifyPaginatedRecords(): void
@@ -83,11 +108,13 @@ class EventsController extends AbstractBackendController
         // ============================================
         // tx_ximatypo3calendar_domain_model_event (Event)
         // ============================================
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['title']['defaultPosition'] = 1;
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['language']['defaultPosition'] = 2;
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['categories']['defaultPosition'] = 3;
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['organizer']['defaultPosition'] = 4;
-        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['status']['defaultPosition'] = 5;
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['showIconColumn'] = false;
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['status']['defaultPosition'] = 1;
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['status']['partial'] = 'EventStatus';
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['title']['defaultPosition'] = 2;
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['language']['defaultPosition'] = 3;
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['categories']['defaultPosition'] = 4;
+        $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['organizer']['defaultPosition'] = 5;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['publish_to_website']['defaultPosition'] = 6;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['publish_date']['defaultPosition'] = 7;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['appointments']['defaultPosition'] = 8;
