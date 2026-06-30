@@ -51,7 +51,7 @@ class DataHandlerEventDispatcherHook
         array &$fieldArray,
         DataHandler $parentObject
     ): void {
-        if ($status !== 'update' || !in_array($table, [self::TABLE_EVENT, self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], true)) {
+        if ($status !== 'update' || !$this->isHandledTable($table)) {
             return;
         }
 
@@ -95,7 +95,7 @@ class DataHandlerEventDispatcherHook
         array $fieldArray,
         DataHandler $parentObject
     ): void {
-        if (!in_array($table, [self::TABLE_EVENT, self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], true)) {
+        if (!$this->isHandledTable($table)) {
             return;
         }
 
@@ -143,7 +143,7 @@ class DataHandlerEventDispatcherHook
         DataHandler $parentObject,
         mixed $pasteUpdate
     ): void {
-        if (!in_array($table, [self::TABLE_EVENT, self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], true)) {
+        if (!$this->isHandledTable($table)) {
             return;
         }
         if (!in_array($command, ['disable', 'enable', 'delete', 'copy'], true)) {
@@ -169,7 +169,7 @@ class DataHandlerEventDispatcherHook
         mixed $pasteUpdate,
         mixed $pasteDatamap
     ): void {
-        if (!in_array($table, [self::TABLE_EVENT, self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], true)) {
+        if (!$this->isHandledTable($table)) {
             return;
         }
 
@@ -229,7 +229,7 @@ class DataHandlerEventDispatcherHook
         bool &$recordWasDeleted,
         DataHandler $parentObject
     ): void {
-        if (!in_array($table, [self::TABLE_EVENT, self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], true)) {
+        if (!$this->isHandledTable($table)) {
             return;
         }
 
@@ -364,6 +364,11 @@ class DataHandlerEventDispatcherHook
         }
         self::$dispatchedEventKeys[$eventKey] = true;
         return true;
+    }
+
+    private function isHandledTable(string $table): bool
+    {
+        return in_array($table, [self::TABLE_EVENT, self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], true);
     }
 
     private function resolveUid(string $status, mixed $id, DataHandler $parentObject): int
