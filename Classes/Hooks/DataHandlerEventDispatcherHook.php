@@ -105,7 +105,7 @@ class DataHandlerEventDispatcherHook
         }
 
         if ($status === 'new') {
-            $createdFields = $this->buildCreatedFields($fieldArray);
+            $createdFields = $this->buildChangedFields([], $fieldArray);
             $this->dispatchLifecycleEvent($table, $uid, ChangeType::CREATED, $createdFields);
 
             if ($table === self::TABLE_ENTRY || $table === self::TABLE_EVENT) {
@@ -178,7 +178,7 @@ class DataHandlerEventDispatcherHook
             $newUid = $sourceUid > 0 ? (int)($parentObject->copyMappingArray_merged[$table][$sourceUid] ?? 0) : 0;
             if ($newUid > 0) {
                 $newRecord = $this->fetchRecord($table, $newUid);
-                $createdFields = $this->buildCreatedFields($newRecord ?? []);
+                $createdFields = $this->buildChangedFields([], $newRecord ?? []);
                 $this->dispatchLifecycleEvent($table, $newUid, ChangeType::CREATED, $createdFields);
             }
             return;
@@ -263,27 +263,6 @@ class DataHandlerEventDispatcherHook
 
             $changedFields[$field] = [
                 'old' => $oldValue,
-                'new' => $newValue,
-            ];
-        }
-
-        return $changedFields;
-    }
-
-    /**
-     * @param array<string, mixed> $fieldArray
-     * @return array<string, array{old: mixed, new: mixed}>
-     */
-    private function buildCreatedFields(array $fieldArray): array
-    {
-        $changedFields = [];
-        foreach ($fieldArray as $field => $newValue) {
-            if ($this->valuesEqual(null, $newValue)) {
-                continue;
-            }
-
-            $changedFields[$field] = [
-                'old' => null,
                 'new' => $newValue,
             ];
         }
