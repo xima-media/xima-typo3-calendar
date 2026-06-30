@@ -60,6 +60,7 @@ class DataHandlerEventDispatcherHook
             return;
         }
 
+        // Event records intentionally never emit UPDATED — only entries and bookings track generic field changes.
         if ($table === self::TABLE_ENTRY || $table === self::TABLE_REQUIREMENT_BOOKING) {
             $updatedFields = $this->buildChangedFields($record, $fieldArray);
             if ($updatedFields !== []) {
@@ -280,10 +281,7 @@ class DataHandlerEventDispatcherHook
         $changedFields = $this->pendingDatamapEvents[$key];
         unset($this->pendingDatamapEvents[$key]);
 
-        if ($changedFields === [] && !in_array($changeType, [ChangeType::HIDDEN, ChangeType::REACTIVATED], true)) {
-            return;
-        }
-
+        // The empty-field guard lives in dispatchLifecycleEvent (ChangeType::allowsEmptyFields()).
         $this->dispatchLifecycleEvent($table, $uid, $changeType, $changedFields);
     }
 
@@ -292,10 +290,7 @@ class DataHandlerEventDispatcherHook
      */
     private function dispatchLifecycleEvent(string $table, int $uid, ChangeType $changeType, array $changedFields): void
     {
-        if ($table === self::TABLE_EVENT && $changeType === ChangeType::UPDATED) {
-            return;
-        }
-        if ($changedFields === [] && !in_array($changeType, [ChangeType::HIDDEN, ChangeType::DELETED, ChangeType::REACTIVATED], true)) {
+        if ($changedFields === [] && !$changeType->allowsEmptyFields()) {
             return;
         }
         if (!$this->registerDispatch($table, $uid, $changeType)) {
