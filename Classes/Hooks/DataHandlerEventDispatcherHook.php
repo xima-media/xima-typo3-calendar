@@ -60,28 +60,17 @@ class DataHandlerEventDispatcherHook
             return;
         }
 
-        // Event records intentionally never emit UPDATED — only entries and bookings track generic field changes.
-        if ($table === self::TABLE_ENTRY || $table === self::TABLE_REQUIREMENT_BOOKING) {
-            $updatedFields = $this->buildChangedFields($record, $fieldArray);
-            if ($updatedFields !== []) {
-                $this->rememberDatamapEvent($table, $id, ChangeType::UPDATED, $updatedFields);
+        foreach ($this->fieldChangeDefinitions() as $definition) {
+            if (!in_array($table, $definition['tables'], true)) {
+                continue;
+            }
+            $changedFields = $this->buildChangedFields($record, $fieldArray, $definition['fields']);
+            if ($changedFields !== []) {
+                $this->rememberDatamapEvent($table, $id, $definition['type'], $changedFields);
             }
         }
 
-        if ($table === self::TABLE_ENTRY || $table === self::TABLE_EVENT) {
-            $locationFields = $this->buildChangedFields($record, $fieldArray, ['location']);
-            if ($locationFields !== []) {
-                $this->rememberDatamapEvent($table, $id, ChangeType::LOCATION_CHANGED, $locationFields);
-            }
-        }
-
-        if ($table === self::TABLE_ENTRY) {
-            $dateRangeFields = $this->buildChangedFields($record, $fieldArray, ['start_date', 'end_date']);
-            if ($dateRangeFields !== []) {
-                $this->rememberDatamapEvent($table, $id, ChangeType::DATE_RANGE_CHANGED, $dateRangeFields);
-            }
-        }
-
+        // Hidden ↔ reactivated transitions carry no field diff.
         $hiddenFields = $this->buildChangedFields($record, $fieldArray, ['hidden']);
         if ($hiddenFields !== []) {
             $changeType = ((int)$hiddenFields['hidden']['new'] === 1) ? ChangeType::HIDDEN : ChangeType::REACTIVATED;
@@ -106,20 +95,16 @@ class DataHandlerEventDispatcherHook
         }
 
         if ($status === 'new') {
-            $createdFields = $this->buildChangedFields([], $fieldArray);
-            $this->dispatchLifecycleEvent($table, $uid, ChangeType::CREATED, $createdFields);
+            $this->dispatchLifecycleEvent($table, $uid, ChangeType::CREATED, $this->buildChangedFields([], $fieldArray));
 
-            if ($table === self::TABLE_ENTRY || $table === self::TABLE_EVENT) {
-                $locationFields = $this->buildChangedFields([], $fieldArray, ['location']);
-                if ($locationFields !== []) {
-                    $this->dispatchLifecycleEvent($table, $uid, ChangeType::LOCATION_CHANGED, $locationFields);
+            foreach ($this->fieldChangeDefinitions() as $definition) {
+                // A brand-new record has no prior state to have "updated" against.
+                if ($definition['type'] === ChangeType::UPDATED || !in_array($table, $definition['tables'], true)) {
+                    continue;
                 }
-            }
-
-            if ($table === self::TABLE_ENTRY) {
-                $dateRangeFields = $this->buildChangedFields([], $fieldArray, ['start_date', 'end_date']);
-                if ($dateRangeFields !== []) {
-                    $this->dispatchLifecycleEvent($table, $uid, ChangeType::DATE_RANGE_CHANGED, $dateRangeFields);
+                $changedFields = $this->buildChangedFields([], $fieldArray, $definition['fields']);
+                if ($changedFields !== []) {
+                    $this->dispatchLifecycleEvent($table, $uid, $definition['type'], $changedFields);
                 }
             }
             return;
@@ -129,11 +114,9 @@ class DataHandlerEventDispatcherHook
             return;
         }
 
-        $this->dispatchPendingDatamapEvent($table, $id, $uid, ChangeType::UPDATED);
-        $this->dispatchPendingDatamapEvent($table, $id, $uid, ChangeType::HIDDEN);
-        $this->dispatchPendingDatamapEvent($table, $id, $uid, ChangeType::REACTIVATED);
-        $this->dispatchPendingDatamapEvent($table, $id, $uid, ChangeType::LOCATION_CHANGED);
-        $this->dispatchPendingDatamapEvent($table, $id, $uid, ChangeType::DATE_RANGE_CHANGED);
+        foreach ([ChangeType::UPDATED, ChangeType::HIDDEN, ChangeType::REACTIVATED, ChangeType::LOCATION_CHANGED, ChangeType::DATE_RANGE_CHANGED] as $changeType) {
+            $this->dispatchPendingDatamapEvent($table, $id, $uid, $changeType);
+        }
     }
 
     public function processCmdmap_preProcess(
@@ -241,6 +224,24 @@ class DataHandlerEventDispatcherHook
         }
 
         $this->dispatchLifecycleEvent($table, $uid, ChangeType::DELETED, []);
+    }
+
+    /**
+     * Field-scoped change types and what triggers them: a non-empty diff on
+     * `fields` (null = any field) within one of `tables` emits `type`.
+     * Single source of truth shared by the datamap remember and dispatch paths.
+     * Note: Event records are intentionally absent from UPDATED — they only
+     * emit lifecycle and location changes.
+     *
+     * @return list<array{type: ChangeType, tables: list<string>, fields: list<string>|null}>
+     */
+    private function fieldChangeDefinitions(): array
+    {
+        return [
+            ['type' => ChangeType::UPDATED, 'tables' => [self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], 'fields' => null],
+            ['type' => ChangeType::LOCATION_CHANGED, 'tables' => [self::TABLE_ENTRY, self::TABLE_EVENT], 'fields' => ['location']],
+            ['type' => ChangeType::DATE_RANGE_CHANGED, 'tables' => [self::TABLE_ENTRY], 'fields' => ['start_date', 'end_date']],
+        ];
     }
 
     /**
