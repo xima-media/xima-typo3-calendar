@@ -14,7 +14,7 @@ use Xima\XimaTypo3Calendar\Event\EntryChangedEvent;
 use Xima\XimaTypo3Calendar\Event\EventChangedEvent;
 use Xima\XimaTypo3Calendar\Event\RequirementBookingChangedEvent;
 
-class DataHandlerHook
+class DataHandlerEventDispatcherHook
 {
     private const TABLE_EVENT = 'tx_ximatypo3calendar_domain_model_event';
     private const TABLE_ENTRY = 'tx_ximatypo3calendar_domain_model_entry';
