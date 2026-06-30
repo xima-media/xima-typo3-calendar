@@ -2,8 +2,8 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
 	<file source-language="en" datatype="plaintext" original="messages" date="2026-04-17T12:43:45Z" product-name="xima_typo3_calendar">
 		<body>
-			<trans-unit id="extConf.recordPid">
-				<source>Record storage page uid</source>
+			<trans-unit id="extConf.unrestrictedRecordTypes">
+				<source>Record types excluded from the frontend query restrictions (comma-separated record_type values, e.g. "private-event"). Events and entries of these record types bypass the status/owner visibility restrictions.</source>
 			</trans-unit>
 			<trans-unit id="next_appointment_start_date">
 				<source>Next appointment</source>

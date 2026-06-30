@@ -3,9 +3,9 @@
 	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2026-04-17T12:43:45Z"
 		  product-name="xima_typo3_calendar">
 		<body>
-			<trans-unit id="extConf.recordPid">
+			<trans-unit id="extConf.unrestrictedRecordTypes">
 				<source />
-				<target>UID des Sysfolders mit den Kalender Datensätzen</target>
+				<target>Datensatztypen, die von den Frontend-Abfrageeinschränkungen ausgeschlossen sind (durch Kommas getrennte record_type-Werte, z. B. "private-event"). Veranstaltungen und Einträge dieser Datensatztypen umgehen die Status-/Besitzer-Sichtbarkeitseinschränkungen.</target>
 			</trans-unit>
 			<trans-unit id="next_appointment_start_date">
 				<source />
