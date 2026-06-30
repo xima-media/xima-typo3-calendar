@@ -323,20 +323,14 @@ class DataHandlerEventDispatcherHook
             return;
         }
 
-        if ($table === self::TABLE_EVENT) {
-            $event = new EventChangedEvent($uid, $table, $changeType, $changedFields);
-            $this->eventDispatcher->dispatch($event);
-            return;
-        }
+        $event = match ($table) {
+            self::TABLE_EVENT => new EventChangedEvent($uid, $table, $changeType, $changedFields),
+            self::TABLE_ENTRY => new EntryChangedEvent($uid, $table, $changeType, $changedFields),
+            self::TABLE_REQUIREMENT_BOOKING => new RequirementBookingChangedEvent($uid, $table, $changeType, $changedFields),
+            default => null,
+        };
 
-        if ($table === self::TABLE_ENTRY) {
-            $event = new EntryChangedEvent($uid, $table, $changeType, $changedFields);
-            $this->eventDispatcher->dispatch($event);
-            return;
-        }
-
-        if ($table === self::TABLE_REQUIREMENT_BOOKING) {
-            $event = new RequirementBookingChangedEvent($uid, $table, $changeType, $changedFields);
+        if ($event !== null) {
             $this->eventDispatcher->dispatch($event);
         }
     }
