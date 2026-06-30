@@ -86,7 +86,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['eventDispatcher']['listeners'][
 
 ## Payload Examples
 
-### RequirementBookingLifecycleChangedEvent (created)
+### RequirementBookingChangedEvent (created)
 
 ```php
 $event->uid // 123
@@ -154,7 +154,7 @@ This means listeners may observe child delete events slightly earlier than direc
 #[AsEventListener(identifier: 'my-ext/notify-booking-created')]
 readonly class BookingNotifier
 {
-    public function __invoke(RequirementBookingLifecycleChangedEvent $event): void
+    public function __invoke(RequirementBookingChangedEvent $event): void
     {
         if ($event->changeType !== ChangeType::CREATED) {
             return;
