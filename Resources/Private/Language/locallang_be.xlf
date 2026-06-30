@@ -32,6 +32,21 @@
 			<trans-unit id="plugin.event_detail.description">
 				<source>Detail view of events</source>
 			</trans-unit>
+			<trans-unit id="notifications.tab">
+				<source>Notifications</source>
+			</trans-unit>
+			<trans-unit id="notifications.notify_review">
+				<source>Notify me when new events are submitted for review</source>
+			</trans-unit>
+			<trans-unit id="notifications.notify_live">
+				<source>Notify me when live events are edited</source>
+			</trans-unit>
+			<trans-unit id="notifications.notify_categories">
+				<source>Only notify for events in these categories (leave empty for all)</source>
+			</trans-unit>
+			<trans-unit id="notifications.notify_categories.empty">
+				<source>No categories available.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

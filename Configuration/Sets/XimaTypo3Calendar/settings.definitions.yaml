@@ -1,0 +1,17 @@
+categories:
+
+  XimaTypo3Calendar:
+    label: 'XIMA TYPO3 Calendar'
+
+  XimaTypo3Calendar.notifications:
+    label: 'Notifications'
+    parent: XimaTypo3Calendar
+
+settings:
+
+  xima_typo3_calendar.notifications.parentCategory:
+    label: 'Parent category for notification filtering'
+    description: 'Optional sys_category UID. When set, only categories below this one can be chosen in the backend user notification settings. 0 (default) offers all categories.'
+    category: XimaTypo3Calendar.notifications
+    type: int
+    default: 0

@@ -43,6 +43,26 @@
 				<source>Detail view of events</source>
 				<target>Detailansicht einer Veranstaltung</target>
 			</trans-unit>
+			<trans-unit id="notifications.tab">
+				<source>Notifications</source>
+				<target>Benachrichtigungen</target>
+			</trans-unit>
+			<trans-unit id="notifications.notify_review">
+				<source>Notify me when new events are submitted for review</source>
+				<target>Benachrichtigen, wenn neue Veranstaltungen zur Prüfung eingereicht werden</target>
+			</trans-unit>
+			<trans-unit id="notifications.notify_live">
+				<source>Notify me when live events are edited</source>
+				<target>Benachrichtigen, wenn Live-Veranstaltungen bearbeitet werden</target>
+			</trans-unit>
+			<trans-unit id="notifications.notify_categories">
+				<source>Only notify for events in these categories (leave empty for all)</source>
+				<target>Nur für Veranstaltungen in diesen Kategorien benachrichtigen (leer = alle)</target>
+			</trans-unit>
+			<trans-unit id="notifications.notify_categories.empty">
+				<source>No categories available.</source>
+				<target>Keine Kategorien verfügbar.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
