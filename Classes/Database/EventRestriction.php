@@ -58,7 +58,13 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             return $expressionBuilder->and();
         }
 
-        $applicationType = ApplicationType::fromRequest($this->getRequest());
+        // In rare cases (like routeEnhancer resolving) no global request is available
+        $request = $this->getRequest();
+        if (!$request instanceof ServerRequestInterface) {
+            return $expressionBuilder->and();
+        }
+
+        $applicationType = ApplicationType::fromRequest($request);
 
         // In CLI context, we do not restrict events
         if (isset($GLOBALS['BE_USER']) && $GLOBALS['BE_USER'] instanceof CommandLineUserAuthentication) {
@@ -118,8 +124,8 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
         return array_values(array_filter(array_map('trim', explode(',', $configured)), static fn (string $type): bool => $type !== ''));
     }
 
-    private function getRequest(): ServerRequestInterface
+    private function getRequest(): ?ServerRequestInterface
     {
-        return $GLOBALS['TYPO3_REQUEST'];
+        return $GLOBALS['TYPO3_REQUEST'] ?? null;
     }
 }

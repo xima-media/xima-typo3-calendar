@@ -66,7 +66,13 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             return $expressionBuilder->and();
         }
 
-        $applicationType = ApplicationType::fromRequest($this->getRequest());
+        // In rare cases (like routeEnhancer resolving) no global request is available
+        $request = $this->getRequest();
+        if (!$request instanceof ServerRequestInterface) {
+            return $expressionBuilder->and();
+        }
+
+        $applicationType = ApplicationType::fromRequest($request);
 
         if ($applicationType->isFrontend()) {
             // The event table is LEFT JOINed, so TYPO3 moves its restrictions to the ON clause
@@ -128,8 +134,8 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
         return array_values(array_filter(array_map('trim', explode(',', $configured)), static fn(string $type): bool => $type !== ''));
     }
 
-    private function getRequest(): ServerRequestInterface
+    private function getRequest(): ?ServerRequestInterface
     {
-        return $GLOBALS['TYPO3_REQUEST'];
+        return $GLOBALS['TYPO3_REQUEST'] ?? null;
     }
 }
