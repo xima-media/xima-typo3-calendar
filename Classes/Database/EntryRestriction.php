@@ -84,7 +84,7 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             $user = $this->getFrontendUserAuthentication();
 
             $unrestrictedRecordTypes = $this->getUnrestrictedRecordTypes();
-            $quotedRecordTypes = array_map(static fn(string $type): string => $qb->quote($type), $unrestrictedRecordTypes);
+            $quotedRecordTypes = array_map(static fn (string $type): string => $qb->quote($type), $unrestrictedRecordTypes);
 
             // The parent event is exempt from the restriction when its record type is unrestricted
             $eventClause = $user && $user->getUserId()
