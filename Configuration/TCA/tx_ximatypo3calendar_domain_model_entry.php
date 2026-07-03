@@ -117,6 +117,7 @@ return [
             'config' => [
                 'type' => 'datetime',
                 'readOnly' => true,
+                'nullable' => true,
             ],
         ],
         'modified_fields' => [
