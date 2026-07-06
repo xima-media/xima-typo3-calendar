@@ -7,6 +7,14 @@
 				<source />
 				<target>Datensatztypen, die von den Frontend-Abfrageeinschränkungen ausgeschlossen sind (durch Kommas getrennte record_type-Werte, z. B. "private-event"). Veranstaltungen und Einträge dieser Datensatztypen umgehen die Status-/Besitzer-Sichtbarkeitseinschränkungen.</target>
 			</trans-unit>
+			<trans-unit id="extConf.notifications.parentCategory">
+				<source />
+				<target>Übergeordnete Kategorie für die Benachrichtigungsfilterung</target>
+			</trans-unit>
+			<trans-unit id="extConf.features.requirementsManagement">
+				<source />
+				<target>Anforderungsmanagement:Ermöglicht die Verwaltung von Anforderungen für die Veranstaltungstermine</target>
+			</trans-unit>
 			<trans-unit id="next_appointment_start_date">
 				<source />
 				<target>Nächster Termin</target>

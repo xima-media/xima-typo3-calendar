@@ -1,0 +1,14 @@
+TCEMAIN.preview {
+  tx_ximatypo3calendar_domain_model_event {
+    previewPageId =
+    fieldToParameterMap {
+      uid = tx_ximatypo3calendar_eventdetail[event]
+    }
+  }
+  tx_ximatypo3calendar_domain_model_entry {
+    previewPageId =
+    fieldToParameterMap {
+      uid = tx_ximatypo3calendar_eventappointmentdetail[appointment]
+    }
+  }
+}

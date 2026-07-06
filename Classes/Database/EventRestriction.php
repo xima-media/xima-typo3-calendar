@@ -15,6 +15,7 @@ use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\EnforceableQueryRestrictionInterface;
 use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionInterface;
 use TYPO3\CMS\Core\Http\ApplicationType;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 
@@ -121,7 +122,7 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             return [];
         }
 
-        return array_values(array_filter(array_map('trim', explode(',', $configured)), static fn (string $type): bool => $type !== ''));
+        return array_values(GeneralUtility::trimExplode(',', $configured, true));
     }
 
     private function getRequest(): ?ServerRequestInterface

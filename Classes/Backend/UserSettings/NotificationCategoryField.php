@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\Backend\UserSettings;
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -25,7 +25,7 @@ final class NotificationCategoryField
     private const FIELD = 'tx_ximatypo3calendar_notify_categories';
     private const TABLE = 'be_users';
     private const LL = 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang_be.xlf:';
-    private const SETTING_PARENT_CATEGORY = 'xima_typo3_calendar.notifications.parentCategory';
+    private const EXTCONF_PARENT_CATEGORY = 'notifications/parentCategory';
 
     public function render(array $params, object $parentObject): string
     {
@@ -36,11 +36,12 @@ final class NotificationCategoryField
         GeneralUtility::makeInstance(PageRenderer::class)
             ->loadJavaScriptModule('@xima/xima-typo3-calendar/usersettings-notification-categories.js');
 
-        // Optional site-set setting (xima/xima-typo3-calendar): restrict the offered
-        // categories to the subtree(s) below the configured parent category UID(s).
+        // Optional extension configuration setting (xima_typo3_calendar): restrict the offered
+        // categories to the subtree below the configured parent category UID.
         $tree = '';
-        foreach ($this->getRootParentUids() as $rootParent) {
-            $tree .= $this->renderBranch($rootParent, $childrenMap, $selected, 0);
+        $rootParent = $this->getRootParentUid();
+        if ($rootParent > 0) {
+            $tree = $this->renderBranch($rootParent, $childrenMap, $selected, 0);
         }
         if ($tree === '') {
             $tree = '<p class="text-body-secondary mb-0">'
@@ -162,17 +163,15 @@ final class NotificationCategoryField
      *
      * @return int[]
      */
-    private function getRootParentUids(): array
+    private function getRootParentUid(): int
     {
-        $parents = [];
-        foreach (GeneralUtility::makeInstance(SiteFinder::class)->getAllSites() as $site) {
-            $parent = (int)$site->getSettings()->get(self::SETTING_PARENT_CATEGORY, 0);
-            if ($parent > 0) {
-                $parents[$parent] = $parent;
-            }
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class);
+        $parent = (int)$extConf->get('xima_typo3_calendar', self::EXTCONF_PARENT_CATEGORY);
+        if ($parent > 0) {
+            return $parent;
         }
 
-        return $parents !== [] ? array_values($parents) : [0];
+        return 0;
     }
 
     private function getLanguageService(): LanguageService

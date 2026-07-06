@@ -1,3 +1,0 @@
-[feature("ximaTypo3Calendar.requirementsManagement") == false]
-  mod.web_list.table.tx_ximatypo3calendar_domain_model_requirement.hideTable = 1
-[END]
