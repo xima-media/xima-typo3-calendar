@@ -3,3 +3,6 @@ notifications.parentCategory = 12
 
 # cat=restrictions; type=string; label=LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang_be.xlf:extConf.unrestrictedRecordTypes
 restrictions.unrestrictedRecordTypes =
+
+# cat=features; type=boolean; label=LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang_be.xlf:extConf.features.requirementsManagement
+features.requirementsManagement = 0

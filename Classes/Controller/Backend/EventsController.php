@@ -5,14 +5,14 @@ namespace Xima\XimaTypo3Calendar\Controller\Backend;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
-use TYPO3\CMS\Core\Configuration\Features;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use Xima\XimaTypo3Recordlist\Controller\AbstractBackendController;
 use Xima\XimaTypo3Recordlist\Dto\RecordSource;
 
 class EventsController extends AbstractBackendController
 {
     public function __construct(
-        private readonly Features $features,
+        private readonly ExtensionConfiguration $extensionConfiguration,
     ) {
     }
 
@@ -57,7 +57,7 @@ class EventsController extends AbstractBackendController
             'tx_ximatypo3calendar_domain_model_calendar',
         ];
 
-        if (!$this->features->isFeatureEnabled('ximaTypo3Calendar.requirementsManagement')) {
+        if (!$this->extensionConfiguration->get('xima_typo3_calendar', 'features/requirementsManagement')) {
             $tableNames = array_diff($tableNames, ['tx_ximatypo3calendar_domain_model_requirement']);
         }
 

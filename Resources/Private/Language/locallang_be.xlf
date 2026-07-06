@@ -8,6 +8,9 @@
 			<trans-unit id="extConf.notifications.parentCategory">
 				<source>Parent category for notification filtering</source>
 			</trans-unit>
+			<trans-unit id="extConf.features.requirementsManagement">
+				<source>Requirements management:Enables management of requirements of event appointments</source>
+			</trans-unit>
 			<trans-unit id="next_appointment_start_date">
 				<source>Next appointment</source>
 			</trans-unit>
