@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Xima\XimaTypo3Calendar\Hooks;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -13,6 +14,7 @@ use Xima\XimaTypo3Calendar\Event\EntryChangedEvent;
 use Xima\XimaTypo3Calendar\Event\EventChangedEvent;
 use Xima\XimaTypo3Calendar\Event\RequirementBookingChangedEvent;
 
+#[Autoconfigure(public: true)]
 class DataHandlerEventDispatcherHook
 {
     private const TABLE_EVENT = 'tx_ximatypo3calendar_domain_model_event';
@@ -229,15 +231,13 @@ class DataHandlerEventDispatcherHook
      * Field-scoped change types and what triggers them: a non-empty diff on
      * `fields` (null = any field) within one of `tables` emits `type`.
      * Single source of truth shared by the datamap remember and dispatch paths.
-     * Note: Event records are intentionally absent from UPDATED — they only
-     * emit lifecycle and location changes.
      *
      * @return list<array{type: ChangeType, tables: list<string>, fields: list<string>|null}>
      */
     private function fieldChangeDefinitions(): array
     {
         return [
-            ['type' => ChangeType::UPDATED, 'tables' => [self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], 'fields' => null],
+            ['type' => ChangeType::UPDATED, 'tables' => [self::TABLE_EVENT, self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], 'fields' => null],
             ['type' => ChangeType::LOCATION_CHANGED, 'tables' => [self::TABLE_ENTRY, self::TABLE_EVENT], 'fields' => ['location']],
             ['type' => ChangeType::DATE_RANGE_CHANGED, 'tables' => [self::TABLE_ENTRY], 'fields' => ['start_date', 'end_date']],
         ];

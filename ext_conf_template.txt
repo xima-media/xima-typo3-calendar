@@ -1,5 +1,11 @@
-# cat=basic; type=int+; label=LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang_be.xlf:extConf.notifications.parentCategory
+# cat=notifications; type=boolean; label=LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang_be.xlf:extConf.notifications.enabled
+notifications.enabled = 0
+
+# cat=notifications; type=int+; label=LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang_be.xlf:extConf.notifications.parentCategory
 notifications.parentCategory =
+
+# cat=notifications; type=int+; label=LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang_be.xlf:extConf.notifications.reviewerGroup
+notifications.reviewerGroup =
 
 # cat=restrictions; type=string; label=LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang_be.xlf:extConf.unrestrictedRecordTypes
 restrictions.unrestrictedRecordTypes =

@@ -1,0 +1,23 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+    <f:layout name="SystemEmail" />
+
+    <f:section name="Subject">Event rejected: #{eventUid}</f:section>
+
+    <f:section name="Title">Event rejected</f:section>
+
+    <f:section name="Main">
+        <p>Your event has been rejected.</p>
+        <p>
+            Event UID:
+            <strong>{eventUid}</strong>
+            <br />
+            <f:if condition="{eventTitle}">
+                Event title:
+                <strong>{eventTitle}</strong>
+            </f:if>
+        </p>
+        <p>
+            <a href="{eventEditUrl}">Open event in backend</a>
+        </p>
+    </f:section>
+</html>

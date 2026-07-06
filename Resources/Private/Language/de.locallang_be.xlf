@@ -11,6 +11,14 @@
 				<source />
 				<target>Übergeordnete Kategorie für die Benachrichtigungsfilterung</target>
 			</trans-unit>
+			<trans-unit id="extConf.notifications.reviewerGroup">
+				<source />
+				<target>UID der Backend-Benutzergruppe für Benachrichtigungen bei Veranstaltungsprüfungen</target>
+			</trans-unit>
+			<trans-unit id="extConf.notifications.enabled">
+				<source />
+				<target>E-Mail-Benachrichtigungen für den Workflow aktivieren</target>
+			</trans-unit>
 			<trans-unit id="extConf.features.requirementsManagement">
 				<source />
 				<target>Anforderungsmanagement:Ermöglicht die Verwaltung von Anforderungen für die Veranstaltungstermine</target>

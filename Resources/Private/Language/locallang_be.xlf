@@ -8,6 +8,12 @@
 			<trans-unit id="extConf.notifications.parentCategory">
 				<source>Parent category for notification filtering</source>
 			</trans-unit>
+			<trans-unit id="extConf.notifications.reviewerGroup">
+				<source>Backend reviewer group UID for event review notifications</source>
+			</trans-unit>
+			<trans-unit id="extConf.notifications.enabled">
+				<source>Enable workflow email notifications</source>
+			</trans-unit>
 			<trans-unit id="extConf.features.requirementsManagement">
 				<source>Requirements management:Enables management of requirements of event appointments</source>
 			</trans-unit>
