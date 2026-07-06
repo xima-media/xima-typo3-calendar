@@ -3,8 +3,6 @@
 namespace Xima\XimaTypo3Calendar\Controller\Backend;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
-use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use Xima\XimaTypo3Recordlist\Controller\AbstractBackendController;
 use Xima\XimaTypo3Recordlist\Dto\RecordSource;
@@ -14,15 +12,6 @@ class EventsController extends AbstractBackendController
     public function __construct(
         private readonly ExtensionConfiguration $extensionConfiguration,
     ) {
-    }
-
-    /**
-     * @throws ExtensionConfigurationPathDoesNotExistException
-     * @throws ExtensionConfigurationExtensionNotConfiguredException
-     */
-    public function getRecordPid(): int
-    {
-        return 0;
     }
 
     protected function getRecordSources(): array
