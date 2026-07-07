@@ -127,8 +127,6 @@ final readonly class EventWorkflowNotification
             ->select('uid', 'email', 'realName', 'username')
             ->from('be_users')
             ->where(
-                $queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)),
-                $queryBuilder->expr()->eq('disable', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)),
                 $queryBuilder->expr()->isNotNull('email'),
                 $queryBuilder->expr()->neq('email', $queryBuilder->createNamedParameter('')),
                 $queryBuilder->expr()->eq($statusPreferenceField, $queryBuilder->createNamedParameter(1, Connection::PARAM_INT)),
