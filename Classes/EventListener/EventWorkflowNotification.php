@@ -41,27 +41,26 @@ final readonly class EventWorkflowNotification
         if ($eventRecord === null) {
             return;
         }
-        $eventTitle = (string)($eventRecord['title'] ?? '');
 
         if (array_key_exists('status', $event->changedFields)) {
             $newStatus = (int)($event->changedFields['status']['new'] ?? EventStatus::DRAFT->value);
 
             if ($newStatus === EventStatus::REVIEW->value) {
                 $recipients = $this->recipientResolver->getBackendRecipients($event->uid, NotificationRecipientResolver::PREFERENCE_REVIEW);
-                $this->mailService->sendNotification('EventReviewNotification', $recipients, $event->uid, $eventTitle);
+                $this->mailService->sendNotification('EventReviewNotification', $recipients, $eventRecord);
                 return;
             }
 
             if ($newStatus === EventStatus::REJECTED->value) {
                 $owner = $this->recipientResolver->getOwnerRecipient((int)($eventRecord['owner'] ?? 0));
-                $this->mailService->sendNotification('EventRejectedNotification', $owner === null ? [] : [$owner], $event->uid, $eventTitle);
+                $this->mailService->sendNotification('EventRejectedNotification', $owner === null ? [] : [$owner], $eventRecord);
                 return;
             }
         }
 
         if ($this->isLiveEventUpdate($event->changedFields, $eventRecord)) {
             $recipients = $this->recipientResolver->getBackendRecipients($event->uid, NotificationRecipientResolver::PREFERENCE_LIVE);
-            $this->mailService->sendNotification('EventLiveNotification', $recipients, $event->uid, $eventTitle, array_keys($event->changedFields));
+            $this->mailService->sendNotification('EventLiveNotification', $recipients, $eventRecord, array_keys($event->changedFields));
         }
     }
 

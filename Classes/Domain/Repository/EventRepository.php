@@ -26,6 +26,7 @@ class EventRepository extends Repository
     public function getEventRecordByUid(int $uid): ?array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(self::TABLE);
+        $queryBuilder->getRestrictions()->removeAll();
         $eventRecord = $queryBuilder
             ->select('*')
             ->from(self::TABLE)

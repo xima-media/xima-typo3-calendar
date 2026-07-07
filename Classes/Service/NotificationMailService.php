@@ -77,13 +77,15 @@ final readonly class NotificationMailService
     public function sendNotification(
         string $template,
         array $recipients,
-        int $eventUid,
-        string $eventTitle,
+        array $eventRecord,
         array $changedFieldNames = []
     ): void {
         if ($recipients === []) {
             return;
         }
+
+        $eventUid = (int)($eventRecord['uid'] ?? 0);
+        $eventTitle = (string)($eventRecord['title'] ?? '');
 
         $assignments = [
             'eventUid' => $eventUid,
