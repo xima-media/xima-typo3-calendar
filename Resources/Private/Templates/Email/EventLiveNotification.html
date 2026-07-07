@@ -1,12 +1,12 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
     <f:layout name="SystemEmail" />
 
-    <f:section name="Subject">Event live: #{eventUid}</f:section>
+    <f:section name="Subject">Event updated: #{eventUid}</f:section>
 
-    <f:section name="Title">Event live</f:section>
+    <f:section name="Title">Event updated</f:section>
 
     <f:section name="Main">
-        <p>Your event is now live.</p>
+        <p>A live event has been updated.</p>
         <p>
             Event UID:
             <strong>{eventUid}</strong>
@@ -16,6 +16,14 @@
                 <strong>{eventTitle}</strong>
             </f:if>
         </p>
+        <f:if condition="{changedFieldLabels}">
+            <p>Changed fields:</p>
+            <ul>
+                <f:for each="{changedFieldLabels}" as="changedFieldLabel">
+                    <li>{changedFieldLabel}</li>
+                </f:for>
+            </ul>
+        </f:if>
         <p>
             <a href="{eventEditUrl}">Open event in backend</a>
         </p>
