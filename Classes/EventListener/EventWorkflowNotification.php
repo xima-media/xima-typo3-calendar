@@ -5,21 +5,16 @@ declare(strict_types=1);
 namespace Xima\XimaTypo3Calendar\EventListener;
 
 use Doctrine\DBAL\ArrayParameterType;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Mime\Address;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
-use TYPO3\CMS\Core\Mail\FluidEmail;
-use TYPO3\CMS\Core\Mail\MailerInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 use Xima\XimaTypo3Calendar\Event\ChangeType;
 use Xima\XimaTypo3Calendar\Event\EventChangedEvent;
+use Xima\XimaTypo3Calendar\Service\NotificationMailService;
 
 #[AsEventListener(
     identifier: 'xima-typo3-calendar/event-workflow-notification',
@@ -33,10 +28,9 @@ final readonly class EventWorkflowNotification
 
     public function __construct(
         private ConnectionPool $connectionPool,
-        private MailerInterface $mailer,
+        private NotificationMailService $mailService,
         private UriBuilder $backendUriBuilder,
         private LanguageServiceFactory $languageServiceFactory,
-        private LoggerInterface $logger,
     ) {
     }
 
@@ -102,33 +96,8 @@ final readonly class EventWorkflowNotification
             'eventEditUrl' => $this->buildAbsoluteEditUrl($uid),
             'changedFieldLabels' => $changedFieldLabels,
         ];
-        $request = $this->getRequest();
 
-        // One message per recipient — a shared To header would leak every
-        // subscriber's address to all the others.
-        foreach ($recipients as $recipient) {
-            try {
-                $email = GeneralUtility::makeInstance(FluidEmail::class)
-                    ->format(FluidEmail::FORMAT_HTML)
-                    ->setTemplate($template)
-                    ->assignMultiple($assignments)
-                    ->addTo(new Address($recipient['email'], $recipient['name']));
-
-                if ($request instanceof ServerRequestInterface) {
-                    $email->setRequest($request);
-                }
-
-                $this->mailer->send($email);
-            } catch (\Throwable $exception) {
-                // A malformed address or a failing transport must never abort the
-                // DataHandler save that triggered this notification.
-                $this->logger->error('Failed to send calendar workflow notification', [
-                    'template' => $template,
-                    'recipient' => $recipient['email'],
-                    'exception' => $exception,
-                ]);
-            }
-        }
+        $this->mailService->sendToRecipients($template, $recipients, $assignments);
     }
 
     /**
@@ -257,11 +226,6 @@ final readonly class EventWorkflowNotification
         return $eventRecord === false ? null : $eventRecord;
     }
 
-    private function getRequest(): ?ServerRequestInterface
-    {
-        return $GLOBALS['TYPO3_REQUEST'] ?? null;
-    }
-
     /**
      * @param array<string, mixed> $eventRecord
      */
@@ -272,32 +236,13 @@ final readonly class EventWorkflowNotification
             return;
         }
 
-        try {
-            $email = GeneralUtility::makeInstance(FluidEmail::class)
-                ->format(FluidEmail::FORMAT_HTML)
-                ->setTemplate($template)
-                ->assignMultiple([
-                    'eventUid' => $uid,
-                    'eventTitle' => $eventRecord['title'] ?? '',
-                    'eventEditUrl' => $this->buildAbsoluteEditUrl($uid),
-                ])
-                ->addTo(new Address($recipient['email'], $recipient['name']));
+        $assignments = [
+            'eventUid' => $uid,
+            'eventTitle' => $eventRecord['title'] ?? '',
+            'eventEditUrl' => $this->buildAbsoluteEditUrl($uid),
+        ];
 
-            $request = $this->getRequest();
-            if ($request instanceof ServerRequestInterface) {
-                $email->setRequest($request);
-            }
-
-            $this->mailer->send($email);
-        } catch (\Throwable $exception) {
-            // The owner address comes from fe_users and may be malformed; never let
-            // that (or a transport failure) abort the DataHandler save.
-            $this->logger->error('Failed to send calendar workflow notification to owner', [
-                'template' => $template,
-                'recipient' => $recipient['email'],
-                'exception' => $exception,
-            ]);
-        }
+        $this->mailService->sendToRecipients($template, [$recipient], $assignments);
     }
 
     /**
