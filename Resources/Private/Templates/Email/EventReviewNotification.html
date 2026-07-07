@@ -1,23 +1,30 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
     <f:layout name="SystemEmail" />
 
-    <f:section name="Subject">Event review requested: #{eventUid}</f:section>
+    <f:section name="Subject">
+        <f:translate key="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:email.review.subject" />:
+        #{eventUid}
+    </f:section>
 
-    <f:section name="Title">Event review requested</f:section>
+    <f:section name="Title">
+        <f:translate key="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:email.review.title" />
+    </f:section>
 
     <f:section name="Main">
-        <p>An event has been moved to review status and needs your attention.</p>
+        <p><f:translate key="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:email.review.intro" /></p>
         <p>
-            Event UID:
+            <f:translate key="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:email.eventUid" />:
             <strong>{eventUid}</strong>
             <br />
             <f:if condition="{eventTitle}">
-                Event title:
+                <f:translate key="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:email.eventTitle" />:
                 <strong>{eventTitle}</strong>
             </f:if>
         </p>
         <p>
-            <a href="{eventEditUrl}">Open event in backend</a>
+            <a href="{eventEditUrl}">
+                <f:translate key="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:email.openBackend" />
+            </a>
         </p>
     </f:section>
 </html>
