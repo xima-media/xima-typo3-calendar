@@ -25,6 +25,38 @@ final readonly class EventWorkflowNotification
     private const BE_USER_NOTIFY_REVIEW = 'tx_ximatypo3calendar_notify_review';
     private const BE_USER_NOTIFY_LIVE = 'tx_ximatypo3calendar_notify_live';
     private const BE_USER_NOTIFY_CATEGORIES = 'tx_ximatypo3calendar_notify_categories';
+    private const LLL = 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:';
+
+    /**
+     * Labels every notification template needs, resolved in PHP and assigned as
+     * variables. The templates must not use f:translate: they are rendered from
+     * the DataHandler flow (including CLI/scheduler) where no TSFE exists.
+     */
+    private const SHARED_EMAIL_LABELS = [
+        'eventUidLabel' => 'email.eventUid',
+        'eventTitleLabel' => 'email.eventTitle',
+        'openBackendLabel' => 'email.openBackend',
+    ];
+
+    /** @var array<string, array<string, string>> template => (assignName => LLL key) */
+    private const TEMPLATE_EMAIL_LABELS = [
+        'EventLiveNotification' => [
+            'subjectLabel' => 'email.live.subject',
+            'titleLabel' => 'email.live.title',
+            'introLabel' => 'email.live.intro',
+            'changedFieldsLabel' => 'email.live.changedFields',
+        ],
+        'EventReviewNotification' => [
+            'subjectLabel' => 'email.review.subject',
+            'titleLabel' => 'email.review.title',
+            'introLabel' => 'email.review.intro',
+        ],
+        'EventRejectedNotification' => [
+            'subjectLabel' => 'email.rejected.subject',
+            'titleLabel' => 'email.rejected.title',
+            'introLabel' => 'email.rejected.intro',
+        ],
+    ];
 
     public function __construct(
         private ConnectionPool $connectionPool,
@@ -95,6 +127,7 @@ final readonly class EventWorkflowNotification
             'eventTitle' => $eventRecord['title'] ?? '',
             'eventEditUrl' => $this->buildAbsoluteEditUrl($uid),
             'changedFieldLabels' => $changedFieldLabels,
+            ...$this->resolveEmailLabels($template),
         ];
 
         $this->mailService->sendToRecipients($template, $recipients, $assignments);
@@ -240,9 +273,27 @@ final readonly class EventWorkflowNotification
             'eventUid' => $uid,
             'eventTitle' => $eventRecord['title'] ?? '',
             'eventEditUrl' => $this->buildAbsoluteEditUrl($uid),
+            ...$this->resolveEmailLabels($template),
         ];
 
         $this->mailService->sendToRecipients($template, [$recipient], $assignments);
+    }
+
+    /**
+     * Resolves the localized template labels in PHP (CLI-safe, no TSFE required)
+     * so the Fluid templates can render them as plain variables.
+     *
+     * @return array<string, string>
+     */
+    private function resolveEmailLabels(string $template): array
+    {
+        $labels = [];
+        $keys = array_merge(self::SHARED_EMAIL_LABELS, self::TEMPLATE_EMAIL_LABELS[$template] ?? []);
+        foreach ($keys as $assignName => $key) {
+            $labels[$assignName] = $this->translateLabel(self::LLL . $key);
+        }
+
+        return $labels;
     }
 
     /**
