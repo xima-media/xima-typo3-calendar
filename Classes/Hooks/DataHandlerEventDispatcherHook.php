@@ -33,6 +33,16 @@ class DataHandlerEventDispatcherHook
      */
     private static array $directDeleteKeys = [];
 
+    /**
+     * The DataHandler instance the static dedup state currently belongs to.
+     * A single backend save shares one DataHandler across the datamap and cmdmap
+     * phases, so the dedup keys must survive between them — but they MUST be reset
+     * once a new DataHandler run begins, otherwise long-lived processes (CLI, the
+     * scheduler, import queues) would suppress legitimate repeat events for the
+     * whole process lifetime.
+     */
+    private static ?DataHandler $currentRun = null;
+
     /** @var array<string, array<string, array{old: mixed, new: mixed}>> */
     private array $pendingDatamapEvents = [];
 
@@ -52,6 +62,8 @@ class DataHandlerEventDispatcherHook
         array &$fieldArray,
         DataHandler $parentObject
     ): void {
+        $this->beginRunScope($parentObject);
+
         if ($status !== 'update' || !$this->isHandledTable($table)) {
             return;
         }
@@ -86,6 +98,8 @@ class DataHandlerEventDispatcherHook
         array $fieldArray,
         DataHandler $parentObject
     ): void {
+        $this->beginRunScope($parentObject);
+
         if (!$this->isHandledTable($table)) {
             return;
         }
@@ -128,6 +142,8 @@ class DataHandlerEventDispatcherHook
         DataHandler $parentObject,
         mixed $pasteUpdate
     ): void {
+        $this->beginRunScope($parentObject);
+
         if (!$this->isHandledTable($table)) {
             return;
         }
@@ -154,6 +170,8 @@ class DataHandlerEventDispatcherHook
         mixed $pasteUpdate,
         mixed $pasteDatamap
     ): void {
+        $this->beginRunScope($parentObject);
+
         if (!$this->isHandledTable($table)) {
             return;
         }
@@ -214,6 +232,8 @@ class DataHandlerEventDispatcherHook
         bool &$recordWasDeleted,
         DataHandler $parentObject
     ): void {
+        $this->beginRunScope($parentObject);
+
         if (!$this->isHandledTable($table)) {
             return;
         }
@@ -337,6 +357,21 @@ class DataHandlerEventDispatcherHook
     private function isHandledTable(string $table): bool
     {
         return in_array($table, [self::TABLE_EVENT, self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], true);
+    }
+
+    /**
+     * Binds the static dedup state to the current DataHandler run. The datamap and
+     * cmdmap phases of one save share the same DataHandler instance, so the keys are
+     * preserved between them; the moment a different DataHandler starts, the stale
+     * keys are cleared so repeated operations in a long-lived process are not swallowed.
+     */
+    private function beginRunScope(DataHandler $parentObject): void
+    {
+        if (self::$currentRun !== $parentObject) {
+            self::$currentRun = $parentObject;
+            self::$dispatchedEventKeys = [];
+            self::$directDeleteKeys = [];
+        }
     }
 
     private function resolveUid(string $status, mixed $id, DataHandler $parentObject): int
