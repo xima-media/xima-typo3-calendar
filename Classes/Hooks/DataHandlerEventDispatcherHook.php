@@ -77,7 +77,7 @@ class DataHandlerEventDispatcherHook
             if (!in_array($table, $definition['tables'], true)) {
                 continue;
             }
-            $changedFields = $this->buildChangedFields($record, $fieldArray, $definition['fields']);
+            $changedFields = $this->buildChangedFields($record, $fieldArray, $definition['fields'], $definition['exclude']);
             if ($changedFields !== []) {
                 $this->rememberDatamapEvent($table, $id, $definition['type'], $changedFields);
             }
@@ -245,14 +245,16 @@ class DataHandlerEventDispatcherHook
      * `fields` (null = any field) within one of `tables` emits `type`.
      * Single source of truth shared by the datamap remember and dispatch paths.
      *
-     * @return list<array{type: ChangeType, tables: list<string>, fields: list<string>|null}>
+     * @return list<array{type: ChangeType, tables: list<string>, fields: list<string>|null, exclude: list<string>}>
      */
     private function fieldChangeDefinitions(): array
     {
         return [
-            ['type' => ChangeType::UPDATED, 'tables' => [self::TABLE_EVENT, self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], 'fields' => null],
-            ['type' => ChangeType::LOCATION_CHANGED, 'tables' => [self::TABLE_ENTRY, self::TABLE_EVENT], 'fields' => ['location']],
-            ['type' => ChangeType::DATE_RANGE_CHANGED, 'tables' => [self::TABLE_ENTRY], 'fields' => ['start_date', 'end_date']],
+            // `hidden` is owned by the dedicated HIDDEN / REACTIVATED events, so a pure
+            // visibility toggle must not also surface as a generic content UPDATED.
+            ['type' => ChangeType::UPDATED, 'tables' => [self::TABLE_EVENT, self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], 'fields' => null, 'exclude' => ['hidden']],
+            ['type' => ChangeType::LOCATION_CHANGED, 'tables' => [self::TABLE_ENTRY, self::TABLE_EVENT], 'fields' => ['location'], 'exclude' => []],
+            ['type' => ChangeType::DATE_RANGE_CHANGED, 'tables' => [self::TABLE_ENTRY], 'fields' => ['start_date', 'end_date'], 'exclude' => []],
         ];
     }
 
@@ -260,13 +262,17 @@ class DataHandlerEventDispatcherHook
      * @param array<string, mixed> $currentRecord
      * @param array<string, mixed> $incomingFieldArray
      * @param array<int, string>|null $allowedFields
+     * @param array<int, string> $excludedFields
      * @return array<string, array{old: mixed, new: mixed}>
      */
-    private function buildChangedFields(array $currentRecord, array $incomingFieldArray, ?array $allowedFields = null): array
+    private function buildChangedFields(array $currentRecord, array $incomingFieldArray, ?array $allowedFields = null, array $excludedFields = []): array
     {
         $changedFields = [];
         foreach ($incomingFieldArray as $field => $newValue) {
             if ($allowedFields !== null && !in_array($field, $allowedFields, true)) {
+                continue;
+            }
+            if (in_array($field, $excludedFields, true)) {
                 continue;
             }
 
