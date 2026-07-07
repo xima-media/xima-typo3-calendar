@@ -37,7 +37,7 @@ final readonly class NotificationRecipientResolver
      *
      * @return array<int, array{email: string, name: string}>
      */
-    public function getBackendRecipients(int $eventUid, string $preferenceField): array
+    public function getSubscribedBackendRecipients(int $eventUid, string $preferenceField): array
     {
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable('be_users');
         $rows = $queryBuilder

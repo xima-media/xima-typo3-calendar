@@ -46,7 +46,7 @@ final readonly class EventWorkflowNotification
             $newStatus = (int)($event->changedFields['status']['new'] ?? EventStatus::DRAFT->value);
 
             if ($newStatus === EventStatus::REVIEW->value) {
-                $recipients = $this->recipientResolver->getBackendRecipients($event->uid, NotificationRecipientResolver::PREFERENCE_REVIEW);
+                $recipients = $this->recipientResolver->getSubscribedBackendRecipients($event->uid, NotificationRecipientResolver::PREFERENCE_REVIEW);
                 $this->mailService->sendNotification('EventReviewNotification', $recipients, $eventRecord);
                 return;
             }
@@ -59,7 +59,7 @@ final readonly class EventWorkflowNotification
         }
 
         if ($this->isLiveEventUpdate($event->changedFields, $eventRecord)) {
-            $recipients = $this->recipientResolver->getBackendRecipients($event->uid, NotificationRecipientResolver::PREFERENCE_LIVE);
+            $recipients = $this->recipientResolver->getSubscribedBackendRecipients($event->uid, NotificationRecipientResolver::PREFERENCE_LIVE);
             $this->mailService->sendNotification('EventLiveNotification', $recipients, $eventRecord, array_keys($event->changedFields));
         }
     }
