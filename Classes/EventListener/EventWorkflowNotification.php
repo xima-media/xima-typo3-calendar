@@ -55,6 +55,7 @@ final readonly class EventWorkflowNotification
             if ($newValue === EventStatus::REVIEW->value) {
                 $this->sendNotificationToBackendUsers(
                     $event->uid,
+                    $eventRecord,
                     'EventReviewNotification',
                     self::BE_USER_NOTIFY_REVIEW
                 );
@@ -62,7 +63,7 @@ final readonly class EventWorkflowNotification
             }
 
             if ($newValue === EventStatus::REJECTED->value) {
-                $this->sendNotificationToOwner($event->uid, 'EventRejectedNotification');
+                $this->sendNotificationToOwner($event->uid, $eventRecord, 'EventRejectedNotification');
                 return;
             }
         }
@@ -71,6 +72,7 @@ final readonly class EventWorkflowNotification
             $changedFieldLabels = $this->resolveChangedFieldLabels(array_keys($event->changedFields));
             $this->sendNotificationToBackendUsers(
                 $event->uid,
+                $eventRecord,
                 'EventLiveNotification',
                 self::BE_USER_NOTIFY_LIVE,
                 $changedFieldLabels
@@ -79,21 +81,18 @@ final readonly class EventWorkflowNotification
     }
 
     /**
+     * @param array<string, mixed> $eventRecord
      * @param string[] $changedFieldLabels
      */
     private function sendNotificationToBackendUsers(
         int $uid,
+        array $eventRecord,
         string $template,
         string $statusPreferenceField,
         array $changedFieldLabels = []
     ): void {
         $recipients = $this->resolveBackendRecipients($uid, $statusPreferenceField);
         if ($recipients === []) {
-            return;
-        }
-
-        $eventRecord = $this->fetchEventRecord($uid);
-        if ($eventRecord === null) {
             return;
         }
 
@@ -263,13 +262,11 @@ final readonly class EventWorkflowNotification
         return $GLOBALS['TYPO3_REQUEST'] ?? null;
     }
 
-    private function sendNotificationToOwner(int $uid, string $template): void
+    /**
+     * @param array<string, mixed> $eventRecord
+     */
+    private function sendNotificationToOwner(int $uid, array $eventRecord, string $template): void
     {
-        $eventRecord = $this->fetchEventRecord($uid);
-        if ($eventRecord === null) {
-            return;
-        }
-
         $recipient = $this->resolveOwnerRecipient((int)($eventRecord['owner'] ?? 0));
         if ($recipient === null) {
             return;
