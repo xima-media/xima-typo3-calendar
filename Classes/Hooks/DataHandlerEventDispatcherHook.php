@@ -33,6 +33,16 @@ class DataHandlerEventDispatcherHook
      */
     private static array $directDeleteKeys = [];
 
+    /**
+     * The DataHandler instance the static dedup state currently belongs to.
+     * A single backend save shares one DataHandler across the datamap and cmdmap
+     * phases, so the dedup keys must survive between them — but they MUST be reset
+     * once a new DataHandler run begins, otherwise long-lived processes (CLI, the
+     * scheduler, import queues) would suppress legitimate repeat events for the
+     * whole process lifetime.
+     */
+    private static ?DataHandler $currentRun = null;
+
     /** @var array<string, array<string, array{old: mixed, new: mixed}>> */
     private array $pendingDatamapEvents = [];
 
@@ -52,6 +62,8 @@ class DataHandlerEventDispatcherHook
         array &$fieldArray,
         DataHandler $parentObject
     ): void {
+        $this->beginRunScope($parentObject);
+
         if ($status !== 'update' || !$this->isHandledTable($table)) {
             return;
         }
@@ -65,7 +77,7 @@ class DataHandlerEventDispatcherHook
             if (!in_array($table, $definition['tables'], true)) {
                 continue;
             }
-            $changedFields = $this->buildChangedFields($record, $fieldArray, $definition['fields']);
+            $changedFields = $this->buildChangedFields($record, $fieldArray, $definition['fields'], $definition['exclude']);
             if ($changedFields !== []) {
                 $this->rememberDatamapEvent($table, $id, $definition['type'], $changedFields);
             }
@@ -86,6 +98,8 @@ class DataHandlerEventDispatcherHook
         array $fieldArray,
         DataHandler $parentObject
     ): void {
+        $this->beginRunScope($parentObject);
+
         if (!$this->isHandledTable($table)) {
             return;
         }
@@ -96,18 +110,11 @@ class DataHandlerEventDispatcherHook
         }
 
         if ($status === 'new') {
+            // A brand-new record only ever emits CREATED. The *_CHANGED variants
+            // describe a transition from a prior value, which does not exist yet;
+            // firing them here produced phantom "location/date changed" events for
+            // freshly created records and made listeners run twice per create.
             $this->dispatchLifecycleEvent($table, $uid, ChangeType::CREATED, $this->buildChangedFields([], $fieldArray));
-
-            foreach ($this->fieldChangeDefinitions() as $definition) {
-                // A brand-new record has no prior state to have "updated" against.
-                if ($definition['type'] === ChangeType::UPDATED || !in_array($table, $definition['tables'], true)) {
-                    continue;
-                }
-                $changedFields = $this->buildChangedFields([], $fieldArray, $definition['fields']);
-                if ($changedFields !== []) {
-                    $this->dispatchLifecycleEvent($table, $uid, $definition['type'], $changedFields);
-                }
-            }
             return;
         }
 
@@ -128,6 +135,8 @@ class DataHandlerEventDispatcherHook
         DataHandler $parentObject,
         mixed $pasteUpdate
     ): void {
+        $this->beginRunScope($parentObject);
+
         if (!$this->isHandledTable($table)) {
             return;
         }
@@ -154,6 +163,8 @@ class DataHandlerEventDispatcherHook
         mixed $pasteUpdate,
         mixed $pasteDatamap
     ): void {
+        $this->beginRunScope($parentObject);
+
         if (!$this->isHandledTable($table)) {
             return;
         }
@@ -214,6 +225,8 @@ class DataHandlerEventDispatcherHook
         bool &$recordWasDeleted,
         DataHandler $parentObject
     ): void {
+        $this->beginRunScope($parentObject);
+
         if (!$this->isHandledTable($table)) {
             return;
         }
@@ -232,14 +245,16 @@ class DataHandlerEventDispatcherHook
      * `fields` (null = any field) within one of `tables` emits `type`.
      * Single source of truth shared by the datamap remember and dispatch paths.
      *
-     * @return list<array{type: ChangeType, tables: list<string>, fields: list<string>|null}>
+     * @return list<array{type: ChangeType, tables: list<string>, fields: list<string>|null, exclude: list<string>}>
      */
     private function fieldChangeDefinitions(): array
     {
         return [
-            ['type' => ChangeType::UPDATED, 'tables' => [self::TABLE_EVENT, self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], 'fields' => null],
-            ['type' => ChangeType::LOCATION_CHANGED, 'tables' => [self::TABLE_ENTRY, self::TABLE_EVENT], 'fields' => ['location']],
-            ['type' => ChangeType::DATE_RANGE_CHANGED, 'tables' => [self::TABLE_ENTRY], 'fields' => ['start_date', 'end_date']],
+            // `hidden` is owned by the dedicated HIDDEN / REACTIVATED events, so a pure
+            // visibility toggle must not also surface as a generic content UPDATED.
+            ['type' => ChangeType::UPDATED, 'tables' => [self::TABLE_EVENT, self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], 'fields' => null, 'exclude' => ['hidden']],
+            ['type' => ChangeType::LOCATION_CHANGED, 'tables' => [self::TABLE_ENTRY, self::TABLE_EVENT], 'fields' => ['location'], 'exclude' => []],
+            ['type' => ChangeType::DATE_RANGE_CHANGED, 'tables' => [self::TABLE_ENTRY], 'fields' => ['start_date', 'end_date'], 'exclude' => []],
         ];
     }
 
@@ -247,13 +262,17 @@ class DataHandlerEventDispatcherHook
      * @param array<string, mixed> $currentRecord
      * @param array<string, mixed> $incomingFieldArray
      * @param array<int, string>|null $allowedFields
+     * @param array<int, string> $excludedFields
      * @return array<string, array{old: mixed, new: mixed}>
      */
-    private function buildChangedFields(array $currentRecord, array $incomingFieldArray, ?array $allowedFields = null): array
+    private function buildChangedFields(array $currentRecord, array $incomingFieldArray, ?array $allowedFields = null, array $excludedFields = []): array
     {
         $changedFields = [];
         foreach ($incomingFieldArray as $field => $newValue) {
             if ($allowedFields !== null && !in_array($field, $allowedFields, true)) {
+                continue;
+            }
+            if (in_array($field, $excludedFields, true)) {
                 continue;
             }
 
@@ -337,6 +356,21 @@ class DataHandlerEventDispatcherHook
     private function isHandledTable(string $table): bool
     {
         return in_array($table, [self::TABLE_EVENT, self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], true);
+    }
+
+    /**
+     * Binds the static dedup state to the current DataHandler run. The datamap and
+     * cmdmap phases of one save share the same DataHandler instance, so the keys are
+     * preserved between them; the moment a different DataHandler starts, the stale
+     * keys are cleared so repeated operations in a long-lived process are not swallowed.
+     */
+    private function beginRunScope(DataHandler $parentObject): void
+    {
+        if (self::$currentRun !== $parentObject) {
+            self::$currentRun = $parentObject;
+            self::$dispatchedEventKeys = [];
+            self::$directDeleteKeys = [];
+        }
     }
 
     private function resolveUid(string $status, mixed $id, DataHandler $parentObject): int
