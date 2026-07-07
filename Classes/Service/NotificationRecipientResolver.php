@@ -32,24 +32,6 @@ final readonly class NotificationRecipientResolver
     }
 
     /**
-     * @return array<string, mixed>|null
-     */
-    public function getEventRecord(int $uid): ?array
-    {
-        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::EVENT_TABLE);
-        $eventRecord = $queryBuilder
-            ->select('*')
-            ->from(self::EVENT_TABLE)
-            ->where(
-                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT))
-            )
-            ->executeQuery()
-            ->fetchAssociative();
-
-        return $eventRecord === false ? null : $eventRecord;
-    }
-
-    /**
      * Backend users that enabled $preferenceField and — if they restricted
      * themselves to categories — share at least one category with the event.
      *

@@ -6,6 +6,7 @@ namespace Xima\XimaTypo3Calendar\EventListener;
 
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
+use Xima\XimaTypo3Calendar\Domain\Repository\EventRepository;
 use Xima\XimaTypo3Calendar\Event\ChangeType;
 use Xima\XimaTypo3Calendar\Event\EventChangedEvent;
 use Xima\XimaTypo3Calendar\Service\NotificationMailService;
@@ -25,6 +26,7 @@ use Xima\XimaTypo3Calendar\Service\NotificationRecipientResolver;
 final readonly class EventWorkflowNotification
 {
     public function __construct(
+        private EventRepository $eventRepository,
         private NotificationRecipientResolver $recipientResolver,
         private NotificationMailService $mailService,
     ) {
@@ -35,7 +37,7 @@ final readonly class EventWorkflowNotification
         if ($event->changeType !== ChangeType::UPDATED) {
             return;
         }
-        $eventRecord = $this->recipientResolver->getEventRecord($event->uid);
+        $eventRecord = $this->eventRepository->getEventRecordByUid($event->uid);
         if ($eventRecord === null) {
             return;
         }
