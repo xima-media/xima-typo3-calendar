@@ -8,15 +8,6 @@ use Doctrine\DBAL\ArrayParameterType;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
-/**
- * Resolves the audiences for the event workflow notifications.
- *
- * Owns every database lookup behind the notifications: the event record itself,
- * the backend users that opted into a given workflow preference (filtered by
- * their subscribed categories) and the front-end owner of a rejected event.
- * Keeping this apart from the event listener isolates the data access from the
- * workflow policy and makes both testable on their own.
- */
 final readonly class NotificationRecipientResolver
 {
     private const EVENT_TABLE = 'tx_ximatypo3calendar_domain_model_event';

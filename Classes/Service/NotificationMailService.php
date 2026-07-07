@@ -14,15 +14,6 @@ use TYPO3\CMS\Core\Mail\FluidEmail;
 use TYPO3\CMS\Core\Mail\MailerInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Builds and sends the calendar workflow notification emails.
- *
- * Owns everything about turning a workflow event into delivered mail: assembling
- * the template variables (edit link, localized labels, changed-field labels),
- * per-recipient delivery, and transport error handling. Every recipient receives
- * their own message and a failing send never propagates out — a broken address or
- * transport must not abort the DataHandler save that triggered the notification.
- */
 final readonly class NotificationMailService
 {
     private const EVENT_TABLE = 'tx_ximatypo3calendar_domain_model_event';

@@ -12,14 +12,6 @@ use Xima\XimaTypo3Calendar\Event\EventChangedEvent;
 use Xima\XimaTypo3Calendar\Service\NotificationMailService;
 use Xima\XimaTypo3Calendar\Service\NotificationRecipientResolver;
 
-/**
- * Turns event workflow status changes into notification emails.
- *
- * This listener only holds the workflow policy — which template goes to which
- * audience for a given status transition. Recipient lookups are delegated to
- * {@see NotificationRecipientResolver} and both content assembly and delivery to
- * {@see NotificationMailService}.
- */
 #[AsEventListener(
     identifier: 'xima-typo3-calendar/event-workflow-notification',
 )]
