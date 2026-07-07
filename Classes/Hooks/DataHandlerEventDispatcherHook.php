@@ -110,18 +110,11 @@ class DataHandlerEventDispatcherHook
         }
 
         if ($status === 'new') {
+            // A brand-new record only ever emits CREATED. The *_CHANGED variants
+            // describe a transition from a prior value, which does not exist yet;
+            // firing them here produced phantom "location/date changed" events for
+            // freshly created records and made listeners run twice per create.
             $this->dispatchLifecycleEvent($table, $uid, ChangeType::CREATED, $this->buildChangedFields([], $fieldArray));
-
-            foreach ($this->fieldChangeDefinitions() as $definition) {
-                // A brand-new record has no prior state to have "updated" against.
-                if ($definition['type'] === ChangeType::UPDATED || !in_array($table, $definition['tables'], true)) {
-                    continue;
-                }
-                $changedFields = $this->buildChangedFields([], $fieldArray, $definition['fields']);
-                if ($changedFields !== []) {
-                    $this->dispatchLifecycleEvent($table, $uid, $definition['type'], $changedFields);
-                }
-            }
             return;
         }
 
