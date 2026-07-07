@@ -6,6 +6,7 @@ namespace Xima\XimaTypo3Calendar\EventListener;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Mime\Address;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
@@ -35,6 +36,7 @@ final readonly class EventWorkflowNotification
         private MailerInterface $mailer,
         private UriBuilder $backendUriBuilder,
         private LanguageServiceFactory $languageServiceFactory,
+        private LoggerInterface $logger,
     ) {
     }
 
@@ -106,17 +108,27 @@ final readonly class EventWorkflowNotification
         // One message per recipient — a shared To header would leak every
         // subscriber's address to all the others.
         foreach ($recipients as $recipient) {
-            $email = GeneralUtility::makeInstance(FluidEmail::class)
-                ->format(FluidEmail::FORMAT_HTML)
-                ->setTemplate($template)
-                ->assignMultiple($assignments)
-                ->addTo(new Address($recipient['email'], $recipient['name']));
+            try {
+                $email = GeneralUtility::makeInstance(FluidEmail::class)
+                    ->format(FluidEmail::FORMAT_HTML)
+                    ->setTemplate($template)
+                    ->assignMultiple($assignments)
+                    ->addTo(new Address($recipient['email'], $recipient['name']));
 
-            if ($request instanceof ServerRequestInterface) {
-                $email->setRequest($request);
+                if ($request instanceof ServerRequestInterface) {
+                    $email->setRequest($request);
+                }
+
+                $this->mailer->send($email);
+            } catch (\Throwable $exception) {
+                // A malformed address or a failing transport must never abort the
+                // DataHandler save that triggered this notification.
+                $this->logger->error('Failed to send calendar workflow notification', [
+                    'template' => $template,
+                    'recipient' => $recipient['email'],
+                    'exception' => $exception,
+                ]);
             }
-
-            $this->mailer->send($email);
         }
     }
 
@@ -263,22 +275,32 @@ final readonly class EventWorkflowNotification
             return;
         }
 
-        $email = GeneralUtility::makeInstance(FluidEmail::class)
-            ->format(FluidEmail::FORMAT_HTML)
-            ->setTemplate($template)
-            ->assignMultiple([
-                'eventUid' => $uid,
-                'eventTitle' => $eventRecord['title'] ?? '',
-                'eventEditUrl' => $this->buildAbsoluteEditUrl($uid),
-            ])
-            ->addTo(new Address($recipient['email'], $recipient['name']));
+        try {
+            $email = GeneralUtility::makeInstance(FluidEmail::class)
+                ->format(FluidEmail::FORMAT_HTML)
+                ->setTemplate($template)
+                ->assignMultiple([
+                    'eventUid' => $uid,
+                    'eventTitle' => $eventRecord['title'] ?? '',
+                    'eventEditUrl' => $this->buildAbsoluteEditUrl($uid),
+                ])
+                ->addTo(new Address($recipient['email'], $recipient['name']));
 
-        $request = $this->getRequest();
-        if ($request instanceof ServerRequestInterface) {
-            $email->setRequest($request);
+            $request = $this->getRequest();
+            if ($request instanceof ServerRequestInterface) {
+                $email->setRequest($request);
+            }
+
+            $this->mailer->send($email);
+        } catch (\Throwable $exception) {
+            // The owner address comes from fe_users and may be malformed; never let
+            // that (or a transport failure) abort the DataHandler save.
+            $this->logger->error('Failed to send calendar workflow notification to owner', [
+                'template' => $template,
+                'recipient' => $recipient['email'],
+                'exception' => $exception,
+            ]);
         }
-
-        $this->mailer->send($email);
     }
 
     /**
