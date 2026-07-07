@@ -95,26 +95,29 @@ final readonly class EventWorkflowNotification
             return;
         }
 
-        $email = GeneralUtility::makeInstance(FluidEmail::class)
-            ->format(FluidEmail::FORMAT_HTML)
-            ->setTemplate($template)
-            ->assignMultiple([
-                'eventUid' => $uid,
-                'eventTitle' => $eventRecord['title'] ?? '',
-                'eventEditUrl' => $this->buildAbsoluteEditUrl($uid),
-                'changedFieldLabels' => $changedFieldLabels,
-            ]);
-
-        foreach ($recipients as $recipient) {
-            $email->addTo(new Address($recipient['email'], $recipient['name']));
-        }
-
+        $assignments = [
+            'eventUid' => $uid,
+            'eventTitle' => $eventRecord['title'] ?? '',
+            'eventEditUrl' => $this->buildAbsoluteEditUrl($uid),
+            'changedFieldLabels' => $changedFieldLabels,
+        ];
         $request = $this->getRequest();
-        if ($request instanceof ServerRequestInterface) {
-            $email->setRequest($request);
-        }
 
-        $this->mailer->send($email);
+        // One message per recipient — a shared To header would leak every
+        // subscriber's address to all the others.
+        foreach ($recipients as $recipient) {
+            $email = GeneralUtility::makeInstance(FluidEmail::class)
+                ->format(FluidEmail::FORMAT_HTML)
+                ->setTemplate($template)
+                ->assignMultiple($assignments)
+                ->addTo(new Address($recipient['email'], $recipient['name']));
+
+            if ($request instanceof ServerRequestInterface) {
+                $email->setRequest($request);
+            }
+
+            $this->mailer->send($email);
+        }
     }
 
     /**
