@@ -4,27 +4,30 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\EventListener;
 
-use Doctrine\DBAL\ArrayParameterType;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 use Xima\XimaTypo3Calendar\Event\ChangeType;
 use Xima\XimaTypo3Calendar\Event\EventChangedEvent;
 use Xima\XimaTypo3Calendar\Service\NotificationMailService;
+use Xima\XimaTypo3Calendar\Service\NotificationRecipientResolver;
 
+/**
+ * Turns event workflow status changes into notification emails.
+ *
+ * This listener only holds the workflow policy — which template goes to which
+ * audience for a given status transition — and assembles the template variables.
+ * Recipient lookups are delegated to {@see NotificationRecipientResolver} and the
+ * actual delivery to {@see NotificationMailService}.
+ */
 #[AsEventListener(
     identifier: 'xima-typo3-calendar/event-workflow-notification',
 )]
 final readonly class EventWorkflowNotification
 {
     private const EVENT_TABLE = 'tx_ximatypo3calendar_domain_model_event';
-    private const BE_USER_NOTIFY_REVIEW = 'tx_ximatypo3calendar_notify_review';
-    private const BE_USER_NOTIFY_LIVE = 'tx_ximatypo3calendar_notify_live';
-    private const BE_USER_NOTIFY_CATEGORIES = 'tx_ximatypo3calendar_notify_categories';
     private const LLL = 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:';
 
     /**
@@ -59,7 +62,7 @@ final readonly class EventWorkflowNotification
     ];
 
     public function __construct(
-        private ConnectionPool $connectionPool,
+        private NotificationRecipientResolver $recipientResolver,
         private NotificationMailService $mailService,
         private UriBuilder $backendUriBuilder,
         private LanguageServiceFactory $languageServiceFactory,
@@ -71,53 +74,46 @@ final readonly class EventWorkflowNotification
         if ($event->changeType !== ChangeType::UPDATED) {
             return;
         }
-        $eventRecord = $this->fetchEventRecord($event->uid);
+        $eventRecord = $this->recipientResolver->getEventRecord($event->uid);
         if ($eventRecord === null) {
             return;
         }
 
         if (array_key_exists('status', $event->changedFields)) {
-            $newValue = (int)($event->changedFields['status']['new'] ?? EventStatus::DRAFT->value);
-            if ($newValue === EventStatus::REVIEW->value) {
-                $this->sendNotificationToBackendUsers(
-                    $event->uid,
-                    $eventRecord,
-                    'EventReviewNotification',
-                    self::BE_USER_NOTIFY_REVIEW
-                );
+            $newStatus = (int)($event->changedFields['status']['new'] ?? EventStatus::DRAFT->value);
+
+            if ($newStatus === EventStatus::REVIEW->value) {
+                $recipients = $this->recipientResolver->getBackendRecipients($event->uid, NotificationRecipientResolver::PREFERENCE_REVIEW);
+                $this->sendNotification('EventReviewNotification', $recipients, $event->uid, $eventRecord);
                 return;
             }
 
-            if ($newValue === EventStatus::REJECTED->value) {
-                $this->sendNotificationToOwner($event->uid, $eventRecord, 'EventRejectedNotification');
+            if ($newStatus === EventStatus::REJECTED->value) {
+                $owner = $this->recipientResolver->getOwnerRecipient((int)($eventRecord['owner'] ?? 0));
+                $this->sendNotification('EventRejectedNotification', $owner === null ? [] : [$owner], $event->uid, $eventRecord);
                 return;
             }
         }
 
         if ($this->isLiveEventUpdate($event->changedFields, $eventRecord)) {
+            $recipients = $this->recipientResolver->getBackendRecipients($event->uid, NotificationRecipientResolver::PREFERENCE_LIVE);
             $changedFieldLabels = $this->resolveChangedFieldLabels(array_keys($event->changedFields));
-            $this->sendNotificationToBackendUsers(
-                $event->uid,
-                $eventRecord,
-                'EventLiveNotification',
-                self::BE_USER_NOTIFY_LIVE,
-                $changedFieldLabels
-            );
+            $this->sendNotification('EventLiveNotification', $recipients, $event->uid, $eventRecord, $changedFieldLabels);
         }
     }
 
     /**
+     * @param array<int, array{email: string, name: string}> $recipients
      * @param array<string, mixed> $eventRecord
      * @param string[] $changedFieldLabels
      */
-    private function sendNotificationToBackendUsers(
+    private function sendNotification(
+        string $template,
+        array $recipients,
         int $uid,
         array $eventRecord,
-        string $template,
-        string $statusPreferenceField,
         array $changedFieldLabels = []
     ): void {
-        $recipients = $this->resolveBackendRecipients($uid, $statusPreferenceField);
         if ($recipients === []) {
             return;
         }
@@ -131,152 +127,6 @@ final readonly class EventWorkflowNotification
         ];
 
         $this->mailService->sendToRecipients($template, $recipients, $assignments);
-    }
-
-    /**
-     * @return array<int, array{email: string, name: string}>
-     */
-    private function resolveBackendRecipients(int $eventUid, string $statusPreferenceField): array
-    {
-        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('be_users');
-        $rows = $queryBuilder
-            ->select('uid', 'email', 'realName', 'username')
-            ->from('be_users')
-            ->where(
-                $queryBuilder->expr()->isNotNull('email'),
-                $queryBuilder->expr()->neq('email', $queryBuilder->createNamedParameter('')),
-                $queryBuilder->expr()->eq($statusPreferenceField, $queryBuilder->createNamedParameter(1, Connection::PARAM_INT)),
-            )
-            ->executeQuery()
-            ->fetchAllAssociative();
-
-        if ($rows === []) {
-            return [];
-        }
-
-        $eventCategoryUids = $this->fetchEventCategoryUids($eventUid);
-        $beUserUids = array_map(static fn (array $row): int => (int)$row['uid'], $rows);
-        $categorySubscriptionsByUser = $this->fetchBackendUserCategorySubscriptions($beUserUids);
-
-        $recipients = [];
-        foreach ($rows as $row) {
-            $beUserUid = (int)$row['uid'];
-            $selectedCategoryUids = $categorySubscriptionsByUser[$beUserUid] ?? [];
-            if ($selectedCategoryUids !== [] && array_intersect($selectedCategoryUids, $eventCategoryUids) === []) {
-                continue;
-            }
-
-            $email = trim((string)($row['email'] ?? ''));
-            if ($email === '') {
-                continue;
-            }
-
-            $normalizedEmail = mb_strtolower($email);
-            if (isset($recipients[$normalizedEmail])) {
-                continue;
-            }
-
-            $name = trim((string)($row['realName'] ?? ''));
-            if ($name === '') {
-                $name = trim((string)($row['username'] ?? ''));
-            }
-            $recipients[$normalizedEmail] = [
-                'email' => $email,
-                'name' => $name,
-            ];
-        }
-
-        return array_values($recipients);
-    }
-
-    /**
-     * @return int[]
-     */
-    private function fetchEventCategoryUids(int $eventUid): array
-    {
-        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_category_record_mm');
-        $rows = $queryBuilder
-            ->select('uid_local')
-            ->from('sys_category_record_mm')
-            ->where(
-                $queryBuilder->expr()->eq('tablenames', $queryBuilder->createNamedParameter(self::EVENT_TABLE)),
-                $queryBuilder->expr()->eq('fieldname', $queryBuilder->createNamedParameter('categories')),
-                $queryBuilder->expr()->eq('uid_foreign', $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT))
-            )
-            ->executeQuery()
-            ->fetchFirstColumn();
-
-        return array_map('intval', $rows);
-    }
-
-    /**
-     * @param int[] $beUserUids
-     * @return array<int, int[]>
-     */
-    private function fetchBackendUserCategorySubscriptions(array $beUserUids): array
-    {
-        if ($beUserUids === []) {
-            return [];
-        }
-
-        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_category_record_mm');
-        $rows = $queryBuilder
-            ->select('uid_foreign', 'uid_local')
-            ->from('sys_category_record_mm')
-            ->where(
-                $queryBuilder->expr()->eq('tablenames', $queryBuilder->createNamedParameter('be_users')),
-                $queryBuilder->expr()->eq('fieldname', $queryBuilder->createNamedParameter(self::BE_USER_NOTIFY_CATEGORIES)),
-                $queryBuilder->expr()->in(
-                    'uid_foreign',
-                    $queryBuilder->createNamedParameter($beUserUids, ArrayParameterType::INTEGER)
-                )
-            )
-            ->executeQuery()
-            ->fetchAllAssociative();
-
-        $subscriptions = [];
-        foreach ($rows as $row) {
-            $beUserUid = (int)$row['uid_foreign'];
-            $categoryUid = (int)$row['uid_local'];
-            $subscriptions[$beUserUid][] = $categoryUid;
-        }
-
-        return $subscriptions;
-    }
-
-    private function fetchEventRecord(int $uid): ?array
-    {
-        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::EVENT_TABLE);
-        $eventRecord = $queryBuilder
-            ->select('*')
-            ->from(self::EVENT_TABLE)
-            ->where(
-                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT))
-            )
-            ->executeQuery()
-            ->fetchAssociative();
-
-        return $eventRecord === false ? null : $eventRecord;
-    }
-
-    /**
-     * @param array<string, mixed> $eventRecord
-     */
-    private function sendNotificationToOwner(int $uid, array $eventRecord, string $template): void
-    {
-        $recipient = $this->resolveOwnerRecipient((int)($eventRecord['owner'] ?? 0));
-        if ($recipient === null) {
-            return;
-        }
-
-        $assignments = [
-            'eventUid' => $uid,
-            'eventTitle' => $eventRecord['title'] ?? '',
-            'eventEditUrl' => $this->buildAbsoluteEditUrl($uid),
-            ...$this->resolveEmailLabels($template),
-        ];
-
-        $this->mailService->sendToRecipients($template, [$recipient], $assignments);
     }
 
     /**
@@ -294,47 +144,6 @@ final readonly class EventWorkflowNotification
         }
 
         return $labels;
-    }
-
-    /**
-     * @return array{email: string, name: string}|null
-     */
-    private function resolveOwnerRecipient(int $ownerUid): ?array
-    {
-        if ($ownerUid <= 0) {
-            return null;
-        }
-
-        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('fe_users');
-        $row = $queryBuilder
-            ->select('email', 'first_name', 'last_name', 'username')
-            ->from('fe_users')
-            ->where(
-                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($ownerUid, Connection::PARAM_INT))
-            )
-            ->executeQuery()
-            ->fetchAssociative();
-
-        if ($row === false) {
-            return null;
-        }
-
-        $email = trim((string)($row['email'] ?? ''));
-        if ($email === '') {
-            return null;
-        }
-
-        $firstName = trim((string)($row['first_name'] ?? ''));
-        $lastName = trim((string)($row['last_name'] ?? ''));
-        $name = trim($firstName . ' ' . $lastName);
-        if ($name === '') {
-            $name = trim((string)($row['username'] ?? ''));
-        }
-
-        return [
-            'email' => $email,
-            'name' => $name,
-        ];
     }
 
     private function buildAbsoluteEditUrl(int $uid): string
