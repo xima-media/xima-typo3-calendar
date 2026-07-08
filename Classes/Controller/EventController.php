@@ -48,7 +48,7 @@ class EventController extends ActionController
         }
 
         $this->view->assign('event', $event);
-        $this->view->assign('eventAppointment', $appointment);
+        $this->view->assign('appointment', $appointment);
 
         return $this->htmlResponse();
     }
