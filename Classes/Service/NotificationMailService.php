@@ -9,6 +9,8 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Mime\Address;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Http\ApplicationType;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Mail\FluidEmail;
 use TYPO3\CMS\Core\Mail\MailerInterface;
@@ -18,6 +20,10 @@ final readonly class NotificationMailService
 {
     private const EVENT_TABLE = 'tx_ximatypo3calendar_domain_model_event';
     private const LLL = 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:';
+
+    private const BACKEND_EDIT_PATH = '/typo3/record/edit';
+    private const BACKEND_MODULE = 'calendar_events';
+    private const BACKEND_MODULE_PATH = '/typo3/module/calendar/events';
 
     /**
      * Labels every notification template needs, resolved in PHP and assigned as
@@ -184,8 +190,21 @@ final readonly class NotificationMailService
         return $label;
     }
 
+    /**
+     * Builds the absolute backend edit URL for the event.
+     *
+     * In backend context the backend UriBuilder is used (it produces a properly
+     * tokenized route URL). The notification can, however, also be triggered from
+     * the frontend (e.g. a frontend user moving an event from draft to review),
+     * where the backend UriBuilder is not available and would throw. Only in that
+     * frontend case do we fall back to a hand-built path + query string.
+     */
     private function buildAbsoluteEditUrl(int $uid): string
     {
+        if ($this->isFrontendRequest()) {
+            return $this->buildFrontendFallbackEditUrl($uid);
+        }
+
         $returnUrl = (string)$this->backendUriBuilder->buildUriFromRoute('dashboard');
         return (string)$this->backendUriBuilder->buildUriFromRoute(
             'record_edit',
@@ -199,6 +218,44 @@ final readonly class NotificationMailService
             ],
             UriBuilder::ABSOLUTE_URL
         );
+    }
+
+    /**
+     * Frontend fallback: a plain absolute path + query string that does not depend
+     * on the backend routing being bootstrapped.
+     */
+    private function buildFrontendFallbackEditUrl(int $uid): string
+    {
+        $query = http_build_query([
+            'edit' => [
+                self::EVENT_TABLE => [
+                    $uid => 'edit',
+                ],
+            ],
+            'module' => self::BACKEND_MODULE,
+            'returnUrl' => self::BACKEND_MODULE_PATH,
+        ]);
+
+        return $this->getRequestHost() . self::BACKEND_EDIT_PATH . '?' . $query;
+    }
+
+    private function isFrontendRequest(): bool
+    {
+        $request = $this->getRequest();
+        if (!$request instanceof ServerRequestInterface) {
+            return false;
+        }
+
+        return ApplicationType::fromRequest($request)->isFrontend();
+    }
+
+    private function getRequestHost(): string
+    {
+        $normalizedParams = $this->getRequest()?->getAttribute('normalizedParams') ?? null;
+        if ($normalizedParams instanceof NormalizedParams) {
+            return $normalizedParams->getRequestHost();
+        }
+        return GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST');
     }
 
     private function getRequest(): ?ServerRequestInterface
