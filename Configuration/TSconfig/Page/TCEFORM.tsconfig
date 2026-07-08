@@ -1,6 +1,0 @@
-[feature("ximaTypo3Calendar.requirementsManagement") == false]
-  TCEFORM.tx_ximatypo3calendar_domain_model_entry {
-    requirement_bookings.disabled = 1
-    notes.disabled = 1
-  }
-[END]

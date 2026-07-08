@@ -1,0 +1,38 @@
+routeEnhancers:
+  CalendarEventDetailPlugin:
+    type: Extbase
+    extension: XimaTypo3Calendar
+    plugin: EventDetail
+    routes:
+      - routePath: '/a{appointment_uid}'
+        _controller: 'Event::show'
+        _arguments:
+          appointment_uid: 'appointment'
+      - routePath: '/{event_uid}/a{appointment_uid}'
+        _controller: 'Event::show'
+        _arguments:
+          event_uid: 'event'
+          appointment_uid: 'appointment'
+      - routePath: '/{event_uid}-{event_slug}/a{appointment_uid}'
+        _controller: 'Event::show'
+        _arguments:
+          event_uid: 'event'
+          appointment_uid: 'appointment'
+      - routePath: '/{event_uid}-{event_slug}'
+        _controller: 'Event::show'
+        _arguments:
+          event_uid: 'event'
+    defaultController: 'Event::show'
+    defaults:
+      event_slug: ''
+    static:
+      event_slug: true
+    aspects:
+      event_uid:
+        type: PersistedAliasMapper
+        tableName: tx_ximatypo3calendar_domain_model_event
+        routeFieldName: uid
+      appointment_uid:
+        type: PersistedAliasMapper
+        tableName: tx_ximatypo3calendar_domain_model_entry
+        routeFieldName: uid

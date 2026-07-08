@@ -3,22 +3,11 @@ categories:
   XimaTypo3Calendar:
     label: 'XIMA TYPO3 Calendar'
 
-  XimaTypo3Calendar.pages:
-    label: 'Pages'
-    parent: XimaTypo3Calendar
-
 settings:
 
-  xima_typo3_calendar.pages.eventSinglePid:
-    label: 'Single page for calendar events'
-    description: 'The page where the single view of a calendar event is displayed.'
-    category: XimaTypo3Calendar.pages
-    type: int
-    default: 0
-
-  xima_typo3_calendar.pages.eventAppointmentSinglePid:
-    label: 'Single page for event appointments'
-    description: 'The page where the single view of an event appointment is displayed.'
-    category: XimaTypo3Calendar.pages
-    type: int
+  xima_typo3_calendar.eventShowPid:
+    label: 'Event detail page'
+    description: 'The page where the single view of a calendar event and appointment is displayed.'
+    category: XimaTypo3Calendar
+    type: page
     default: 0

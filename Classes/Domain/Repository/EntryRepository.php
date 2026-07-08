@@ -20,6 +20,7 @@ class EntryRepository extends Repository
         $queryBuilder
             ->select(
                 'e.uid',
+                'e.pid',
                 'e.title',
                 'e.start_date',
                 'e.end_date',

@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace Xima\XimaTypo3Calendar\Controller;
 
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Error\Http\PageNotFoundException;
+use TYPO3\CMS\Core\Http\ImmediateResponseException;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Frontend\Controller\ErrorController;
 use Xima\XimaTypo3Calendar\Domain\Model\Event;
+use Xima\XimaTypo3Calendar\Domain\Model\EventAppointment;
 use Xima\XimaTypo3Calendar\Domain\Repository\EventRepository;
 
 class EventController extends ActionController
@@ -23,9 +28,27 @@ class EventController extends ActionController
         return $this->htmlResponse();
     }
 
-    public function showAction(Event $event): ResponseInterface
+    /**
+     * @throws ImmediateResponseException
+     * @throws PageNotFoundException
+     */
+    public function showAction(?Event $event = null, ?EventAppointment $appointment = null): ResponseInterface
     {
+        if (!$event && $appointment) {
+            $event = $appointment->getEvent();
+        }
+
+        if (!$event) {
+            $message = 'No event found!';
+            $response = GeneralUtility::makeInstance(ErrorController::class)->pageNotFoundAction(
+                $this->request,
+                $message
+            );
+            throw new ImmediateResponseException($response, 1783512532);
+        }
+
         $this->view->assign('event', $event);
+        $this->view->assign('appointment', $appointment);
 
         return $this->htmlResponse();
     }

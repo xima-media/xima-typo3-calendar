@@ -94,6 +94,70 @@
 				<source />
 				<target>Zeigt abgesagte, gelöschte und verborgene Termine, die in der Zukunft stattgefunden hätten.</target>
 			</trans-unit>
+			<trans-unit id="email.review.subject">
+				<source>Event review requested</source>
+				<target>Veranstaltung zur Prüfung angefordert</target>
+			</trans-unit>
+			<trans-unit id="email.review.title">
+				<source>Event review requested</source>
+				<target>Veranstaltung zur Prüfung angefordert</target>
+			</trans-unit>
+			<trans-unit id="email.review.intro">
+				<source>An event has been moved to review status and needs your attention.</source>
+				<target>Eine Veranstaltung wurde in den Prüfstatus verschoben und benötigt Ihre Aufmerksamkeit.</target>
+			</trans-unit>
+			<trans-unit id="email.live.subject">
+				<source>Event updated</source>
+				<target>Veranstaltung aktualisiert</target>
+			</trans-unit>
+			<trans-unit id="email.live.title">
+				<source>Event updated</source>
+				<target>Veranstaltung aktualisiert</target>
+			</trans-unit>
+			<trans-unit id="email.live.intro">
+				<source>A live event has been updated.</source>
+				<target>Eine Live-Veranstaltung wurde aktualisiert.</target>
+			</trans-unit>
+			<trans-unit id="email.live.changedFields">
+				<source>Changed fields</source>
+				<target>Geänderte Felder</target>
+			</trans-unit>
+			<trans-unit id="email.rejected.subject">
+				<source>Event rejected</source>
+				<target>Veranstaltung abgelehnt</target>
+			</trans-unit>
+			<trans-unit id="email.rejected.title">
+				<source>Event rejected</source>
+				<target>Veranstaltung abgelehnt</target>
+			</trans-unit>
+			<trans-unit id="email.rejected.intro">
+				<source>Your event has been rejected.</source>
+				<target>Ihre Veranstaltung wurde abgelehnt.</target>
+			</trans-unit>
+			<trans-unit id="email.published.subject">
+				<source>Event published</source>
+				<target>Veranstaltung veröffentlicht</target>
+			</trans-unit>
+			<trans-unit id="email.published.title">
+				<source>Event published</source>
+				<target>Veranstaltung veröffentlicht</target>
+			</trans-unit>
+			<trans-unit id="email.published.intro">
+				<source>Your event has been reviewed and is now published.</source>
+				<target>Ihre Veranstaltung wurde geprüft und ist jetzt veröffentlicht.</target>
+			</trans-unit>
+			<trans-unit id="email.eventUid">
+				<source>Event UID</source>
+				<target>Veranstaltungs-UID</target>
+			</trans-unit>
+			<trans-unit id="email.eventTitle">
+				<source>Event title</source>
+				<target>Veranstaltungstitel</target>
+			</trans-unit>
+			<trans-unit id="email.openBackend">
+				<source>Open event in backend</source>
+				<target>Veranstaltung im Backend öffnen</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
