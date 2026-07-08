@@ -33,7 +33,17 @@ final readonly class NotificationMailService
     private const SHARED_EMAIL_LABELS = [
         'eventUidLabel' => 'email.eventUid',
         'eventTitleLabel' => 'email.eventTitle',
-        'openBackendLabel' => 'email.openBackend',
+    ];
+
+    /**
+     * Templates whose recipient is the event owner (a frontend user without backend
+     * access). They must not contain a backend edit link.
+     *
+     * @var string[]
+     */
+    private const OWNER_TEMPLATES = [
+        'EventRejectedNotification',
+        'EventPublishedNotification',
     ];
 
     /** @var array<string, array<string, string>> template => (assignName => LLL key) */
@@ -43,11 +53,13 @@ final readonly class NotificationMailService
             'titleLabel' => 'email.live.title',
             'introLabel' => 'email.live.intro',
             'changedFieldsLabel' => 'email.live.changedFields',
+            'openBackendLabel' => 'email.openBackend',
         ],
         'EventReviewNotification' => [
             'subjectLabel' => 'email.review.subject',
             'titleLabel' => 'email.review.title',
             'introLabel' => 'email.review.intro',
+            'openBackendLabel' => 'email.openBackend',
         ],
         'EventRejectedNotification' => [
             'subjectLabel' => 'email.rejected.subject',
@@ -92,10 +104,15 @@ final readonly class NotificationMailService
         $assignments = [
             'eventUid' => $eventUid,
             'eventTitle' => $eventTitle,
-            'eventEditUrl' => $this->buildAbsoluteEditUrl($eventUid),
             'changedFieldLabels' => $this->resolveChangedFieldLabels($changedFieldNames),
             ...$this->resolveEmailLabels($template),
         ];
+
+        // Owner emails go to a frontend user without backend access, so they must
+        // not carry a backend edit link.
+        if (!in_array($template, self::OWNER_TEMPLATES, true)) {
+            $assignments['eventEditUrl'] = $this->buildAbsoluteEditUrl($eventUid);
+        }
 
         $this->sendToRecipients($template, $recipients, $assignments);
     }
