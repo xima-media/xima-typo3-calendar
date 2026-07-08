@@ -48,6 +48,15 @@ final readonly class EventWorkflowNotification
                 $this->mailService->sendNotification('EventRejectedNotification', $owner === null ? [] : [$owner], $eventRecord);
                 return;
             }
+
+            if ($newStatus === EventStatus::LIVE->value) {
+                $oldStatus = (int)($event->changedFields['status']['old'] ?? EventStatus::DRAFT->value);
+                if ($oldStatus === EventStatus::REVIEW->value) {
+                    $owner = $this->recipientResolver->getOwnerRecipient((int)($eventRecord['owner'] ?? 0));
+                    $this->mailService->sendNotification('EventPublishedNotification', $owner === null ? [] : [$owner], $eventRecord);
+                    return;
+                }
+            }
         }
 
         if ($this->isLiveEventUpdate($event->changedFields, $eventRecord)) {

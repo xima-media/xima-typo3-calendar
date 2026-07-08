@@ -134,6 +134,18 @@
 				<source>Your event has been rejected.</source>
 				<target>Ihre Veranstaltung wurde abgelehnt.</target>
 			</trans-unit>
+			<trans-unit id="email.published.subject">
+				<source>Event published</source>
+				<target>Veranstaltung veröffentlicht</target>
+			</trans-unit>
+			<trans-unit id="email.published.title">
+				<source>Event published</source>
+				<target>Veranstaltung veröffentlicht</target>
+			</trans-unit>
+			<trans-unit id="email.published.intro">
+				<source>Your event has been reviewed and is now published.</source>
+				<target>Ihre Veranstaltung wurde geprüft und ist jetzt veröffentlicht.</target>
+			</trans-unit>
 			<trans-unit id="email.eventUid">
 				<source>Event UID</source>
 				<target>Veranstaltungs-UID</target>

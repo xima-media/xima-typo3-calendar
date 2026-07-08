@@ -48,6 +48,11 @@ final readonly class NotificationMailService
             'titleLabel' => 'email.rejected.title',
             'introLabel' => 'email.rejected.intro',
         ],
+        'EventPublishedNotification' => [
+            'subjectLabel' => 'email.published.subject',
+            'titleLabel' => 'email.published.title',
+            'introLabel' => 'email.published.intro',
+        ],
     ];
 
     public function __construct(

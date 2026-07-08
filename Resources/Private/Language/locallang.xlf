@@ -101,7 +101,16 @@
 			<trans-unit id="email.rejected.intro">
 				<source>Your event has been rejected.</source>
 			</trans-unit>
-			<trans-unit id="email.eventUid">
+			<trans-unit id="email.published.subject">
+					<source>Event published</source>
+				</trans-unit>
+				<trans-unit id="email.published.title">
+					<source>Event published</source>
+				</trans-unit>
+				<trans-unit id="email.published.intro">
+					<source>Your event has been reviewed and is now published.</source>
+				</trans-unit>
+				<trans-unit id="email.eventUid">
 				<source>Event UID</source>
 			</trans-unit>
 			<trans-unit id="email.eventTitle">
