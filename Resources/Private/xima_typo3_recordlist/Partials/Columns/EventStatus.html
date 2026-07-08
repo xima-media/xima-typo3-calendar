@@ -12,6 +12,8 @@
 <f:variable name="d3">{f:translate(key: '{ll}3.description')}</f:variable>
 <f:variable name="statusItems" value="{0: {value: 0, label: l0, description: d0}, 1: {value: 1, label: l1, description: d1}, 2: {value: 2, label: l2, description: d2}, 3: {value: 3, label: l3, description: d3}}" />
 
+<f:variable name="modalLl">LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.modal.</f:variable>
+
 <span class="badge-container select-badge-container" data-column-name="{colConfig.columnName}" data-item-status-{item.status}>
     <a
         href="#"
@@ -20,7 +22,12 @@
         data-bs-toggle="tooltip"
         data-field-name="{colConfig.columnName}"
         data-value="{item.status}"
-        data-status-items="{statusItems -> f:format.json()}">
+        data-status-items="{statusItems -> f:format.json()}"
+        data-modal-title="{f:translate(key: '{modalLl}title')}"
+        data-message-label="{f:translate(key: '{modalLl}message.label')}"
+        data-message-placeholder="{f:translate(key: '{modalLl}message.placeholder')}"
+        data-notify-label="{f:translate(key: '{modalLl}notifyOwner.label')}"
+        data-notify-default="1"
         <core:icon identifier="status-{item.status}" size="small" />
         <span>
             {f:translate(key:'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.{item.status}.label')}

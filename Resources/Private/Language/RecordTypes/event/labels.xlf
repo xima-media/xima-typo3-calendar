@@ -139,6 +139,24 @@
 			<trans-unit id="approval_date.label">
 				<source>Approval date</source>
 			</trans-unit>
+			<trans-unit id="status_message.label">
+				<source>Status message</source>
+			</trans-unit>
+			<trans-unit id="status_message.description">
+				<source>Internal note added when the status was last changed. Used in workflow notification emails.</source>
+			</trans-unit>
+			<trans-unit id="status.modal.title">
+				<source>Change status</source>
+			</trans-unit>
+			<trans-unit id="status.modal.message.label">
+				<source>Message (optional)</source>
+			</trans-unit>
+			<trans-unit id="status.modal.message.placeholder">
+				<source>Add an optional note for this status change…</source>
+			</trans-unit>
+			<trans-unit id="status.modal.notifyOwner.label">
+				<source>Notify event owner by email</source>
+			</trans-unit>
 			<trans-unit id="palettes.event_info_palette">
 				<source>Event Information</source>
 			</trans-unit>

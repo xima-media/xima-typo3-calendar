@@ -33,6 +33,7 @@ final readonly class NotificationMailService
     private const SHARED_EMAIL_LABELS = [
         'eventUidLabel' => 'email.eventUid',
         'eventTitleLabel' => 'email.eventTitle',
+        'statusMessageLabel' => 'email.statusMessage',
     ];
 
     /**
@@ -44,6 +45,7 @@ final readonly class NotificationMailService
     private const OWNER_TEMPLATES = [
         'EventRejectedNotification',
         'EventPublishedNotification',
+        'EventDraftNotification',
     ];
 
     /** @var array<string, array<string, string>> template => (assignName => LLL key) */
@@ -70,6 +72,11 @@ final readonly class NotificationMailService
             'subjectLabel' => 'email.published.subject',
             'titleLabel' => 'email.published.title',
             'introLabel' => 'email.published.intro',
+        ],
+        'EventDraftNotification' => [
+            'subjectLabel' => 'email.draft.subject',
+            'titleLabel' => 'email.draft.title',
+            'introLabel' => 'email.draft.intro',
         ],
     ];
 
@@ -104,6 +111,7 @@ final readonly class NotificationMailService
         $assignments = [
             'eventUid' => $eventUid,
             'eventTitle' => $eventTitle,
+            'statusMessage' => trim((string)($eventRecord['status_message'] ?? '')),
             'changedFieldLabels' => $this->resolveChangedFieldLabels($changedFieldNames),
             ...$this->resolveEmailLabels($template),
         ];

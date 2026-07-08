@@ -16,5 +16,11 @@
                 <strong>{eventTitle}</strong>
             </f:if>
         </p>
+        <f:if condition="{statusMessage}">
+            <p>
+                {statusMessageLabel}:<br />
+                <em><f:format.nl2br>{statusMessage}</f:format.nl2br></em>
+            </p>
+        </f:if>
     </f:section>
 </html>

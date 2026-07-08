@@ -22,6 +22,7 @@ return [
         'sortby' => 'sorting',
         'default_sortby' => 'tstamp DESC',
         'editlock' => 'editlock',
+        'descriptionColumn' => 'status_message',
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
@@ -38,7 +39,7 @@ return [
         'registration_palette' => ['showitem' => 'requires_registration,registration_link,registration_deadline,fee'],
         'workflow_palette' => [
             'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:palettes.workflow_palette',
-            'showitem' => 'owner,status',
+            'showitem' => 'owner,status,--linebreak--,status_message',
         ],
     ],
     'columns' => [
@@ -318,6 +319,15 @@ return [
                 'type' => 'datetime',
                 'readOnly' => true,
                 'nullable' => true,
+            ],
+        ],
+        'status_message' => [
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status_message.label',
+            'description' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status_message.description',
+            'exclude' => true,
+            'config' => [
+                'type' => 'text',
+                'rows' => 3,
             ],
         ],
     ],

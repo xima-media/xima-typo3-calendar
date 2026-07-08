@@ -16,6 +16,12 @@
                 <strong>{eventTitle}</strong>
             </f:if>
         </p>
+        <f:if condition="{statusMessage}">
+            <p>
+                {statusMessageLabel}:<br />
+                <em><f:format.nl2br>{statusMessage}</f:format.nl2br></em>
+            </p>
+        </f:if>
         <p>
             <a href="{eventEditUrl}">{openBackendLabel}</a>
         </p>

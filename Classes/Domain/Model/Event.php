@@ -16,6 +16,8 @@ class Event extends AbstractEntity
 
     protected string $description = '';
 
+    protected string $statusMessage = '';
+
     protected ?EventLanguage $language = null;
 
     protected string $additionalInformation = '';
@@ -147,6 +149,16 @@ class Event extends AbstractEntity
     public function setDescription(string $description): void
     {
         $this->description = $description;
+    }
+
+    public function getStatusMessage(): string
+    {
+        return $this->statusMessage;
+    }
+
+    public function setStatusMessage(string $statusMessage): void
+    {
+        $this->statusMessage = $statusMessage;
     }
 
     public function getLanguage(): ?EventLanguage

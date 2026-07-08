@@ -146,6 +146,18 @@
 				<source>Your event has been reviewed and is now published.</source>
 				<target>Ihre Veranstaltung wurde geprüft und ist jetzt veröffentlicht.</target>
 			</trans-unit>
+			<trans-unit id="email.draft.subject">
+				<source>Event set back to draft</source>
+				<target>Veranstaltung zurück auf Entwurf gesetzt</target>
+			</trans-unit>
+			<trans-unit id="email.draft.title">
+				<source>Event set back to draft</source>
+				<target>Veranstaltung zurück auf Entwurf gesetzt</target>
+			</trans-unit>
+			<trans-unit id="email.draft.intro">
+				<source>Your event has been set back to draft and is no longer publicly visible.</source>
+				<target>Ihre Veranstaltung wurde zurück auf Entwurf gesetzt und ist nicht mehr öffentlich sichtbar.</target>
+			</trans-unit>
 			<trans-unit id="email.eventUid">
 				<source>Event UID</source>
 				<target>Veranstaltungs-UID</target>
@@ -157,6 +169,10 @@
 			<trans-unit id="email.openBackend">
 				<source>Open event in backend</source>
 				<target>Veranstaltung im Backend öffnen</target>
+			</trans-unit>
+			<trans-unit id="email.statusMessage">
+				<source>Message</source>
+				<target>Nachricht</target>
 			</trans-unit>
 		</body>
 	</file>
