@@ -1,12 +1,12 @@
 TCEMAIN.preview {
   tx_ximatypo3calendar_domain_model_event {
-    previewPageId =
+    previewPageId = {$xima_typo3_calendar.pages.eventSinglePid}
     fieldToParameterMap {
       uid = tx_ximatypo3calendar_eventdetail[event]
     }
   }
   tx_ximatypo3calendar_domain_model_entry {
-    previewPageId =
+    previewPageId = {$xima_typo3_calendar.pages.eventAppointmentSinglePid}
     fieldToParameterMap {
       uid = tx_ximatypo3calendar_eventappointmentdetail[appointment]
     }
