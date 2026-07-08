@@ -76,7 +76,7 @@ class VkurkoCalendarSerializer
      * Build the frontend URL of the event single view for the given record.
      *
      * The single view page is configured per site via the
-     * `xima_typo3_calendar.pages.eventSinglePid` site setting. The `event` argument
+     * `xima_typo3_calendar.eventShowPid` site setting. The `event` argument
      * (and cHash) are handled by the CalendarPlugin route enhancer / page router.
      */
     private static function buildEventSingleUrl(array $row): ?string
@@ -92,7 +92,7 @@ class VkurkoCalendarSerializer
             return null;
         }
 
-        $singlePid = (int)$site->getSettings()->get('xima_typo3_calendar.pages.eventSinglePid');
+        $singlePid = (int)$site->getSettings()->get('xima_typo3_calendar.eventShowPid');
         if ($singlePid === 0) {
             return null;
         }
