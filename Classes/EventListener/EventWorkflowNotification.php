@@ -43,6 +43,15 @@ final readonly class EventWorkflowNotification
             if ($newStatus === EventStatus::REVIEW->value) {
                 $recipients = $this->recipientResolver->getSubscribedBackendRecipients($event->uid, NotificationRecipientResolver::PREFERENCE_REVIEW);
                 $this->mailService->sendNotification('EventReviewNotification', $recipients, $eventRecord);
+
+                // When a backend user moves the event into review (e.g. pulling it
+                // back from live), also inform the owner. Skip this when the owner
+                // submitted the event for review themselves from the frontend — that
+                // never populates the (backend-only) status change context.
+                if ($this->statusChangeContext->isFromBackend() && $this->statusChangeContext->shouldNotifyOwner()) {
+                    $owner = $this->recipientResolver->getOwnerRecipient((int)($eventRecord['owner'] ?? 0));
+                    $this->mailService->sendNotification('EventReviewOwnerNotification', $owner === null ? [] : [$owner], $eventRecord);
+                }
                 return;
             }
 

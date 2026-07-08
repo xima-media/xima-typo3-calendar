@@ -5,6 +5,7 @@ namespace Xima\XimaTypo3Calendar\Controller\Backend;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Http\JsonResponse;
@@ -44,6 +45,7 @@ class EventsController extends AbstractBackendController
         }
 
         $this->statusChangeContext->setNotifyOwner($notifyOwner);
+        $this->statusChangeContext->setBackendUser($this->resolveActingBackendUser());
 
         $data = [
             self::EVENT_TABLE => [
@@ -63,6 +65,28 @@ class EventsController extends AbstractBackendController
         }
 
         return new JsonResponse(['success' => true]);
+    }
+
+    /**
+     * @return array{uid: int, name: string, email: string}|null
+     */
+    private function resolveActingBackendUser(): ?array
+    {
+        $backendUser = $GLOBALS['BE_USER'] ?? null;
+        if (!$backendUser instanceof BackendUserAuthentication) {
+            return null;
+        }
+
+        $name = trim((string)($backendUser->user['realName'] ?? ''));
+        if ($name === '') {
+            $name = trim((string)($backendUser->user['username'] ?? ''));
+        }
+
+        return [
+            'uid' => (int)($backendUser->user['uid'] ?? 0),
+            'name' => $name,
+            'email' => trim((string)($backendUser->user['email'] ?? '')),
+        ];
     }
 
     protected function getRecordSources(): array
