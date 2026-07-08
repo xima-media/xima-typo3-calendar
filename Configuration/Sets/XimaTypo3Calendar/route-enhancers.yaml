@@ -1,0 +1,20 @@
+routeEnhancers:
+  CalendarEventDetailPlugin:
+    type: Extbase
+    extension: XimaTypo3Calendar
+    plugin: EventDetail
+    routes:
+      - routePath: '/{event_uid}-{event_slug}'
+        _controller: 'Event::show'
+        _arguments:
+          event_uid: 'event'
+    defaultController: 'Event::show'
+    defaults:
+      event_slug: ''
+    static:
+      event_slug: true
+    aspects:
+      event_uid:
+        type: PersistedAliasMapper
+        tableName: tx_ximatypo3calendar_domain_model_event
+        routeFieldName: uid
