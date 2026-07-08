@@ -5,7 +5,7 @@ declare(strict_types=1);
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
-$pluginKeys = ['event_appointment_list', 'event_appointment_detail', 'event_list', 'event_detail'];
+$pluginKeys = ['event_list', 'event_detail'];
 
 foreach ($pluginKeys as $pluginKey) {
     ExtensionUtility::registerPlugin(

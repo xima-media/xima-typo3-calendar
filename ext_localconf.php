@@ -1,7 +1,6 @@
 <?php
 
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
-use Xima\XimaTypo3Calendar\Controller\EventAppointmentController;
 use Xima\XimaTypo3Calendar\Controller\EventController;
 
 defined('TYPO3') || die();
@@ -24,26 +23,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
     = \Xima\XimaTypo3Calendar\Hooks\DataHandlerEventDispatcherHook::class;
 
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['features']['ximaTypo3Calendar.requirementsManagement'] ??= false;
-
-ExtensionUtility::configurePlugin(
-    'XimaTypo3Calendar',
-    'EventAppointmentList',
-    [
-        EventAppointmentController::class => 'list',
-    ],
-    [],
-    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
-);
-
-ExtensionUtility::configurePlugin(
-    'XimaTypo3Calendar',
-    'EventAppointmentDetail',
-    [
-        EventAppointmentController::class => 'show',
-    ],
-    [],
-    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
-);
 
 ExtensionUtility::configurePlugin(
     'XimaTypo3Calendar',
