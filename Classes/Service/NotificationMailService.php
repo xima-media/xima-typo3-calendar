@@ -210,7 +210,8 @@ final readonly class NotificationMailService
     private function isSystemField(string $fieldName, array $systemFields): bool
     {
         return in_array($fieldName, $systemFields, true)
-            || str_starts_with($fieldName, 't3ver_');
+            || str_starts_with($fieldName, 't3ver_')
+            || $fieldName === 'status_message';
     }
 
     /**
