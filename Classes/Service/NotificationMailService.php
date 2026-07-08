@@ -154,10 +154,11 @@ final readonly class NotificationMailService
      */
     private function resolveChangedFieldLabels(array $changedFieldNames): array
     {
+        $systemFields = $this->getSystemControlFields();
         $labels = [];
 
         foreach ($changedFieldNames as $fieldName) {
-            if ($fieldName === '') {
+            if ($fieldName === '' || $this->isSystemField($fieldName, $systemFields)) {
                 continue;
             }
 
@@ -171,6 +172,58 @@ final readonly class NotificationMailService
         }
 
         return array_values(array_unique($labels));
+    }
+
+    /**
+     * System/control fields (tstamp, timestamps, enable columns, translation and
+     * versioning bookkeeping) are noise in the change notification and must not be
+     * listed. They are resolved from the table's TCA ctrl so renamed enable columns
+     * are covered too.
+     *
+     * @param string[] $systemFields
+     */
+    private function isSystemField(string $fieldName, array $systemFields): bool
+    {
+        return in_array($fieldName, $systemFields, true)
+            || str_starts_with($fieldName, 't3ver_');
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getSystemControlFields(): array
+    {
+        $ctrl = $GLOBALS['TCA'][self::EVENT_TABLE]['ctrl'] ?? [];
+
+        $fields = ['uid', 'pid'];
+
+        foreach ([
+            'tstamp',
+            'crdate',
+            'cruser_id',
+            'sortby',
+            'delete',
+            'languageField',
+            'transOrigPointerField',
+            'transOrigDiffSourceField',
+            'translationSource',
+            'origUid',
+            'editlock',
+        ] as $ctrlKey) {
+            $fieldName = (string)($ctrl[$ctrlKey] ?? '');
+            if ($fieldName !== '') {
+                $fields[] = $fieldName;
+            }
+        }
+
+        foreach (($ctrl['enablecolumns'] ?? []) as $enableColumn) {
+            $enableColumn = (string)$enableColumn;
+            if ($enableColumn !== '') {
+                $fields[] = $enableColumn;
+            }
+        }
+
+        return array_values(array_unique($fields));
     }
 
     private function translateLabel(string $label): string
