@@ -13,19 +13,3 @@ plugin.tx_ximatypo3calendar {
     storagePid = {$plugin.tx_ximatypo3calendar.persistence.storagePid}
   }
 }
-
-plugin.tx_ximatypo3calendar_latestevents.settings {
-  maxItems = {$plugin.tx_ximatypo3calendar_latestevents.settings.maxItems}
-}
-
-plugin.tx_ximatypo3calendar_listevents.settings {
-  maxItems = {$plugin.tx_ximatypo3calendar_listevents.settings.maxItems}
-}
-
-plugin.tx_ximatypo3calendar_eventappointmentlist.settings {
-  detailPid = {$plugin.tx_ximatypo3calendar_eventappointmentlist.settings.detailPid}
-}
-
-plugin.tx_ximatypo3calendar_eventlist.settings {
-  detailPid = {$plugin.tx_ximatypo3calendar_eventlist.settings.detailPid}
-}

@@ -6,19 +6,3 @@ plugin.tx_ximatypo3calendar {
   }
   persistence.storagePid =
 }
-
-plugin.tx_ximatypo3calendar_latestevents.settings {
-  maxItems = 3
-}
-
-plugin.tx_ximatypo3calendar_listevents.settings {
-  maxItems = 10
-}
-
-plugin.tx_ximatypo3calendar_eventappointmentlist.settings {
-  detailPid =
-}
-
-plugin.tx_ximatypo3calendar_eventlist.settings {
-  detailPid =
-}
