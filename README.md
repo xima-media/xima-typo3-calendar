@@ -50,10 +50,8 @@ composer require xima/xima-typo3-calendar
 
 Then, per site:
 
-1. Add the **XIMA TYPO3 Calendar** site set to your site's `dependencies` (or import it) so the
-   frontend route enhancers and TypoScript are loaded.
-2. Set the **Event detail page** site setting (`xima_typo3_calendar.eventShowPid`) to the page
-   that holds the *Event Detail* plugin.
+1. Add the **XIMA TYPO3 Calendar** site set to your site's `dependencies` (or import it) so the frontend route enhancers and TypoScript are loaded.
+2. Set the **Event detail page** site setting (`xima_typo3_calendar.eventShowPid`) to the page that holds the *Event Detail* plugin.
 3. Optionally adjust the [Extension Configuration](#extension-configuration).
 
 ## Features

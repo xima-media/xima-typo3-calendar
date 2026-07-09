@@ -6,9 +6,9 @@ import Notification from '@typo3/backend/notification.js';
 import { html } from 'lit';
 
 /**
- * Scoped styles for the card layout. Injected as part of the modal body so the
- * rules live in the same (top) document the modal renders into.
- */
+* Scoped styles for the card layout. Injected as part of the modal body so the
+* rules live in the same (top) document the modal renders into.
+*/
 const styles = html`
   <style>
     .event-status-selection {
@@ -92,20 +92,20 @@ const styles = html`
   </style>`;
 
 /**
- * Build the modal body: the status card list plus, when configured, the
- * optional message textarea and the "notify owner" checkbox.
- *
- * Returns a lit TemplateResult (not a DOM node): the modal renders in the top
- * document, so the custom elements must be created there — handing over a node
- * built in the current document breaks `<typo3-backend-icon>` style adoption.
- *
- * @param {Array<{value: (string|number), label: string, description?: string}>} items
- * @param {(string|number)} currentValue
- * @param {(event: MouseEvent) => void} onCardClick
- * @param {?{label: string, placeholder: string}} message
- * @param {?{label: string, default: boolean}} notify
- * @returns {import('lit').TemplateResult}
- */
+* Build the modal body: the status card list plus, when configured, the
+* optional message textarea and the "notify owner" checkbox.
+*
+* Returns a lit TemplateResult (not a DOM node): the modal renders in the top
+* document, so the custom elements must be created there — handing over a node
+* built in the current document breaks `<typo3-backend-icon>` style adoption.
+*
+* @param {Array<{value: (string|number), label: string, description?: string}>} items
+* @param {(string|number)} currentValue
+* @param {(event: MouseEvent) => void} onCardClick
+* @param {?{label: string, placeholder: string}} message
+* @param {?{label: string, default: boolean}} notify
+* @returns {import('lit').TemplateResult}
+*/
 function buildContent(items, currentValue, onCardClick, message, notify) {
   return html`
     ${styles}
@@ -151,22 +151,22 @@ function buildContent(items, currentValue, onCardClick, message, notify) {
 }
 
 /**
- * Open the event status selection modal.
- *
- * Reusable from any trigger (record list status badge, edit form button, …).
- * The caller decides what happens with the chosen value via `onSave`, which
- * receives `{ value, message, notifyOwner }`.
- *
- * @param {{
- *   items: Array<{value: (string|number), label: string, description?: string}>,
- *   currentValue: (string|number),
- *   title?: string,
- *   message?: {label: string, placeholder: string},
- *   notify?: {label: string, default: boolean},
- *   onSave: (result: {value: string, message: string, notifyOwner: boolean}) => (Promise<unknown>|unknown)
- * }} options
- * @returns {import('@typo3/backend/modal.js').ModalElement}
- */
+* Open the event status selection modal.
+*
+* Reusable from any trigger (record list status badge, edit form button, …).
+* The caller decides what happens with the chosen value via `onSave`, which
+* receives `{ value, message, notifyOwner }`.
+*
+* @param {{
+*   items: Array<{value: (string|number), label: string, description?: string}>,
+*   currentValue: (string|number),
+*   title?: string,
+*   message?: {label: string, placeholder: string},
+*   notify?: {label: string, default: boolean},
+*   onSave: (result: {value: string, message: string, notifyOwner: boolean}) => (Promise<unknown>|unknown)
+* }} options
+* @returns {import('@typo3/backend/modal.js').ModalElement}
+*/
 export function openEventStatusModal(options) {
   const { items, currentValue, onSave, message = null, notify = null } = options;
   const title = options.title ?? (TYPO3.lang?.['eventStatus.modal.title'] || 'Status');
@@ -218,8 +218,8 @@ export function openEventStatusModal(options) {
 }
 
 /**
- * Wires the record list status badges (first column) to the status modal.
- */
+* Wires the record list status badges (first column) to the status modal.
+*/
 class RecordlistEventStatusModal {
   constructor() {
     DocumentService.ready().then(() => this.init());

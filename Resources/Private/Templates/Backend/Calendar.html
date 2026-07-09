@@ -10,10 +10,10 @@
             <f:for each="{calendars}" as="calendar">
                 <div class="form-check form-check-inline">
                     <input class="xima-cal-filter__checkbox form-check-input"
-                           type="checkbox"
-                           id="cal-{calendar.uid}"
-                           value="{calendar.uid}"
-                           checked="checked" />
+                        type="checkbox"
+                        id="cal-{calendar.uid}"
+                        value="{calendar.uid}"
+                        checked="checked" />
                     <label class="form-check-label" for="cal-{calendar.uid}">
                         {calendar.title}
                     </label>
@@ -23,7 +23,7 @@
     </f:if>
 
     <div id="xima-calendar-mount"
-         data-ajax-url="{ajaxUrl}">
+        data-ajax-url="{ajaxUrl}">
     </div>
 
 </f:section>

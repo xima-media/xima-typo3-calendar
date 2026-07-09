@@ -3,20 +3,18 @@
 declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Xima\XimaTypo3Calendar\EventListener\T3api\BeforeOperationAccessGrantedEventListener;
-use Xima\XimaTypo3Calendar\Hooks\DataHandlerHook;
 use Xima\XimaTypo3Calendar\Widgets\CalendarWidget;
 use Xima\XimaTypo3Calendar\Widgets\Provider\CanceledAppointmentsDataProvider;
 use Xima\XimaTypo3Calendar\Widgets\Provider\ModuleButtonProvider;
 use Xima\XimaTypo3Calendar\Widgets\Provider\ReadyToPublishEventsDataProvider;
 use Xima\XimaTypo3Calendar\Widgets\Provider\SoonNeededRequirementsDataProvider;
 use Xima\XimaTypo3Calendar\Widgets\Provider\UpcomingAppointmentsDataProvider;
-
-use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $lll = 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:';
