@@ -1,6 +1,6 @@
 {
 	"name": "xima/xima-typo3-calendar",
-	"description": "Standalone calendar and event management extension for TYPO3",
+	"description": "Calendar and event management extension for TYPO3",
 	"license": "GPL-2.0-or-later",
 	"type": "typo3-cms-extension",
 	"authors": [

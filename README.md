@@ -1,9 +1,39 @@
-# TYPO3 Calendar Extension
+<div align="center">
 
-Standalone calendar and event management extension for TYPO3. It provides editor-facing
+![Extension icon](Resources/Public/Icons/Extension.svg)
+
+# TYPO3 Calendar
+
+**Standalone calendar and event management for TYPO3, built on dedicated record types**
+
+</div>
+
+[![TYPO3](https://img.shields.io/badge/TYPO3-13.4-orange.svg)](https://typo3.org/)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://www.php.net/)
+[![License](https://img.shields.io/badge/license-GPL--2.0--or--later-green.svg)](https://www.gnu.org/licenses/gpl-2.0)
+
+---
+
+Calendar and event management extension for TYPO3. It provides editor-facing
 backend modules, a frontend event listing and detail view, a status-based publishing workflow
 with e-mail notifications, dashboard widgets, and an optional requirements-management layer —
 all built on dedicated record types rather than on top of another calendar package.
+
+## Table of Contents
+
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Features](#features)
+- [Record Types](#record-types)
+- [Backend Modules](#backend-modules)
+- [Frontend Plugins](#frontend-plugins)
+- [Configuration](#configuration)
+- [Event Workflow & Notifications](#event-workflow--notifications)
+- [Dashboard Widgets](#dashboard-widgets)
+- [Backend Permissions & Access Control](#backend-permissions--access-control)
+- [Frontend Visibility Restrictions](#frontend-visibility-restrictions)
+- [DataHandler Change Events](#datahandler-change-events)
+- [License](#license)
 
 ## Requirements
 
@@ -219,3 +249,7 @@ behavior.
 The extension dispatches custom events during DataHandler datamap and cmdmap operations.
 
 For comprehensive documentation on event types, payloads, use cases, and listener implementation, see [`Documentation/DataHandlerEvents.md`](Documentation/DataHandlerEvents.md).
+
+## License
+
+This extension is licensed under [GPL-2.0-or-later](LICENSE.md).
