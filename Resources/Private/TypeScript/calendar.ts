@@ -4,8 +4,9 @@ import TimeGrid from '@event-calendar/time-grid';
 import List from '@event-calendar/list';
 import '@event-calendar/core/index.css';
 import Viewport from "@typo3/backend/viewport.js";
+import DocumentService from "@typo3/core/document-service.js";
 
-document.addEventListener('DOMContentLoaded', () => {
+DocumentService.ready().then(() => {
     const container = document.getElementById('xima-calendar-mount');
     if (!container) {
         return;
