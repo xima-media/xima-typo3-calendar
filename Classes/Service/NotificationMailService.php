@@ -132,9 +132,9 @@ final readonly class NotificationMailService
 
         // Expose the acting backend user (set for status changes performed through
         // the backend status modal) so templates can name who made the change.
-        $changedByName = $this->statusChangeContext->getBackendUserName();
-        if ($changedByName !== '') {
-            $assignments['changedByName'] = $changedByName;
+        $changedBy = $this->statusChangeContext->getBackendUser();
+        if ($changedBy !== null) {
+            $assignments['changedBy'] = $changedBy;
         }
 
         $this->sendToRecipients($template, $recipients, $assignments);
