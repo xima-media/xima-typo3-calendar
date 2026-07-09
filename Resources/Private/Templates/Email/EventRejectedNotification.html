@@ -26,14 +26,14 @@
                 <strong>{eventTitle}</strong>
             </f:if>
         </p>
-        <f:if condition="{changedBy.name}">
+        <f:if condition="{changedByBeUser.name}">
             <p>{changedByLabel}: <strong>
-                <f:if condition="{changedBy.email}">
+                <f:if condition="{changedByBeUser.email}">
                     <f:then>
-                        <f:link.email email="{changedBy.email}">{changedBy.name}</f:link.email>
+                        <f:link.email email="{changedByBeUser.email}">{changedByBeUser.name}</f:link.email>
                     </f:then>
                     <f:else>
-                        {changedBy.name}
+                        {changedByBeUser.name}
                     </f:else>
                 </f:if>
             </strong></p>
