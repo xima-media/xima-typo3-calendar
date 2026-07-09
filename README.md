@@ -36,8 +36,11 @@ Then, per site:
   URLs via site-set route enhancers.
 - **Publishing workflow** — draft → review → live/rejected status flow with e-mail
   notifications to reviewers and owners.
-- **Frontend user ownership & access control** — automatic query restrictions hide non-live
-  events and scope editing to the owning frontend user.
+- **Ownership & access control** — events track both their owning frontend user and the backend
+  user who created them; automatic query restrictions scope visibility in the frontend and the
+  backend.
+- **Backend permissions** — per-group permissions gate publishing events and seeing other
+  editors' unpublished events; users who may not publish get a read-only form on live events.
 - **Dashboard widgets** — ready-to-publish events, upcoming appointments, canceled
   appointments, and soon-needed requirements.
 - **Requirements management** (optional feature flag) — track resources an appointment needs
@@ -58,7 +61,8 @@ Then, per site:
 | Requirement         | Requirement for an appointment (e.g. speaker desk, beamer)         | `tx_ximatypo3calendar_domain_model_requirement`        |
 | Requirement Booking | Booking of a requirement for a given appointment                  | `tx_ximatypo3calendar_domain_model_requirementbooking` |
 
-An **Event** has a status (`DRAFT`, `REVIEW`, `LIVE`, `REJECTED`) and an owning frontend user.
+An **Event** has a status (`DRAFT`, `REVIEW`, `LIVE`, `REJECTED`), an owning frontend user, and a
+backend owner (`owner_be_user` — the backend user who created it, set automatically on creation).
 An **Event Appointment** is one dated occurrence of an event; its type can be `inPerson`,
 `online`, or `hybrid`. Requirements and requirement bookings are only relevant when the
 [requirements-management feature](#requirements-management) is enabled.
@@ -129,8 +133,12 @@ alternative outcome of a review. Status transitions trigger e-mail notifications
 (`EventWorkflowNotification` listener, templates in `Resources/Private/Templates/Email/`):
 
 - Submitted **for review** → notifies subscribed reviewers.
-- **Rejected** → notifies the event owner.
-- Review → **Live** (published) → notifies the event owner.
+- Moved **to review from the backend** (e.g. pulled back from live) → notifies the event owner
+  (not when the owner submitted it themselves from the frontend).
+- **Rejected**, set back to **draft**, or published (**Live**) → notifies the event owner.
+- A **live event is edited** → notifies backend users subscribed to live-edit notifications.
+
+Owner e-mails carry the optional status message and name the backend user who made the change.
 
 Backend users opt in to notifications under **User Settings → Notifications**:
 
@@ -149,6 +157,33 @@ Four widgets are available in the TYPO3 dashboard (widget group *Calendar*):
 
 Each widget links back into the corresponding backend module for quick action.
 
+## Backend Permissions & Access Control
+
+The extension registers a **Calendar** custom permission group, granted per backend group under
+its *Access Lists*. Administrators implicitly have both permissions.
+
+| Permission                | Identifier            | Grants                                                             |
+|---------------------------|-----------------------|-------------------------------------------------------------------|
+| Publish events (set live) | `publish_live_events` | Setting an event to the **Live** status (publishing it).          |
+| See all events            | `view_all_events`     | Seeing every draft/review/rejected event, not only the own ones.  |
+
+**Backend ownership.** Every event records the backend user that created it in `owner_be_user`
+(set automatically on creation via a DataHandler hook, shown in the *Workflow* palette).
+
+**Visibility.** The `EventRestriction`/`EntryRestriction` query restrictions also apply in the
+backend: a user **without** `view_all_events` only sees live events and the events they own
+(plus any [exempted record types](#exempting-record-types)). Users with the permission — and
+administrators — see everything.
+
+**Publishing.** Setting an event live requires `publish_live_events`. Without it, the **Live**
+option is removed from the status field and the record-list status modal, and the status-change
+endpoint refuses the transition.
+
+**Editing live content.** A user without `publish_live_events` cannot edit a live event or an
+appointment of a live event — the whole edit form is rendered read-only. Their own
+draft/review/rejected events stay fully editable; to change a published event they must first
+move it back to review/draft, or hand it to someone who may publish.
+
 ## Frontend Visibility Restrictions
 
 Events and entries (appointments) are filtered automatically in the frontend through two
@@ -161,7 +196,7 @@ The default rules in the frontend:
 
 - Anonymous visitors only see events with status **LIVE** (and their entries).
 - A logged-in frontend user additionally sees the events they **own** (and those entries).
-- CLI and backend requests are never restricted.
+- CLI requests are never restricted; backend visibility follows the backend permissions above.
 
 ### Exempting record types
 
