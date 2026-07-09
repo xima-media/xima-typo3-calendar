@@ -21,15 +21,15 @@ class VkurkoCalendarSerializer
     public static function serializeBackendEntries(array $backendEntries): array
     {
         $events = array_map(function (array $row): array {
-            $start = ($row['start_date'] && $row['start_date'] !== '0000-00-00 00:00:00')
+            $start = ($row['start_date'] && $row['start_date'] > 0)
                 ? (new \DateTime('@' . $row['start_date']))->format('Y-m-d\TH:i:s')
                 : null;
-            $end = ($row['end_date'] && $row['end_date'] !== '0000-00-00 00:00:00')
+            $end = ($row['end_date'] && $row['end_date'] > 0)
                 ? (new \DateTime('@' . $row['end_date']))->format('Y-m-d\TH:i:s')
                 : null;
 
-            // If end date is missing and it's not an all-day event, assume a default duration of 30 minutes
-            if ($end === null && $start && !$row['all_day']) {
+            // If end date is missing, assume a default duration of 30 minutes, even if it's an all day event (vkurko/calendar needs it!)
+            if ($end === null && $start) {
                 $end = new \DateTime($start);
                 $end->modify('+30 minutes');
                 $end = $end->format('Y-m-d\TH:i:s');
