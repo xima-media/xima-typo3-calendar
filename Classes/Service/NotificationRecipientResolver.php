@@ -26,7 +26,7 @@ final readonly class NotificationRecipientResolver
      * Backend users that enabled $preferenceField and — if they restricted
      * themselves to categories — share at least one category with the event.
      *
-     * @return array<int, array{email: string, name: string}>
+     * @return array<int, array{email: string, name: string, isBackendUser: bool}>
      */
     public function getSubscribedBackendRecipients(int $eventUid, string $preferenceField): array
     {
@@ -75,6 +75,7 @@ final readonly class NotificationRecipientResolver
             $recipients[$normalizedEmail] = [
                 'email' => $email,
                 'name' => $name,
+                'isBackendUser' => true,
             ];
         }
 
@@ -91,7 +92,7 @@ final readonly class NotificationRecipientResolver
      * would otherwise receive for changing the status of their own event.
      *
      * @param array<string, mixed> $eventRecord
-     * @return array<int, array{email: string, name: string}>
+     * @return array<int, array{email: string, name: string, isBackendUser: bool}>
      */
     public function getOwnerRecipients(array $eventRecord, int $excludeBackendUserUid = 0): array
     {
@@ -114,7 +115,7 @@ final readonly class NotificationRecipientResolver
     }
 
     /**
-     * @return array{email: string, name: string}|null
+     * @return array{email: string, name: string, isBackendUser: bool}|null
      */
     public function getOwnerRecipient(int $ownerUid): ?array
     {
@@ -151,13 +152,14 @@ final readonly class NotificationRecipientResolver
         return [
             'email' => $email,
             'name' => $name,
+            'isBackendUser' => false,
         ];
     }
 
     /**
      * Resolves a backend user owner (`owner_be_user`) to an email recipient.
      *
-     * @return array{email: string, name: string}|null
+     * @return array{email: string, name: string, isBackendUser: bool}|null
      */
     public function getBackendOwnerRecipient(int $backendUserUid): ?array
     {
@@ -192,6 +194,7 @@ final readonly class NotificationRecipientResolver
         return [
             'email' => $email,
             'name' => $name,
+            'isBackendUser' => true,
         ];
     }
 
