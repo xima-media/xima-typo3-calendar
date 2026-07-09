@@ -35,7 +35,7 @@ readonly class ReadyToPublishEventsDataProvider implements ListDataProviderInter
                 $qb->expr()->eq('en.event', $qb->quoteIdentifier('e.uid'))
             )
             ->where(
-                $qb->expr()->eq('e.status', $qb->createNamedParameter(EventStatus::DRAFT->value, Connection::PARAM_INT)),
+                $qb->expr()->eq('e.status', $qb->createNamedParameter(EventStatus::REVIEW->value, Connection::PARAM_INT)),
                 $qb->expr()->gte('en.start_date', $qb->createNamedParameter(time(), Connection::PARAM_INT)),
             )
             ->groupBy('e.uid')
