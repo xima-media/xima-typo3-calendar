@@ -2,4 +2,17 @@ templates.xima/xima-typo3-calendar.1767599793 = xima/xima-typo3-recordlist:Resou
 templates.xima/xima-typo3-calendar.1776086587 = xima/xima-typo3-calendar:Resources/Private/xima_typo3_recordlist/
 templates.typo3/cms-dashboard.1778248028 = xima/xima-typo3-calendar:Resources/Private/
 
-@import 'EXT:xima_typo3_calendar/Configuration/TSconfig/TCEMAIN.tsconfig'
+TCEMAIN.preview {
+  tx_ximatypo3calendar_domain_model_event {
+    previewPageId = {$xima_typo3_calendar.eventShowPid}
+    fieldToParameterMap {
+      uid = tx_ximatypo3calendar_eventdetail[event]
+    }
+  }
+  tx_ximatypo3calendar_domain_model_entry {
+    previewPageId = {$xima_typo3_calendar.eventShowPid}
+    fieldToParameterMap {
+      uid = tx_ximatypo3calendar_eventdetail[appointment]
+    }
+  }
+}

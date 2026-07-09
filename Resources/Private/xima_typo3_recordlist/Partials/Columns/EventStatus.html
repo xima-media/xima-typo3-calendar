@@ -1,4 +1,5 @@
 {namespace xm=Xima\XimaTypo3Recordlist\ViewHelpers}
+{namespace xtc=Xima\XimaTypo3Calendar\ViewHelpers}
 <f:be.pageRenderer includeJavaScriptModules="{0: '@xima/xima-typo3-calendar/recordlist-event-status-modal.js'}" />
 
 <f:variable name="ll">LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.</f:variable>
@@ -10,7 +11,17 @@
 <f:variable name="d2">{f:translate(key: '{ll}2.description')}</f:variable>
 <f:variable name="l3">{f:translate(key: '{ll}3.label')}</f:variable>
 <f:variable name="d3">{f:translate(key: '{ll}3.description')}</f:variable>
-<f:variable name="statusItems" value="{0: {value: 0, label: l0, description: d0}, 1: {value: 1, label: l1, description: d1}, 2: {value: 2, label: l2, description: d2}, 3: {value: 3, label: l3, description: d3}}" />
+<f:comment>The LIVE option (value 2) is only offered to backend users allowed to publish events.</f:comment>
+<f:if condition="{xtc:backend.canPublishLiveEvents()}">
+    <f:then>
+        <f:variable name="statusItems" value="{0: {value: 0, label: l0, description: d0}, 1: {value: 1, label: l1, description: d1}, 2: {value: 2, label: l2, description: d2}, 3: {value: 3, label: l3, description: d3}}" />
+    </f:then>
+    <f:else>
+        <f:variable name="statusItems" value="{0: {value: 0, label: l0, description: d0}, 1: {value: 1, label: l1, description: d1}, 3: {value: 3, label: l3, description: d3}}" />
+    </f:else>
+</f:if>
+
+<f:variable name="modalLl">LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.modal.</f:variable>
 
 <span class="badge-container select-badge-container" data-column-name="{colConfig.columnName}" data-item-status-{item.status}>
     <a
@@ -20,7 +31,16 @@
         data-bs-toggle="tooltip"
         data-field-name="{colConfig.columnName}"
         data-value="{item.status}"
-        data-status-items="{statusItems -> f:format.json()}">
+        data-status-items="{statusItems -> f:format.json()}"
+        data-modal-title="{f:translate(key: '{modalLl}title')}"
+        data-message-label="{f:translate(key: '{modalLl}message.label')}"
+        data-message-placeholder="{f:translate(key: '{modalLl}message.placeholder')}"
+        data-notify-label="{f:translate(key: '{modalLl}notifyOwner.label')}"
+        data-notify-default="1"
+        data-save-label="{f:translate(key: '{modalLl}save')}"
+        data-cancel-label="{f:translate(key: '{modalLl}cancel')}"
+        data-success-title="{f:translate(key: '{modalLl}success.title')}"
+        data-success-message="{f:translate(key: '{modalLl}success.message')}">
         <core:icon identifier="status-{item.status}" size="small" />
         <span>
             {f:translate(key:'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status.items.{item.status}.label')}

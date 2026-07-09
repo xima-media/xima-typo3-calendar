@@ -160,6 +160,10 @@
 				<source />
 				<target>Besitzer</target>
 			</trans-unit>
+			<trans-unit id="owner_be_user.label">
+				<source />
+				<target>Backend-Besitzer</target>
+			</trans-unit>
 			<trans-unit id="status.label">
 				<source />
 				<target>Status</target>
@@ -199,6 +203,46 @@
 			<trans-unit id="approval_date.label">
 				<source />
 				<target>Datum der Freigabe</target>
+			</trans-unit>
+			<trans-unit id="status_message.label">
+				<source />
+				<target>Statusnachricht</target>
+			</trans-unit>
+			<trans-unit id="status_message.description">
+				<source />
+				<target>Interne Notiz, die bei der letzten Statusänderung hinterlegt wurde. Wird in Workflow-Benachrichtigungen verwendet.</target>
+			</trans-unit>
+			<trans-unit id="status.modal.title">
+				<source />
+				<target>Status ändern</target>
+			</trans-unit>
+			<trans-unit id="status.modal.message.label">
+				<source />
+				<target>Nachricht (optional)</target>
+			</trans-unit>
+			<trans-unit id="status.modal.message.placeholder">
+				<source />
+				<target>Optionale Notiz zu dieser Statusänderung hinzufügen…</target>
+			</trans-unit>
+			<trans-unit id="status.modal.notifyOwner.label">
+				<source />
+				<target>Eigentümer per E-Mail benachrichtigen</target>
+			</trans-unit>
+			<trans-unit id="status.modal.save">
+				<source />
+				<target>Speichern</target>
+			</trans-unit>
+			<trans-unit id="status.modal.cancel">
+				<source />
+				<target>Abbrechen</target>
+			</trans-unit>
+			<trans-unit id="status.modal.success.title">
+				<source />
+				<target>Status geändert</target>
+			</trans-unit>
+			<trans-unit id="status.modal.success.message">
+				<source />
+				<target>Der Status der Veranstaltung wurde aktualisiert.</target>
 			</trans-unit>
 		</body>
 	</file>

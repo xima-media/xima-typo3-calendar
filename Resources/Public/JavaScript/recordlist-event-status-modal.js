@@ -64,10 +64,36 @@ const styles = html`
       color: var(--typo3-text-color-variant, #6b7280);
       line-height: 1.3;
     }
+    .event-status-message {
+      margin-top: .875rem;
+      display: flex;
+      flex-direction: column;
+      gap: .375rem;
+    }
+    .event-status-message label {
+      font-weight: 600;
+      font-size: .8125rem;
+    }
+    .event-status-message textarea {
+      width: 100%;
+      min-height: 4.5rem;
+      resize: vertical;
+    }
+    .event-status-notify {
+      margin-top: .75rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .event-status-notify label {
+      margin: 0;
+      font-size: .8125rem;
+    }
   </style>`;
 
 /**
- * Build the card list rendered inside the modal body.
+ * Build the modal body: the status card list plus, when configured, the
+ * optional message textarea and the "notify owner" checkbox.
  *
  * Returns a lit TemplateResult (not a DOM node): the modal renders in the top
  * document, so the custom elements must be created there — handing over a node
@@ -76,9 +102,11 @@ const styles = html`
  * @param {Array<{value: (string|number), label: string, description?: string}>} items
  * @param {(string|number)} currentValue
  * @param {(event: MouseEvent) => void} onCardClick
+ * @param {?{label: string, placeholder: string}} message
+ * @param {?{label: string, default: boolean}} notify
  * @returns {import('lit').TemplateResult}
  */
-function buildContent(items, currentValue, onCardClick) {
+function buildContent(items, currentValue, onCardClick, message, notify) {
   return html`
     ${styles}
     <div class="event-status-selection">
@@ -98,26 +126,52 @@ function buildContent(items, currentValue, onCardClick) {
               : ''}
           </span>
         </button>`)}
-    </div>`;
+    </div>
+    ${message
+      ? html`
+        <div class="event-status-message">
+          <label for="event-status-message-input">${message.label}</label>
+          <textarea
+            id="event-status-message-input"
+            class="form-control"
+            placeholder="${message.placeholder ?? ''}"></textarea>
+        </div>`
+      : ''}
+    ${notify
+      ? html`
+        <div class="event-status-notify form-check">
+          <input
+            type="checkbox"
+            id="event-status-notify-input"
+            class="form-check-input"
+            ?checked=${notify.default !== false} />
+          <label class="form-check-label" for="event-status-notify-input">${notify.label}</label>
+        </div>`
+      : ''}`;
 }
 
 /**
  * Open the event status selection modal.
  *
  * Reusable from any trigger (record list status badge, edit form button, …).
- * The caller decides what happens with the chosen value via `onSave`.
+ * The caller decides what happens with the chosen value via `onSave`, which
+ * receives `{ value, message, notifyOwner }`.
  *
  * @param {{
  *   items: Array<{value: (string|number), label: string, description?: string}>,
  *   currentValue: (string|number),
  *   title?: string,
- *   onSave: (value: string) => (Promise<unknown>|unknown)
+ *   message?: {label: string, placeholder: string},
+ *   notify?: {label: string, default: boolean},
+ *   onSave: (result: {value: string, message: string, notifyOwner: boolean}) => (Promise<unknown>|unknown)
  * }} options
  * @returns {import('@typo3/backend/modal.js').ModalElement}
  */
 export function openEventStatusModal(options) {
-  const { items, currentValue, onSave } = options;
+  const { items, currentValue, onSave, message = null, notify = null } = options;
   const title = options.title ?? (TYPO3.lang?.['eventStatus.modal.title'] || 'Status');
+  const saveLabel = options.saveLabel || TYPO3.lang?.['button.ok'] || 'Save';
+  const cancelLabel = options.cancelLabel || TYPO3.lang?.['button.cancel'] || 'Cancel';
 
   let selectedValue = String(currentValue);
 
@@ -131,24 +185,31 @@ export function openEventStatusModal(options) {
 
   return Modal.advanced({
     title,
-    content: buildContent(items, currentValue, onCardClick),
+    content: buildContent(items, currentValue, onCardClick, message, notify),
     severity: SeverityEnum.notice,
     size: Modal.sizes.small,
     type: Modal.types.default,
     buttons: [
       {
-        text: TYPO3.lang?.['button.cancel'] || 'Cancel',
+        text: cancelLabel,
         btnClass: 'btn-default',
         name: 'cancel',
         trigger: (e, modal) => modal.hideModal(),
       },
       {
-        text: TYPO3.lang?.['button.ok'] || 'OK',
+        text: saveLabel,
         btnClass: 'btn-primary',
         name: 'save',
         active: true,
         trigger: (e, modal) => {
-          Promise.resolve(typeof onSave === 'function' ? onSave(selectedValue) : undefined)
+          const messageInput = modal.querySelector('#event-status-message-input');
+          const notifyInput = modal.querySelector('#event-status-notify-input');
+          const result = {
+            value: selectedValue,
+            message: messageInput ? messageInput.value : '',
+            notifyOwner: notifyInput ? notifyInput.checked : true,
+          };
+          Promise.resolve(typeof onSave === 'function' ? onSave(result) : undefined)
             .then(() => modal.hideModal());
         },
       },
@@ -191,25 +252,37 @@ class RecordlistEventStatusModal {
     openEventStatusModal({
       items,
       currentValue: badge.dataset.value,
-      onSave: (value) => this.persist(row, badge.dataset.fieldName, value),
+      title: badge.dataset.modalTitle,
+      saveLabel: badge.dataset.saveLabel,
+      cancelLabel: badge.dataset.cancelLabel,
+      message: badge.dataset.messageLabel
+        ? { label: badge.dataset.messageLabel, placeholder: badge.dataset.messagePlaceholder }
+        : null,
+      notify: badge.dataset.notifyLabel
+        ? { label: badge.dataset.notifyLabel, default: badge.dataset.notifyDefault !== '0' }
+        : null,
+      onSave: (result) => this.persist(row, result, badge.dataset),
     });
   }
 
-  persist(row, column, value) {
+  persist(row, result, dataset = {}) {
     if (!row) {
       return Promise.resolve();
     }
 
     const payload = new FormData();
-    payload.append('table', row.dataset.table);
     payload.append('uid', row.dataset.uid);
-    payload.append('column', column);
-    payload.append('newValue', value);
+    payload.append('status', result.value);
+    payload.append('message', result.message ?? '');
+    payload.append('notifyOwner', result.notifyOwner ? '1' : '0');
 
-    return new AjaxRequest(TYPO3.settings.ajaxUrls.xima_recordlist_inline_edit)
-      .withQueryArguments({ workspaceId: row.getAttribute('data-t3ver_wsid') })
+    return new AjaxRequest(TYPO3.settings.ajaxUrls.calendar_event_status_update)
       .post('', { body: payload })
       .then(() => {
+        Notification.success(
+          dataset.successTitle || 'Status changed',
+          dataset.successMessage || '',
+        );
         window.location.reload();
       })
       .catch(() => {

@@ -39,3 +39,21 @@ ExtensionManagementUtility::addFieldsToUserSettings(
         'tx_ximatypo3calendar_notify_categories',
     ]),
 );
+
+// Custom backend permissions for the calendar workflow. Granted per backend
+// group via the group's "Access Lists". Checked through CalendarPermissionService.
+$GLOBALS['TYPO3_CONF_VARS']['BE']['customPermOptions']['tx_ximatypo3calendar_permissions'] = [
+    'header' => $ll . 'permissions.header',
+    'items' => [
+        'publish_live_events' => [
+            $ll . 'permissions.publish_live_events.label',
+            '',
+            $ll . 'permissions.publish_live_events.description',
+        ],
+        'view_all_events' => [
+            $ll . 'permissions.view_all_events.label',
+            '',
+            $ll . 'permissions.view_all_events.description',
+        ],
+    ],
+];

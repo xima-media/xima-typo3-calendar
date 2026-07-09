@@ -33,6 +33,8 @@ final readonly class NotificationMailService
     private const SHARED_EMAIL_LABELS = [
         'eventUidLabel' => 'email.eventUid',
         'eventTitleLabel' => 'email.eventTitle',
+        'statusMessageLabel' => 'email.statusMessage',
+        'changedByLabel' => 'email.changedBy',
     ];
 
     /**
@@ -44,6 +46,8 @@ final readonly class NotificationMailService
     private const OWNER_TEMPLATES = [
         'EventRejectedNotification',
         'EventPublishedNotification',
+        'EventDraftNotification',
+        'EventReviewOwnerNotification',
     ];
 
     /** @var array<string, array<string, string>> template => (assignName => LLL key) */
@@ -71,6 +75,16 @@ final readonly class NotificationMailService
             'titleLabel' => 'email.published.title',
             'introLabel' => 'email.published.intro',
         ],
+        'EventDraftNotification' => [
+            'subjectLabel' => 'email.draft.subject',
+            'titleLabel' => 'email.draft.title',
+            'introLabel' => 'email.draft.intro',
+        ],
+        'EventReviewOwnerNotification' => [
+            'subjectLabel' => 'email.reviewOwner.subject',
+            'titleLabel' => 'email.reviewOwner.title',
+            'introLabel' => 'email.reviewOwner.intro',
+        ],
     ];
 
     public function __construct(
@@ -78,6 +92,7 @@ final readonly class NotificationMailService
         private LoggerInterface $logger,
         private UriBuilder $backendUriBuilder,
         private LanguageServiceFactory $languageServiceFactory,
+        private StatusChangeContext $statusChangeContext,
     ) {
     }
 
@@ -104,6 +119,7 @@ final readonly class NotificationMailService
         $assignments = [
             'eventUid' => $eventUid,
             'eventTitle' => $eventTitle,
+            'statusMessage' => trim((string)($eventRecord['status_message'] ?? '')),
             'changedFieldLabels' => $this->resolveChangedFieldLabels($changedFieldNames),
             ...$this->resolveEmailLabels($template),
         ];
@@ -112,6 +128,13 @@ final readonly class NotificationMailService
         // not carry a backend edit link.
         if (!in_array($template, self::OWNER_TEMPLATES, true)) {
             $assignments['eventEditUrl'] = $this->buildAbsoluteEditUrl($eventUid);
+        }
+
+        // Expose the acting backend user (set for status changes performed through
+        // the backend status modal) so templates can name who made the change.
+        $changedByName = $this->statusChangeContext->getBackendUserName();
+        if ($changedByName !== '') {
+            $assignments['changedByName'] = $changedByName;
         }
 
         $this->sendToRecipients($template, $recipients, $assignments);
@@ -202,7 +225,8 @@ final readonly class NotificationMailService
     private function isSystemField(string $fieldName, array $systemFields): bool
     {
         return in_array($fieldName, $systemFields, true)
-            || str_starts_with($fieldName, 't3ver_');
+            || str_starts_with($fieldName, 't3ver_')
+            || $fieldName === 'status_message';
     }
 
     /**

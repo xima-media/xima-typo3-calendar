@@ -41,6 +41,21 @@
 			<trans-unit id="notifications.notify_categories.empty">
 				<source>No categories available.</source>
 			</trans-unit>
+			<trans-unit id="permissions.header">
+				<source>Calendar</source>
+			</trans-unit>
+			<trans-unit id="permissions.publish_live_events.label">
+				<source>Publish events (set live)</source>
+			</trans-unit>
+			<trans-unit id="permissions.publish_live_events.description">
+				<source>Allows setting events to the live status and thereby publishing them.</source>
+			</trans-unit>
+			<trans-unit id="permissions.view_all_events.label">
+				<source>See all events</source>
+			</trans-unit>
+			<trans-unit id="permissions.view_all_events.description">
+				<source>Allows seeing all draft, review and rejected events, not only the own ones.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -2,11 +2,13 @@
 
 namespace Xima\XimaTypo3Calendar\Hooks;
 
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 
+#[Autoconfigure(public: true)]
 class DataHandlerHook
 {
     protected bool $updatedEventStatus = false;

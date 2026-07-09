@@ -10949,7 +10949,8 @@ var index3 = {
 
 // Resources/Private/TypeScript/calendar.ts
 import Viewport from "@typo3/backend/viewport.js";
-document.addEventListener("DOMContentLoaded", () => {
+import DocumentService from "@typo3/core/document-service.js";
+DocumentService.ready().then(() => {
   const container = document.getElementById("xima-calendar-mount");
   if (!container) {
     return;

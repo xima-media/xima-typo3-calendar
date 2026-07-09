@@ -110,6 +110,24 @@
 				<trans-unit id="email.published.intro">
 					<source>Your event has been reviewed and is now published.</source>
 				</trans-unit>
+				<trans-unit id="email.draft.subject">
+					<source>Event set back to draft</source>
+				</trans-unit>
+				<trans-unit id="email.draft.title">
+					<source>Event set back to draft</source>
+				</trans-unit>
+				<trans-unit id="email.draft.intro">
+					<source>Your event has been set back to draft and is no longer publicly visible.</source>
+				</trans-unit>
+				<trans-unit id="email.reviewOwner.subject">
+					<source>Event under review</source>
+				</trans-unit>
+				<trans-unit id="email.reviewOwner.title">
+					<source>Event under review</source>
+				</trans-unit>
+				<trans-unit id="email.reviewOwner.intro">
+					<source>Your event has been moved to review and is currently not publicly visible.</source>
+				</trans-unit>
 				<trans-unit id="email.eventUid">
 				<source>Event UID</source>
 			</trans-unit>
@@ -118,6 +136,12 @@
 			</trans-unit>
 			<trans-unit id="email.openBackend">
 				<source>Open event in backend</source>
+			</trans-unit>
+			<trans-unit id="email.statusMessage">
+				<source>Message</source>
+			</trans-unit>
+			<trans-unit id="email.changedBy">
+				<source>Changed by</source>
 			</trans-unit>
 		</body>
 	</file>

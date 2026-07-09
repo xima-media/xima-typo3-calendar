@@ -22,6 +22,7 @@ return [
         'sortby' => 'sorting',
         'default_sortby' => 'tstamp DESC',
         'editlock' => 'editlock',
+        'descriptionColumn' => 'status_message',
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
@@ -38,7 +39,7 @@ return [
         'registration_palette' => ['showitem' => 'requires_registration,registration_link,registration_deadline,fee'],
         'workflow_palette' => [
             'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:palettes.workflow_palette',
-            'showitem' => 'owner,status',
+            'showitem' => 'owner,owner_be_user,--linebreak--,status,status_message',
         ],
     ],
     'columns' => [
@@ -274,6 +275,20 @@ return [
                 'items' => [
                     ['label' => '', 'value' => 0],
                 ],
+                'readOnly' => true,
+            ],
+        ],
+        'owner_be_user' => [
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:owner_be_user.label',
+            'exclude' => true,
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'foreign_table' => 'be_users',
+                'items' => [
+                    ['label' => '', 'value' => 0],
+                ],
+                'readOnly' => true,
             ],
         ],
         'status' => [
@@ -282,6 +297,7 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
+                'itemsProcFunc' => \Xima\XimaTypo3Calendar\Backend\Tca\EventStatusItemsProcessor::class . '->removeUnauthorizedItems',
                 'items' => [
                     [
                         'value' => EventStatus::DRAFT->value,
@@ -318,6 +334,15 @@ return [
                 'type' => 'datetime',
                 'readOnly' => true,
                 'nullable' => true,
+            ],
+        ],
+        'status_message' => [
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status_message.label',
+            'description' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:status_message.description',
+            'exclude' => true,
+            'config' => [
+                'type' => 'text',
+                'rows' => 3,
             ],
         ],
     ],

@@ -11,6 +11,7 @@ use Xima\XimaTypo3Calendar\Event\ChangeType;
 use Xima\XimaTypo3Calendar\Event\EventChangedEvent;
 use Xima\XimaTypo3Calendar\Service\NotificationMailService;
 use Xima\XimaTypo3Calendar\Service\NotificationRecipientResolver;
+use Xima\XimaTypo3Calendar\Service\StatusChangeContext;
 
 #[AsEventListener(
     identifier: 'xima-typo3-calendar/event-workflow-notification',
@@ -21,6 +22,7 @@ final readonly class EventWorkflowNotification
         private EventRepository $eventRepository,
         private NotificationRecipientResolver $recipientResolver,
         private NotificationMailService $mailService,
+        private StatusChangeContext $statusChangeContext,
     ) {
     }
 
@@ -37,25 +39,36 @@ final readonly class EventWorkflowNotification
         if (array_key_exists('status', $event->changedFields)) {
             $newStatus = (int)($event->changedFields['status']['new'] ?? EventStatus::DRAFT->value);
 
+            // Submitted for approval → notify the backend reviewers.
             if ($newStatus === EventStatus::REVIEW->value) {
                 $recipients = $this->recipientResolver->getSubscribedBackendRecipients($event->uid, NotificationRecipientResolver::PREFERENCE_REVIEW);
                 $this->mailService->sendNotification('EventReviewNotification', $recipients, $eventRecord);
-                return;
-            }
 
-            if ($newStatus === EventStatus::REJECTED->value) {
-                $owner = $this->recipientResolver->getOwnerRecipient((int)($eventRecord['owner'] ?? 0));
-                $this->mailService->sendNotification('EventRejectedNotification', $owner === null ? [] : [$owner], $eventRecord);
-                return;
-            }
-
-            if ($newStatus === EventStatus::LIVE->value) {
-                $oldStatus = (int)($event->changedFields['status']['old'] ?? EventStatus::DRAFT->value);
-                if ($oldStatus === EventStatus::REVIEW->value) {
+                // When a backend user moves the event into review (e.g. pulling it
+                // back from live), also inform the owner. Skip this when the owner
+                // submitted the event for review themselves from the frontend — that
+                // never populates the (backend-only) status change context.
+                if ($this->statusChangeContext->isFromBackend() && $this->statusChangeContext->shouldNotifyOwner()) {
                     $owner = $this->recipientResolver->getOwnerRecipient((int)($eventRecord['owner'] ?? 0));
-                    $this->mailService->sendNotification('EventPublishedNotification', $owner === null ? [] : [$owner], $eventRecord);
-                    return;
+                    $this->mailService->sendNotification('EventReviewOwnerNotification', $owner === null ? [] : [$owner], $eventRecord);
                 }
+                return;
+            }
+
+            // Every other transition is owner-facing: reset to draft, published
+            // (live from any prior state) or rejected. The status modal's
+            // "notify owner" toggle can suppress these.
+            $ownerTemplate = match ($newStatus) {
+                EventStatus::DRAFT->value => 'EventDraftNotification',
+                EventStatus::LIVE->value => 'EventPublishedNotification',
+                EventStatus::REJECTED->value => 'EventRejectedNotification',
+                default => null,
+            };
+
+            if ($ownerTemplate && $this->statusChangeContext->shouldNotifyOwner()) {
+                $owner = $this->recipientResolver->getOwnerRecipient((int)($eventRecord['owner'] ?? 0));
+                $this->mailService->sendNotification($ownerTemplate, $owner === null ? [] : [$owner], $eventRecord);
+                return;
             }
         }
 

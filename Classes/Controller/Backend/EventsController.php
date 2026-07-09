@@ -2,16 +2,98 @@
 
 namespace Xima\XimaTypo3Calendar\Controller\Backend;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Http\JsonResponse;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
+use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
+use Xima\XimaTypo3Calendar\Service\StatusChangeContext;
 use Xima\XimaTypo3Recordlist\Controller\AbstractBackendController;
 use Xima\XimaTypo3Recordlist\Dto\RecordSource;
 
 class EventsController extends AbstractBackendController
 {
+    private const EVENT_TABLE = 'tx_ximatypo3calendar_domain_model_event';
+
     public function __construct(
         private readonly ExtensionConfiguration $extensionConfiguration,
+        private readonly StatusChangeContext $statusChangeContext,
+        private readonly CalendarPermissionService $permissionService,
     ) {
+    }
+
+    /**
+     * Persists a status change triggered from the record-list status modal,
+     * together with the optional status message, and controls whether the event
+     * owner is notified. The change runs through the DataHandler so the regular
+     * workflow hooks and notification listeners fire.
+     */
+    public function updateStatus(ServerRequestInterface $request): ResponseInterface
+    {
+        $parsedBody = $request->getParsedBody();
+
+        $uid = (int)($parsedBody['uid'] ?? 0);
+        $statusValue = (int)($parsedBody['status'] ?? -1);
+        $message = trim((string)($parsedBody['message'] ?? ''));
+        $notifyOwner = (bool)(int)($parsedBody['notifyOwner'] ?? 1);
+
+        if ($uid <= 0 || EventStatus::tryFrom($statusValue) === null) {
+            return new JsonResponse(['success' => false], 400);
+        }
+
+        // Publishing (setting an event live) requires the dedicated permission.
+        if ($statusValue === EventStatus::LIVE->value && !$this->permissionService->canPublishLiveEvents()) {
+            return new JsonResponse(['success' => false], 403);
+        }
+
+        $this->statusChangeContext->setNotifyOwner($notifyOwner);
+        $this->statusChangeContext->setBackendUser($this->resolveActingBackendUser());
+
+        $data = [
+            self::EVENT_TABLE => [
+                $uid => [
+                    'status' => $statusValue,
+                    'status_message' => $message,
+                ],
+            ],
+        ];
+
+        $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+        $dataHandler->start($data, []);
+        $dataHandler->process_datamap();
+
+        if ($dataHandler->errorLog !== []) {
+            return new JsonResponse(['success' => false, 'errors' => $dataHandler->errorLog], 500);
+        }
+
+        return new JsonResponse(['success' => true]);
+    }
+
+    /**
+     * @return array{uid: int, name: string, email: string}|null
+     */
+    private function resolveActingBackendUser(): ?array
+    {
+        $backendUser = $GLOBALS['BE_USER'] ?? null;
+        if (!$backendUser instanceof BackendUserAuthentication) {
+            return null;
+        }
+
+        $name = trim((string)($backendUser->user['realName'] ?? ''));
+        if ($name === '') {
+            $name = trim((string)($backendUser->user['username'] ?? ''));
+        }
+
+        return [
+            'uid' => (int)($backendUser->user['uid'] ?? 0),
+            'name' => $name,
+            'email' => trim((string)($backendUser->user['email'] ?? '')),
+        ];
     }
 
     protected function getRecordSources(): array
