@@ -228,6 +228,22 @@
 				<source />
 				<target>Eigentümer per E-Mail benachrichtigen</target>
 			</trans-unit>
+			<trans-unit id="status.modal.save">
+				<source />
+				<target>Speichern</target>
+			</trans-unit>
+			<trans-unit id="status.modal.cancel">
+				<source />
+				<target>Abbrechen</target>
+			</trans-unit>
+			<trans-unit id="status.modal.success.title">
+				<source />
+				<target>Status geändert</target>
+			</trans-unit>
+			<trans-unit id="status.modal.success.message">
+				<source />
+				<target>Der Status der Veranstaltung wurde aktualisiert.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -160,6 +160,18 @@
 			<trans-unit id="status.modal.notifyOwner.label">
 				<source>Notify event owner by email</source>
 			</trans-unit>
+			<trans-unit id="status.modal.save">
+				<source>Save</source>
+			</trans-unit>
+			<trans-unit id="status.modal.cancel">
+				<source>Cancel</source>
+			</trans-unit>
+			<trans-unit id="status.modal.success.title">
+				<source>Status changed</source>
+			</trans-unit>
+			<trans-unit id="status.modal.success.message">
+				<source>The event status has been updated.</source>
+			</trans-unit>
 			<trans-unit id="palettes.event_info_palette">
 				<source>Event Information</source>
 			</trans-unit>

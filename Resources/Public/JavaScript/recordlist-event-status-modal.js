@@ -170,6 +170,8 @@ function buildContent(items, currentValue, onCardClick, message, notify) {
 export function openEventStatusModal(options) {
   const { items, currentValue, onSave, message = null, notify = null } = options;
   const title = options.title ?? (TYPO3.lang?.['eventStatus.modal.title'] || 'Status');
+  const saveLabel = options.saveLabel || TYPO3.lang?.['button.ok'] || 'Save';
+  const cancelLabel = options.cancelLabel || TYPO3.lang?.['button.cancel'] || 'Cancel';
 
   let selectedValue = String(currentValue);
 
@@ -189,13 +191,13 @@ export function openEventStatusModal(options) {
     type: Modal.types.default,
     buttons: [
       {
-        text: TYPO3.lang?.['button.cancel'] || 'Cancel',
+        text: cancelLabel,
         btnClass: 'btn-default',
         name: 'cancel',
         trigger: (e, modal) => modal.hideModal(),
       },
       {
-        text: TYPO3.lang?.['button.ok'] || 'OK',
+        text: saveLabel,
         btnClass: 'btn-primary',
         name: 'save',
         active: true,
@@ -251,17 +253,19 @@ class RecordlistEventStatusModal {
       items,
       currentValue: badge.dataset.value,
       title: badge.dataset.modalTitle,
+      saveLabel: badge.dataset.saveLabel,
+      cancelLabel: badge.dataset.cancelLabel,
       message: badge.dataset.messageLabel
         ? { label: badge.dataset.messageLabel, placeholder: badge.dataset.messagePlaceholder }
         : null,
       notify: badge.dataset.notifyLabel
         ? { label: badge.dataset.notifyLabel, default: badge.dataset.notifyDefault !== '0' }
         : null,
-      onSave: (result) => this.persist(row, result),
+      onSave: (result) => this.persist(row, result, badge.dataset),
     });
   }
 
-  persist(row, result) {
+  persist(row, result, dataset = {}) {
     if (!row) {
       return Promise.resolve();
     }
@@ -275,6 +279,10 @@ class RecordlistEventStatusModal {
     return new AjaxRequest(TYPO3.settings.ajaxUrls.calendar_event_status_update)
       .post('', { body: payload })
       .then(() => {
+        Notification.success(
+          dataset.successTitle || 'Status changed',
+          dataset.successMessage || '',
+        );
         window.location.reload();
       })
       .catch(() => {
