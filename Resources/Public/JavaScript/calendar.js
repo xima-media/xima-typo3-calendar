@@ -106,15 +106,15 @@ var globals = typeof window !== "undefined" ? window : typeof globalThis !== "un
 // node_modules/svelte/src/runtime/internal/ResizeObserverSingleton.js
 var ResizeObserverSingleton = class _ResizeObserverSingleton {
   /**
-   * @private
-   * @readonly
-   * @type {WeakMap<Element, import('./private.js').Listener>}
-   */
+  * @private
+  * @readonly
+  * @type {WeakMap<Element, import('./private.js').Listener>}
+  */
   _listeners = "WeakMap" in globals ? /* @__PURE__ */ new WeakMap() : void 0;
   /**
-   * @private
-   * @type {ResizeObserver}
-   */
+  * @private
+  * @type {ResizeObserver}
+  */
   _observer = void 0;
   /** @type {ResizeObserverOptions} */
   options;
@@ -123,10 +123,10 @@ var ResizeObserverSingleton = class _ResizeObserverSingleton {
     this.options = options;
   }
   /**
-   * @param {Element} element
-   * @param {import('./private.js').Listener} listener
-   * @returns {() => void}
-   */
+  * @param {Element} element
+  * @param {import('./private.js').Listener} listener
+  * @returns {() => void}
+  */
   observe(element2, listener) {
     this._listeners.set(element2, listener);
     this._getObserver().observe(element2, this.options);
@@ -136,8 +136,8 @@ var ResizeObserverSingleton = class _ResizeObserverSingleton {
     };
   }
   /**
-   * @private
-   */
+  * @private
+  */
   _getObserver() {
     return this._observer ?? (this._observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
@@ -645,9 +645,9 @@ if (typeof HTMLElement === "function") {
                 }
               },
               /**
-               * @param {HTMLElement} target
-               * @param {HTMLElement} [anchor]
-               */
+              * @param {HTMLElement} target
+              * @param {HTMLElement} [anchor]
+              */
               m: function mount(target, anchor) {
                 insert(target, node, anchor);
               },
@@ -782,20 +782,20 @@ function get_custom_element_value(prop, value, props_definition, transform) {
 }
 var SvelteComponent = class {
   /**
-   * ### PRIVATE API
-   *
-   * Do not use, may change at any time
-   *
-   * @type {any}
-   */
+  * ### PRIVATE API
+  *
+  * Do not use, may change at any time
+  *
+  * @type {any}
+  */
   $$ = void 0;
   /**
-   * ### PRIVATE API
-   *
-   * Do not use, may change at any time
-   *
-   * @type {any}
-   */
+  * ### PRIVATE API
+  *
+  * Do not use, may change at any time
+  *
+  * @type {any}
+  */
   $$set = void 0;
   /** @returns {void} */
   $destroy() {
@@ -803,11 +803,11 @@ var SvelteComponent = class {
     this.$destroy = noop;
   }
   /**
-   * @template {Extract<keyof Events, string>} K
-   * @param {K} type
-   * @param {((e: Events[K]) => void) | null | undefined} callback
-   * @returns {() => void}
-   */
+  * @template {Extract<keyof Events, string>} K
+  * @param {K} type
+  * @param {((e: Events[K]) => void) | null | undefined} callback
+  * @returns {() => void}
+  */
   $on(type, callback) {
     if (!is_function(callback)) {
       return noop;
@@ -820,9 +820,9 @@ var SvelteComponent = class {
     };
   }
   /**
-   * @param {Partial<Props>} props
-   * @returns {void}
-   */
+  * @param {Partial<Props>} props
+  * @returns {void}
+  */
   $set(props) {
     if (this.$$set && !is_empty(props)) {
       this.$$.skip_bound = true;

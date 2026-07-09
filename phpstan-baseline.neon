@@ -1,6 +1,36 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Offset 1 on array\<string, mixed\> on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: Classes/Backend/Tca/EventStatusItemsProcessor.php
+
+		-
+			message: '#^PHPDoc tag @return with type array\<int\> is incompatible with native type int\.$#'
+			identifier: return.phpDocType
+			count: 1
+			path: Classes/Backend/UserSettings/NotificationCategoryField.php
+
+		-
+			message: '#^Parameter \#1 \$array \(list\<non\-empty\-string\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: Classes/Database/EntryRestriction.php
+
+		-
+			message: '#^Parameter \#1 \$input of method TYPO3\\CMS\\Core\\Database\\Query\\QueryBuilder\:\:quote\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 2
+			path: Classes/Database/EntryRestriction.php
+
+		-
+			message: '#^Parameter \#1 \$array \(list\<non\-empty\-string\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: Classes/Database/EventRestriction.php
+
+		-
 			message: '#^Parameter \#1 \$input of method TYPO3\\CMS\\Core\\Database\\Query\\QueryBuilder\:\:quote\(\) expects string, int given\.$#'
 			identifier: argument.type
 			count: 1
@@ -17,6 +47,90 @@ parameters:
 			identifier: missingType.generics
 			count: 1
 			path: Classes/Domain/Model/Api/Calendar.php
+
+		-
+			message: '#^Method Xima\\XimaTypo3Calendar\\Domain\\Model\\Event\:\:getAppointments\(\) return type with generic class TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage does not specify its types\: TEntity$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Model/Event.php
+
+		-
+			message: '#^Method Xima\\XimaTypo3Calendar\\Domain\\Model\\Event\:\:getCategories\(\) return type with generic class TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage does not specify its types\: TEntity$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Model/Event.php
+
+		-
+			message: '#^Method Xima\\XimaTypo3Calendar\\Domain\\Model\\Event\:\:getFiles\(\) return type with generic class TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage does not specify its types\: TEntity$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Model/Event.php
+
+		-
+			message: '#^Method Xima\\XimaTypo3Calendar\\Domain\\Model\\Event\:\:getHosts\(\) return type with generic class TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage does not specify its types\: TEntity$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Model/Event.php
+
+		-
+			message: '#^Method Xima\\XimaTypo3Calendar\\Domain\\Model\\Event\:\:getRelatedEvents\(\) return type with generic class TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage does not specify its types\: TEntity$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Model/Event.php
+
+		-
+			message: '#^Method Xima\\XimaTypo3Calendar\\Domain\\Model\\Event\:\:setAppointments\(\) has parameter \$appointments with generic class TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage but does not specify its types\: TEntity$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Model/Event.php
+
+		-
+			message: '#^Method Xima\\XimaTypo3Calendar\\Domain\\Model\\Event\:\:setCategories\(\) has parameter \$categories with generic class TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage but does not specify its types\: TEntity$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Model/Event.php
+
+		-
+			message: '#^Method Xima\\XimaTypo3Calendar\\Domain\\Model\\Event\:\:setFiles\(\) has parameter \$files with generic class TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage but does not specify its types\: TEntity$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Model/Event.php
+
+		-
+			message: '#^Method Xima\\XimaTypo3Calendar\\Domain\\Model\\Event\:\:setHosts\(\) has parameter \$hosts with generic class TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage but does not specify its types\: TEntity$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Model/Event.php
+
+		-
+			message: '#^Method Xima\\XimaTypo3Calendar\\Domain\\Model\\Event\:\:setRelatedEvents\(\) has parameter \$relatedEvents with generic class TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage but does not specify its types\: TEntity$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Model/Event.php
+
+		-
+			message: '#^Method Xima\\XimaTypo3Calendar\\Domain\\Model\\EventAppointment\:\:getRequirementBookings\(\) return type with generic class TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage does not specify its types\: TEntity$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Model/EventAppointment.php
+
+		-
+			message: '#^Method Xima\\XimaTypo3Calendar\\Domain\\Model\\EventAppointment\:\:setRequirementBookings\(\) has parameter \$requirementBookings with generic class TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage but does not specify its types\: TEntity$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Model/EventAppointment.php
+
+		-
+			message: '#^Class Xima\\XimaTypo3Calendar\\Domain\\Repository\\CalendarRepository extends generic class TYPO3\\CMS\\Extbase\\Persistence\\Repository but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Repository/CalendarRepository.php
+
+		-
+			message: '#^Class Xima\\XimaTypo3Calendar\\Domain\\Repository\\EntryRepository extends generic class TYPO3\\CMS\\Extbase\\Persistence\\Repository but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: Classes/Domain/Repository/EntryRepository.php
 
 		-
 			message: '#^Class Xima\\XimaTypo3Calendar\\Domain\\Repository\\EventRepository extends generic class TYPO3\\CMS\\Extbase\\Persistence\\Repository but does not specify its types\: T$#'
