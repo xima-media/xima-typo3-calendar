@@ -26,8 +26,17 @@
                 <strong>{eventTitle}</strong>
             </f:if>
         </p>
-        <f:if condition="{changedByName}">
-            <p>{changedByLabel}: <strong>{changedByName}</strong></p>
+        <f:if condition="{changedByBeUser.name}">
+            <p>{changedByLabel}: <strong>
+                <f:if condition="{changedByBeUser.email}">
+                    <f:then>
+                        <f:link.email email="{changedByBeUser.email}">{changedByBeUser.name}</f:link.email>
+                    </f:then>
+                    <f:else>
+                        {changedByBeUser.name}
+                    </f:else>
+                </f:if>
+            </strong></p>
         </f:if>
     </f:section>
 </html>
