@@ -4,6 +4,7 @@ namespace Xima\XimaTypo3Calendar\Database;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Authentication\CommandLineUserAuthentication;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
@@ -18,6 +19,7 @@ use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
+use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
 
 /**
  * Enforced query restriction for the entry (appointment) table.
@@ -48,6 +50,7 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
         protected Context $context,
         protected ConnectionPool $connectionPool,
         protected ExtensionConfiguration $extensionConfiguration,
+        protected CalendarPermissionService $permissionService,
     ) {
     }
 
@@ -106,8 +109,40 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             return $expressionBuilder->and($expressionBuilder->or(...$orConditions));
         }
 
-        // @TODO: Check if the user has access to the event module
         if ($applicationType->isBackend()) {
+            $backendUser = $GLOBALS['BE_USER'] ?? null;
+            if (!$backendUser instanceof BackendUserAuthentication) {
+                return $expressionBuilder->and();
+            }
+
+            // Users allowed to see all events (and administrators) are unrestricted.
+            if ($this->permissionService->canViewAllEvents($backendUser)) {
+                return $expressionBuilder->and();
+            }
+
+            $entryAlias = array_search('tx_ximatypo3calendar_domain_model_entry', $queriedTables, true);
+            $qb = $this->connectionPool->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_entry');
+
+            $unrestrictedRecordTypes = $this->getUnrestrictedRecordTypes();
+            $quotedRecordTypes = array_map(static fn (string $type): string => $qb->quote($type), $unrestrictedRecordTypes);
+
+            // Only entries of live events and events the backend user owns stay visible.
+            $eventClause = '(e.status = ' . $qb->quote((string)EventStatus::LIVE->value)
+                . ' OR e.owner_be_user = ' . (int)$backendUser->getUserId() . ')';
+            if ($quotedRecordTypes !== []) {
+                $eventClause = '(' . $eventClause . ' OR e.record_type IN (' . implode(', ', $quotedRecordTypes) . '))';
+            }
+
+            $orConditions = [
+                'EXISTS (SELECT 1 FROM tx_ximatypo3calendar_domain_model_event e WHERE e.uid = ' . $entryAlias . '.event AND e.deleted = 0 AND ' . $eventClause . ')',
+            ];
+
+            // Entries of configured record types are exempt from the visibility restriction
+            if ($quotedRecordTypes !== []) {
+                $orConditions[] = $expressionBuilder->in($entryAlias . '.record_type', $quotedRecordTypes);
+            }
+
+            return $expressionBuilder->and($expressionBuilder->or(...$orConditions));
         }
 
         return $expressionBuilder->and();

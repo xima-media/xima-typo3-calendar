@@ -39,7 +39,7 @@ return [
         'registration_palette' => ['showitem' => 'requires_registration,registration_link,registration_deadline,fee'],
         'workflow_palette' => [
             'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:palettes.workflow_palette',
-            'showitem' => 'owner,status,--linebreak--,status_message',
+            'showitem' => 'owner,owner_be_user,--linebreak--,status,status_message',
         ],
     ],
     'columns' => [
@@ -275,6 +275,20 @@ return [
                 'items' => [
                     ['label' => '', 'value' => 0],
                 ],
+                'readOnly' => true,
+            ],
+        ],
+        'owner_be_user' => [
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/event/labels.xlf:owner_be_user.label',
+            'exclude' => true,
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'foreign_table' => 'be_users',
+                'items' => [
+                    ['label' => '', 'value' => 0],
+                ],
+                'readOnly' => true,
             ],
         ],
         'status' => [
@@ -283,6 +297,7 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
+                'itemsProcFunc' => \Xima\XimaTypo3Calendar\Backend\Tca\EventStatusItemsProcessor::class . '->removeUnauthorizedItems',
                 'items' => [
                     [
                         'value' => EventStatus::DRAFT->value,

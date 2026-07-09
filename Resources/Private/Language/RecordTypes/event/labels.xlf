@@ -109,6 +109,9 @@
 			<trans-unit id="owner.label">
 				<source>Owner</source>
 			</trans-unit>
+			<trans-unit id="owner_be_user.label">
+				<source>Backend owner</source>
+			</trans-unit>
 			<trans-unit id="status.label">
 				<source>Status</source>
 			</trans-unit>

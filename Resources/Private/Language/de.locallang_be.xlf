@@ -55,6 +55,26 @@
 				<source>No categories available.</source>
 				<target>Keine Kategorien verfügbar.</target>
 			</trans-unit>
+			<trans-unit id="permissions.header">
+				<source>Calendar</source>
+				<target>Kalender</target>
+			</trans-unit>
+			<trans-unit id="permissions.publish_live_events.label">
+				<source>Publish events (set live)</source>
+				<target>Veranstaltungen veröffentlichen (live setzen)</target>
+			</trans-unit>
+			<trans-unit id="permissions.publish_live_events.description">
+				<source>Allows setting events to the live status and thereby publishing them.</source>
+				<target>Erlaubt das Setzen von Veranstaltungen auf den Live-Status und damit deren Veröffentlichung.</target>
+			</trans-unit>
+			<trans-unit id="permissions.view_all_events.label">
+				<source>See all events</source>
+				<target>Alle Veranstaltungen sehen</target>
+			</trans-unit>
+			<trans-unit id="permissions.view_all_events.description">
+				<source>Allows seeing all draft, review and rejected events, not only the own ones.</source>
+				<target>Erlaubt das Sehen aller Entwürfe, Prüfungen und abgelehnten Veranstaltungen, nicht nur der eigenen.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

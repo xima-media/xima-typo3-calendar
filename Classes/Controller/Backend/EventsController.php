@@ -11,6 +11,7 @@ use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
+use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
 use Xima\XimaTypo3Calendar\Service\StatusChangeContext;
 use Xima\XimaTypo3Recordlist\Controller\AbstractBackendController;
 use Xima\XimaTypo3Recordlist\Dto\RecordSource;
@@ -22,6 +23,7 @@ class EventsController extends AbstractBackendController
     public function __construct(
         private readonly ExtensionConfiguration $extensionConfiguration,
         private readonly StatusChangeContext $statusChangeContext,
+        private readonly CalendarPermissionService $permissionService,
     ) {
     }
 
@@ -42,6 +44,11 @@ class EventsController extends AbstractBackendController
 
         if ($uid <= 0 || EventStatus::tryFrom($statusValue) === null) {
             return new JsonResponse(['success' => false], 400);
+        }
+
+        // Publishing (setting an event live) requires the dedicated permission.
+        if ($statusValue === EventStatus::LIVE->value && !$this->permissionService->canPublishLiveEvents()) {
+            return new JsonResponse(['success' => false], 403);
         }
 
         $this->statusChangeContext->setNotifyOwner($notifyOwner);

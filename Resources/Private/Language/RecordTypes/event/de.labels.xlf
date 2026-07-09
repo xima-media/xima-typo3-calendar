@@ -160,6 +160,10 @@
 				<source />
 				<target>Besitzer</target>
 			</trans-unit>
+			<trans-unit id="owner_be_user.label">
+				<source />
+				<target>Backend-Besitzer</target>
+			</trans-unit>
 			<trans-unit id="status.label">
 				<source />
 				<target>Status</target>
