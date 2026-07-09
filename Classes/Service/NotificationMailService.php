@@ -35,19 +35,7 @@ final readonly class NotificationMailService
         'eventTitleLabel' => 'email.eventTitle',
         'statusMessageLabel' => 'email.statusMessage',
         'changedByLabel' => 'email.changedBy',
-    ];
-
-    /**
-     * Templates whose recipient is the event owner (a frontend user without backend
-     * access). They must not contain a backend edit link.
-     *
-     * @var string[]
-     */
-    private const OWNER_TEMPLATES = [
-        'EventRejectedNotification',
-        'EventPublishedNotification',
-        'EventDraftNotification',
-        'EventReviewOwnerNotification',
+        'openBackendLabel' => 'email.openBackend',
     ];
 
     /** @var array<string, array<string, string>> template => (assignName => LLL key) */
@@ -57,13 +45,11 @@ final readonly class NotificationMailService
             'titleLabel' => 'email.live.title',
             'introLabel' => 'email.live.intro',
             'changedFieldsLabel' => 'email.live.changedFields',
-            'openBackendLabel' => 'email.openBackend',
         ],
         'EventReviewNotification' => [
             'subjectLabel' => 'email.review.subject',
             'titleLabel' => 'email.review.title',
             'introLabel' => 'email.review.intro',
-            'openBackendLabel' => 'email.openBackend',
         ],
         'EventRejectedNotification' => [
             'subjectLabel' => 'email.rejected.subject',
@@ -100,7 +86,7 @@ final readonly class NotificationMailService
      * Assembles the template variables for one workflow notification and sends it
      * to every recipient. Does nothing when there are no recipients.
      *
-     * @param array<int, array{email: string, name: string}> $recipients
+     * @param array<int, array{email: string, name: string, isBackendUser?: bool}> $recipients
      * @param string[] $changedFieldNames
      */
     public function sendNotification(
@@ -124,12 +110,6 @@ final readonly class NotificationMailService
             ...$this->resolveEmailLabels($template),
         ];
 
-        // Owner emails go to a frontend user without backend access, so they must
-        // not carry a backend edit link.
-        if (!in_array($template, self::OWNER_TEMPLATES, true)) {
-            $assignments['eventEditUrl'] = $this->buildAbsoluteEditUrl($eventUid);
-        }
-
         // Expose the acting backend user (set for status changes performed through
         // the backend status modal) so templates can name who made the change.
         $changedByBeUser = $this->statusChangeContext->getBackendUser();
@@ -141,19 +121,29 @@ final readonly class NotificationMailService
     }
 
     /**
-     * @param array<int, array{email: string, name: string}> $recipients
+     * @param array<int, array{email: string, name: string, isBackendUser?: bool}> $recipients
      * @param array<string, mixed> $assignments
      */
     private function sendToRecipients(string $template, array $recipients, array $assignments): void
     {
         $request = $this->getRequest();
+        $eventUid = (int)($assignments['eventUid'] ?? 0);
+        $eventEditUrl = null;
 
         foreach ($recipients as $recipient) {
+            $recipientAssignments = $assignments;
+
+            // Only recipients with backend access get a backend edit link.
+            if (($recipient['isBackendUser'] ?? false) === true) {
+                $eventEditUrl ??= $this->buildAbsoluteEditUrl($eventUid);
+                $recipientAssignments['eventEditUrl'] = $eventEditUrl;
+            }
+
             try {
                 $email = GeneralUtility::makeInstance(FluidEmail::class)
                     ->format(FluidEmail::FORMAT_HTML)
                     ->setTemplate($template)
-                    ->assignMultiple($assignments)
+                    ->assignMultiple($recipientAssignments)
                     ->addTo(new Address($recipient['email'], $recipient['name']));
 
                 if ($request instanceof ServerRequestInterface) {

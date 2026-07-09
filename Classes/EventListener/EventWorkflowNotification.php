@@ -49,8 +49,8 @@ final readonly class EventWorkflowNotification
                 // submitted the event for review themselves from the frontend — that
                 // never populates the (backend-only) status change context.
                 if ($this->statusChangeContext->isFromBackend() && $this->statusChangeContext->shouldNotifyOwner()) {
-                    $owner = $this->recipientResolver->getOwnerRecipient((int)($eventRecord['owner'] ?? 0));
-                    $this->mailService->sendNotification('EventReviewOwnerNotification', $owner === null ? [] : [$owner], $eventRecord);
+                    $owners = $this->recipientResolver->getOwnerRecipients($eventRecord, $this->actingBackendUserUid());
+                    $this->mailService->sendNotification('EventReviewOwnerNotification', $owners, $eventRecord);
                 }
                 return;
             }
@@ -66,8 +66,8 @@ final readonly class EventWorkflowNotification
             };
 
             if ($ownerTemplate && $this->statusChangeContext->shouldNotifyOwner()) {
-                $owner = $this->recipientResolver->getOwnerRecipient((int)($eventRecord['owner'] ?? 0));
-                $this->mailService->sendNotification($ownerTemplate, $owner === null ? [] : [$owner], $eventRecord);
+                $owners = $this->recipientResolver->getOwnerRecipients($eventRecord, $this->actingBackendUserUid());
+                $this->mailService->sendNotification($ownerTemplate, $owners, $eventRecord);
                 return;
             }
         }
@@ -76,6 +76,16 @@ final readonly class EventWorkflowNotification
             $recipients = $this->recipientResolver->getSubscribedBackendRecipients($event->uid, NotificationRecipientResolver::PREFERENCE_LIVE);
             $this->mailService->sendNotification('EventLiveNotification', $recipients, $eventRecord, array_keys($event->changedFields));
         }
+    }
+
+    /**
+     * The backend user who triggered the current status change, or 0 when the
+     * change did not originate from the backend status modal. Used to skip the
+     * owner notification when that user is also the (backend user) owner.
+     */
+    private function actingBackendUserUid(): int
+    {
+        return (int)($this->statusChangeContext->getBackendUser()['uid'] ?? 0);
     }
 
     /**

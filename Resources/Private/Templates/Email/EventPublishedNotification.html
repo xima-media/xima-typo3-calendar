@@ -29,5 +29,8 @@
         <f:if condition="{changedByBeUser.name}">
             <p>{changedByLabel}: <strong>{changedByBeUser.name}</strong></p>
         </f:if>
+        <f:if condition="{eventEditUrl}">
+            <p><a href="{eventEditUrl}">{openBackendLabel}</a></p>
+        </f:if>
     </f:section>
 </html>

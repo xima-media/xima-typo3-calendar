@@ -26,7 +26,7 @@ final readonly class NotificationRecipientResolver
      * Backend users that enabled $preferenceField and — if they restricted
      * themselves to categories — share at least one category with the event.
      *
-     * @return array<int, array{email: string, name: string}>
+     * @return array<int, array{email: string, name: string, isBackendUser: bool}>
      */
     public function getSubscribedBackendRecipients(int $eventUid, string $preferenceField): array
     {
@@ -75,6 +75,7 @@ final readonly class NotificationRecipientResolver
             $recipients[$normalizedEmail] = [
                 'email' => $email,
                 'name' => $name,
+                'isBackendUser' => true,
             ];
         }
 
@@ -82,7 +83,39 @@ final readonly class NotificationRecipientResolver
     }
 
     /**
-     * @return array{email: string, name: string}|null
+     * Resolves every owner recipient of an event. Ownership can be held by a
+     * frontend user (`owner`), a backend user (`owner_be_user`) or, in edge
+     * cases, both. Every distinct address is returned, deduplicated by email.
+     *
+     * When $excludeBackendUserUid is given, a backend user owner matching that
+     * uid is left out — this suppresses the self-notification a backend user
+     * would otherwise receive for changing the status of their own event.
+     *
+     * @param array<string, mixed> $eventRecord
+     * @return array<int, array{email: string, name: string, isBackendUser: bool}>
+     */
+    public function getOwnerRecipients(array $eventRecord, int $excludeBackendUserUid = 0): array
+    {
+        $recipients = [];
+        $feOwner = $this->getOwnerRecipient((int)($eventRecord['owner'] ?? 0));
+
+        $beOwnerUid = (int)($eventRecord['owner_be_user'] ?? 0);
+        $beOwner = ($excludeBackendUserUid > 0 && $beOwnerUid === $excludeBackendUserUid)
+            ? null
+            : $this->getBackendOwnerRecipient($beOwnerUid);
+
+        foreach ([$feOwner, $beOwner] as $recipient) {
+            if ($recipient === null) {
+                continue;
+            }
+            $recipients[mb_strtolower($recipient['email'])] = $recipient;
+        }
+
+        return array_values($recipients);
+    }
+
+    /**
+     * @return array{email: string, name: string, isBackendUser: bool}|null
      */
     public function getOwnerRecipient(int $ownerUid): ?array
     {
@@ -119,6 +152,49 @@ final readonly class NotificationRecipientResolver
         return [
             'email' => $email,
             'name' => $name,
+            'isBackendUser' => false,
+        ];
+    }
+
+    /**
+     * Resolves a backend user owner (`owner_be_user`) to an email recipient.
+     *
+     * @return array{email: string, name: string, isBackendUser: bool}|null
+     */
+    public function getBackendOwnerRecipient(int $backendUserUid): ?array
+    {
+        if ($backendUserUid <= 0) {
+            return null;
+        }
+
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('be_users');
+        $row = $queryBuilder
+            ->select('email', 'realName', 'username')
+            ->from('be_users')
+            ->where(
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($backendUserUid, Connection::PARAM_INT))
+            )
+            ->executeQuery()
+            ->fetchAssociative();
+
+        if ($row === false) {
+            return null;
+        }
+
+        $email = trim((string)($row['email'] ?? ''));
+        if ($email === '') {
+            return null;
+        }
+
+        $name = trim((string)($row['realName'] ?? ''));
+        if ($name === '') {
+            $name = trim((string)($row['username'] ?? ''));
+        }
+
+        return [
+            'email' => $email,
+            'name' => $name,
+            'isBackendUser' => true,
         ];
     }
 
