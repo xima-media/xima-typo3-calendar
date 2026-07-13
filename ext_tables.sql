@@ -1,3 +1,7 @@
+create table tx_ximatypo3calendar_domain_model_event (
+	status smallint(5) unsigned default 0 not null
+);
+
 create table tx_ximatypo3calendar_domain_model_entry (
 	modified_fields text,
 	modified_date bigint
