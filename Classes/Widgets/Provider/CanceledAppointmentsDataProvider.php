@@ -50,7 +50,7 @@ readonly class CanceledAppointmentsDataProvider implements ListDataProviderInter
                 'b',
                 $qb->expr()->eq('en.uid', $qb->quoteIdentifier('b.foreign_table_parent_uid'))
             )
-            ->innerJoin(
+            ->leftJoin(
                 'b',
                 'tx_ximatypo3calendar_domain_model_requirement',
                 'r',
