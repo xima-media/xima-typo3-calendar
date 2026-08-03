@@ -1,0 +1,4 @@
+"pages",,,,,,,,,,,,,,
+,"uid","pid","title","slug","doktype","is_siteroot","hidden","deleted","perms_userid","perms_groupid","perms_user","perms_group","perms_everybody","sys_language_uid"
+,1,0,"Root","/",1,1,0,0,1,1,31,31,31,0
+,2,1,"Calendar storage","/calendar-storage",254,0,0,0,1,1,31,31,31,0
