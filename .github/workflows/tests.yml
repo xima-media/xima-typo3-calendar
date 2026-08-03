@@ -66,3 +66,54 @@ jobs:
 
       - name: Run functional tests
         run: ddev composer ci:tests:functional
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup DDEV
+        uses: ddev/github-action-setup-ddev@v1
+        with:
+          autostart: false
+
+      - name: Configure and start DDEV
+        run: |
+          ddev config --project-type=typo3 --php-version=8.3
+          ddev start
+
+      - name: Install Composer dependencies
+        run: |
+          ddev composer config github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
+          ddev composer install --no-progress
+
+      - name: Enable Xdebug
+        run: ddev xdebug on
+
+      - name: Run unit tests with coverage
+        run: ddev exec XDEBUG_MODE=coverage vendor/bin/phpunit --testsuite Unit --coverage-clover coverage.unit.xml
+
+      - name: Run functional tests with coverage
+        run: ddev exec XDEBUG_MODE=coverage vendor/bin/phpunit --testsuite Functional --coverage-clover coverage.functional.xml
+
+      # Uploaded separately so the two suites stay distinguishable as flags in
+      # Codecov; codecov.yml expects exactly these two builds before commenting.
+      - name: Upload unit coverage to Codecov
+        uses: codecov/codecov-action@v5.5.4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.unit.xml
+          flags: unit
+          fail_ci_if_error: true
+
+      - name: Upload functional coverage to Codecov
+        uses: codecov/codecov-action@v5.5.4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.functional.xml
+          flags: functional
+          fail_ci_if_error: true

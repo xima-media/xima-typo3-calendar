@@ -11,6 +11,8 @@
 [![TYPO3](https://img.shields.io/badge/TYPO3-13.4-orange.svg)](https://typo3.org/)
 [![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://www.php.net/)
 [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-green.svg)](https://www.gnu.org/licenses/gpl-2.0)
+[![Tests](https://github.com/xima-media/xima-typo3-calendar/actions/workflows/tests.yml/badge.svg)](https://github.com/xima-media/xima-typo3-calendar/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/xima-media/xima-typo3-calendar/graph/badge.svg)](https://codecov.io/gh/xima-media/xima-typo3-calendar)
 
 ---
 
