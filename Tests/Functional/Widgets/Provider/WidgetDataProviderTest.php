@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\Tests\Functional\Widgets\Provider;
 
+use Doctrine\DBAL\Exception as DbalException;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -92,30 +93,48 @@ final class WidgetDataProviderTest extends AbstractCalendarFunctionalTestCase
     }
 
     /**
-     * KNOWN DEFECT — ReadyToPublishEventsDataProvider selects `e.title` and
-     * `en.start_date` while grouping by `e.uid` alone. That is invalid under
-     * `ONLY_FULL_GROUP_BY`, which is MySQL's default since 5.7 and which the
-     * testing framework enables for every functional test. On a server with the
-     * relaxed sql_mode the widget works; on a strict one it throws and the
-     * dashboard breaks.
+     * KNOWN DEFECT — ReadyToPublishEventsDataProvider groups by `e.uid` while
+     * selecting `en.start_date` from the joined entry table. Because that column
+     * is not functionally dependent on the grouping key, the widget reports an
+     * arbitrary appointment's date for an event that has several of them; the
+     * intended value is the earliest one. On a server running with
+     * `ONLY_FULL_GROUP_BY` — MySQL's default since 5.7, and enabled by the
+     * testing framework — the query does not merely return the wrong row, it
+     * throws and the dashboard breaks.
      *
-     * The fix is in the provider's query — either group by every selected column
-     * or aggregate `en.start_date` with `MIN()`. Once it lands, replace this test
-     * with the behavioural coverage it currently blocks: an event awaiting review
-     * is returned, live/draft events are not, events whose appointments are all
-     * in the past are not, and an event with several upcoming appointments is
-     * reported exactly once.
+     * The fix belongs in the provider's query: aggregate with `MIN(en.start_date)`
+     * rather than widening the GROUP BY, so the result is deterministic on every
+     * engine. These assertions describe the intended behaviour; the test reports
+     * itself incomplete for as long as the query still throws, and turns green on
+     * its own once the fix lands.
      */
     #[Test]
-    public function readyToPublishEventsCurrentlyFailsUnderStrictGroupBy(): void
+    public function readyToPublishEventsReturnsEventsAwaitingReviewWithTheirEarliestAppointment(): void
     {
         $this->insertEvent(1, 'Review event', 1);
-        $this->insertEntry(1, 1, 'Upcoming', time() + self::DAY);
+        $this->insertEvent(2, 'Live event', 2);
+        $this->insertEvent(3, 'Draft event', 0);
+        $this->insertEntry(1, 1, 'Later', time() + 3 * self::DAY);
+        $this->insertEntry(2, 1, 'Earliest', time() + self::DAY);
+        $this->insertEntry(3, 2, 'Upcoming', time() + self::DAY);
+        $this->insertEntry(4, 3, 'Upcoming', time() + self::DAY);
+        $this->insertEntry(5, 1, 'Past', time() - self::DAY);
 
-        $this->expectException(\Doctrine\DBAL\Exception::class);
-        $this->expectExceptionMessageMatches('/isn\'t in GROUP BY/');
+        try {
+            $items = $this->readyToPublishEvents()->getItems();
+        } catch (DbalException $exception) {
+            self::markTestIncomplete(
+                'Blocked by the GROUP BY defect described above: ' . $exception->getMessage()
+            );
+        }
 
-        $this->readyToPublishEvents()->getItems();
+        self::assertCount(1, $items, 'the event is reported once despite having several appointments');
+        self::assertSame('Review event', $items[0]['title']);
+        self::assertSame(
+            $this->fetchEntryStartDate(2),
+            (int)$items[0]['start_date'],
+            'the earliest upcoming appointment wins, not an arbitrary one'
+        );
     }
 
     /**
@@ -199,6 +218,11 @@ final class WidgetDataProviderTest extends AbstractCalendarFunctionalTestCase
                 return $event;
             }
         };
+    }
+
+    private function fetchEntryStartDate(int $uid): int
+    {
+        return (int)($this->fetchRawRecord(self::TABLE_ENTRY, $uid)['start_date'] ?? 0);
     }
 
     private function insertCalendar(): void

@@ -12,6 +12,7 @@ use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use Xima\XimaTypo3Calendar\Database\EventRestriction;
 use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
 use Xima\XimaTypo3Calendar\Tests\Functional\AbstractCalendarFunctionalTestCase;
@@ -59,6 +60,29 @@ final class EventRestrictionTest extends AbstractCalendarFunctionalTestCase
         self::assertTrue($this->subject->isEnforced());
     }
 
+    /**
+     * Being enforced means the restriction survives `removeAll()` — that is the
+     * whole point of the interface, and it is the reason ad-hoc queries in
+     * consuming code cannot accidentally expose non-live events. Callers that
+     * genuinely need the raw rows have to drop it by type.
+     */
+    #[Test]
+    public function theRestrictionSurvivesRemoveAllOnAQueryBuilder(): void
+    {
+        $this->givenFrontendRequest();
+        $queryBuilder = $this->get(ConnectionPool::class)->getQueryBuilderForTable(self::TABLE_EVENT);
+        $queryBuilder->getRestrictions()->removeAll();
+
+        $uids = array_map('intval', $queryBuilder
+            ->select('uid')
+            ->from(self::TABLE_EVENT)
+            ->orderBy('uid')
+            ->executeQuery()
+            ->fetchFirstColumn());
+
+        self::assertSame([1], $uids);
+    }
+
     #[Test]
     public function producesNoConditionForQueriesThatDoNotTouchTheEventTable(): void
     {
@@ -99,6 +123,69 @@ final class EventRestrictionTest extends AbstractCalendarFunctionalTestCase
     #[Test]
     public function anonymousVisitorsOnlySeeLiveEventsInTheDatabase(): void
     {
+        $this->givenFrontendRequest();
+
+        self::assertSame([1], $this->fetchVisibleEventUids());
+    }
+
+    /**
+     * A logged-in frontend user additionally sees the events they own, whatever
+     * their status.
+     */
+    #[Test]
+    public function aLoggedInFrontendUserAlsoSeesTheirOwnEvents(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
+            ->update(self::TABLE_EVENT, ['owner' => 7], ['uid' => 2]);
+        $this->givenFrontendRequest($this->frontendUser(7));
+
+        self::assertSame([1, 2], $this->fetchVisibleEventUids());
+    }
+
+    #[Test]
+    public function theOwnerConditionNamesTheFrontendUserUid(): void
+    {
+        $this->givenFrontendRequest($this->frontendUser(7));
+
+        $expression = (string)$this->subject->buildExpression($this->queriedTables(), $this->expressionBuilder);
+
+        self::assertStringContainsString('e.owner', str_replace(['`', '"'], '', $expression));
+        self::assertStringContainsString('7', $expression);
+    }
+
+    /**
+     * Record types listed in `restrictions.unrestrictedRecordTypes` are exempt so
+     * other projects can introduce event record types governed by their own
+     * access rules.
+     */
+    #[Test]
+    public function eventsOfAnUnrestrictedRecordTypeStayVisible(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
+            ->update(self::TABLE_EVENT, ['record_type' => 'private-event'], ['uid' => 3]);
+        $this->givenUnrestrictedRecordTypes('private-event');
+        $this->givenFrontendRequest();
+
+        self::assertSame([1, 3], $this->fetchVisibleEventUids());
+    }
+
+    #[Test]
+    public function theRecordTypeExemptionAcceptsACommaSeparatedList(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
+            ->update(self::TABLE_EVENT, ['record_type' => 'private-event'], ['uid' => 2]);
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
+            ->update(self::TABLE_EVENT, ['record_type' => 'internal-event'], ['uid' => 3]);
+        $this->givenUnrestrictedRecordTypes('private-event, internal-event');
+        $this->givenFrontendRequest();
+
+        self::assertSame([1, 2, 3], $this->fetchVisibleEventUids());
+    }
+
+    #[Test]
+    public function anEmptyRecordTypeSettingExemptsNothing(): void
+    {
+        $this->givenUnrestrictedRecordTypes('');
         $this->givenFrontendRequest();
 
         self::assertSame([1], $this->fetchVisibleEventUids());
@@ -172,6 +259,10 @@ final class EventRestrictionTest extends AbstractCalendarFunctionalTestCase
     private function fetchVisibleEventUids(): array
     {
         $queryBuilder = $this->get(ConnectionPool::class)->getQueryBuilderForTable(self::TABLE_EVENT);
+        // The restriction under test is also registered globally, so it would be
+        // applied a second time — with the real extension configuration rather
+        // than the one the test set up. Being enforced, it survives removeAll().
+        $this->removeAllRestrictions($queryBuilder);
         $expression = $this->subject->buildExpression($this->queriedTables(), $queryBuilder->expr());
 
         $queryBuilder->select('e.uid')->from(self::TABLE_EVENT, 'e')->orderBy('e.uid');
@@ -182,9 +273,39 @@ final class EventRestrictionTest extends AbstractCalendarFunctionalTestCase
         return array_map('intval', $queryBuilder->executeQuery()->fetchFirstColumn());
     }
 
-    private function givenFrontendRequest(): void
+    private function givenFrontendRequest(?FrontendUserAuthentication $user = null): void
     {
-        $GLOBALS['TYPO3_REQUEST'] = $this->request(SystemEnvironmentBuilder::REQUESTTYPE_FE);
+        $request = $this->request(SystemEnvironmentBuilder::REQUESTTYPE_FE);
+        if ($user !== null) {
+            $request = $request->withAttribute('frontend.user', $user);
+        }
+        $GLOBALS['TYPO3_REQUEST'] = $request;
+    }
+
+    private function frontendUser(int $uid): FrontendUserAuthentication
+    {
+        $user = new FrontendUserAuthentication();
+        $user->user = ['uid' => $uid, 'username' => 'fe_user_' . $uid];
+
+        return $user;
+    }
+
+    /**
+     * Rebuilds the subject against a stubbed extension configuration, because the
+     * setting is read once per buildExpression() call through the injected
+     * service.
+     */
+    private function givenUnrestrictedRecordTypes(string $configured): void
+    {
+        $extensionConfiguration = self::createStub(ExtensionConfiguration::class);
+        $extensionConfiguration->method('get')->willReturn($configured);
+
+        $this->subject = new EventRestriction(
+            $this->get(Context::class),
+            $this->get(ConnectionPool::class),
+            $extensionConfiguration,
+            new CalendarPermissionService(),
+        );
     }
 
     private function givenBackendRequest(): void

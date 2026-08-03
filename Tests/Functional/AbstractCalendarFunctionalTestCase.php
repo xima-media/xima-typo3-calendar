@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\Tests\Functional;
 
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Database\Query\Restriction\EnforceableQueryRestrictionInterface;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
+use Xima\XimaTypo3Calendar\Database\EntryRestriction;
+use Xima\XimaTypo3Calendar\Database\EventRestriction;
 
 /**
  * Shared base for the calendar functional tests.
@@ -67,16 +71,19 @@ abstract class AbstractCalendarFunctionalTestCase extends FunctionalTestCase
     ];
 
     /**
-     * Reads a single record with all restrictions removed — the enforced
-     * Event/EntryRestriction would otherwise filter the very rows a test wants to
-     * assert on.
+     * Reads a single record with every restriction removed.
+     *
+     * `removeAll()` keeps restrictions implementing
+     * {@see EnforceableQueryRestrictionInterface}, and both calendar restrictions
+     * are enforced — they have to be dropped by type or they would filter the
+     * very rows a test wants to assert on.
      *
      * @return array<string, mixed>|null
      */
     protected function fetchRawRecord(string $table, int $uid): ?array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($table);
-        $queryBuilder->getRestrictions()->removeAll();
+        $this->removeAllRestrictions($queryBuilder);
 
         $row = $queryBuilder
             ->select('*')
@@ -86,5 +93,17 @@ abstract class AbstractCalendarFunctionalTestCase extends FunctionalTestCase
             ->fetchAssociative();
 
         return is_array($row) ? $row : null;
+    }
+
+    /**
+     * Drops every restriction from $queryBuilder, including the enforced calendar
+     * ones that `removeAll()` deliberately keeps.
+     */
+    protected function removeAllRestrictions(QueryBuilder $queryBuilder): void
+    {
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->removeByType(EventRestriction::class)
+            ->removeByType(EntryRestriction::class);
     }
 }
