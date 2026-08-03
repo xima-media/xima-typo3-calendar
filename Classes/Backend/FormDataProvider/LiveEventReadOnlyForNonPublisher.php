@@ -33,7 +33,6 @@ final class LiveEventReadOnlyForNonPublisher implements FormDataProviderInterfac
             return $result;
         }
 
-        // Users allowed to publish (and administrators) keep full editing rights.
         if (GeneralUtility::makeInstance(CalendarPermissionService::class)->canPublishLiveEvents()) {
             return $result;
         }

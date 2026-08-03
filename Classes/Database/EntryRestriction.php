@@ -24,16 +24,22 @@ use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
 /**
  * Enforced query restriction for the entry (appointment) table.
  *
- * Registered globally via {@see TYPO3_CONF_VARS['DB']['additionalQueryRestrictions']} in ext_localconf.php,
- * so it is appended to *every* query touching `tx_ximatypo3calendar_domain_model_entry` automatically.
+ * Registered globally in ext_localconf.php under
+ * `TYPO3_CONF_VARS['DB']['additionalQueryRestrictions']`, so it is appended to *every* query
+ * touching `tx_ximatypo3calendar_domain_model_entry` automatically.
  *
  * An entry inherits the visibility of its parent event. Because the event table is usually
  * LEFT JOINed, TYPO3 moves the event-side restriction into the ON clause and drops the event
  * from the WHERE-clause table list, so the join alias is not reliably available here. The
  * restriction therefore checks the parent event through a correlated `EXISTS` subquery instead:
- *   - anonymous visitors only see entries whose event has status LIVE;
- *   - a logged-in frontend user additionally sees entries of events they own;
- *   - CLI and backend requests are never restricted.
+ *   - CLI: everything, never restricted;
+ *   - frontend, anonymous: entries whose event has status LIVE;
+ *   - frontend, logged-in user: additionally entries of events they own;
+ *   - backend with the view_all_events permission (or admin): everything;
+ *   - backend without it: entries of LIVE events plus of events they own via owner_be_user.
+ *
+ * Note the CLI check runs *before* the request lookup here, unlike in EventRestriction, so it
+ * applies even when a request happens to be present.
  *
  * Per-record-type opt-out: record types listed in the extension setting
  * `restrictions.unrestrictedRecordTypes` (comma-separated) are exempt. An entry stays visible
@@ -79,9 +85,6 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
         $applicationType = ApplicationType::fromRequest($request);
 
         if ($applicationType->isFrontend()) {
-            // The event table is LEFT JOINed, so TYPO3 moves its restrictions to the ON clause
-            // and excludes it from $queriedTables for the WHERE clause. Use a correlated subquery
-            // to check the event status/owner without relying on the join alias being available here.
             $entryAlias = array_search('tx_ximatypo3calendar_domain_model_entry', $queriedTables, true);
             $qb = $this->connectionPool->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_entry');
             $user = $this->getFrontendUserAuthentication();
@@ -101,7 +104,6 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
                 'EXISTS (SELECT 1 FROM tx_ximatypo3calendar_domain_model_event e WHERE e.uid = ' . $entryAlias . '.event AND e.deleted = 0 AND ' . $eventClause . ')',
             ];
 
-            // Entries of configured record types are exempt from the visibility restriction
             if ($quotedRecordTypes !== []) {
                 $orConditions[] = $expressionBuilder->in($entryAlias . '.record_type', $quotedRecordTypes);
             }
@@ -126,7 +128,6 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             $unrestrictedRecordTypes = $this->getUnrestrictedRecordTypes();
             $quotedRecordTypes = array_map(static fn (string $type): string => $qb->quote($type), $unrestrictedRecordTypes);
 
-            // Only entries of live events and events the backend user owns stay visible.
             $eventClause = '(e.status = ' . $qb->quote((string)EventStatus::LIVE->value)
                 . ' OR e.owner_be_user = ' . (int)$backendUser->getUserId() . ')';
             if ($quotedRecordTypes !== []) {
@@ -137,7 +138,6 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
                 'EXISTS (SELECT 1 FROM tx_ximatypo3calendar_domain_model_event e WHERE e.uid = ' . $entryAlias . '.event AND e.deleted = 0 AND ' . $eventClause . ')',
             ];
 
-            // Entries of configured record types are exempt from the visibility restriction
             if ($quotedRecordTypes !== []) {
                 $orConditions[] = $expressionBuilder->in($entryAlias . '.record_type', $quotedRecordTypes);
             }

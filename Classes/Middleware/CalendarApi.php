@@ -10,6 +10,13 @@ use TYPO3\CMS\Core\Http\JsonResponse;
 use Xima\XimaTypo3Calendar\Domain\Repository\EntryRepository;
 use Xima\XimaTypo3Calendar\Serializer\VkurkoCalendarSerializer;
 
+/**
+ * Serves the calendar feed consumed by the backend Calendar module's JS component.
+ *
+ * Triggered by the page type in the query string rather than by a path, and answers on any
+ * frontend URL. Note it reads the *backend* calendar query, so the frontend visibility rules do
+ * not apply — see Documentation/RestApi.md#known-limitations.
+ */
 class CalendarApi implements MiddlewareInterface
 {
     public function __construct(protected EntryRepository $entryRepository)
@@ -24,6 +31,8 @@ class CalendarApi implements MiddlewareInterface
             return $handler->handle($request);
         }
 
+        // Both query restrictions and the serializer read $GLOBALS['TYPO3_REQUEST'], and this
+        // middleware can run before it is populated.
         $GLOBALS['TYPO3_REQUEST'] ??= $request;
 
         $start = $params['start'] ?? null;

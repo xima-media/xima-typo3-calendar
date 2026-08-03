@@ -5,10 +5,7 @@ use Xima\XimaTypo3Calendar\Controller\EventController;
 
 defined('TYPO3') || die();
 
-// Register event database query restriction
 $GLOBALS['TYPO3_CONF_VARS']['DB']['additionalQueryRestrictions'][Xima\XimaTypo3Calendar\Database\EventRestriction::class] = [];
-
-// Register entry database query restriction
 $GLOBALS['TYPO3_CONF_VARS']['DB']['additionalQueryRestrictions'][Xima\XimaTypo3Calendar\Database\EntryRestriction::class] = [];
 
 $GLOBALS['TYPO3_CONF_VARS']['MAIL']['templateRootPaths'][1783341481] = 'EXT:xima_typo3_calendar/Resources/Private/Templates/Email/';

@@ -28,7 +28,6 @@ class EventOwnerBackendUserHook
             return;
         }
 
-        // Respect an explicit assignment coming with the create datamap.
         if (array_key_exists('owner_be_user', $fieldArray) && (int)$fieldArray['owner_be_user'] > 0) {
             return;
         }

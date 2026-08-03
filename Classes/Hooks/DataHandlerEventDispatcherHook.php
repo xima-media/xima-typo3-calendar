@@ -14,6 +14,18 @@ use Xima\XimaTypo3Calendar\Event\EntryChangedEvent;
 use Xima\XimaTypo3Calendar\Event\EventChangedEvent;
 use Xima\XimaTypo3Calendar\Event\RequirementBookingChangedEvent;
 
+/**
+ * Translates DataHandler operations into the typed record change events.
+ *
+ * Four entry points feed the change types:
+ *   - processDatamap_preProcessFieldArray: remembers the pre-save state for the field diff;
+ *   - processDatamap_afterDatabaseOperations: CREATED, UPDATED, LOCATION_CHANGED, DATE_RANGE_CHANGED, HIDDEN, REACTIVATED;
+ *   - processCmdmap_postProcess: DELETED for directly deleted records;
+ *   - processCmdmap_deleteAction: DELETED for inline children cascaded from a parent delete.
+ *
+ * Dedup state is scoped to one DataHandler run (see beginRunScope()). Full contract:
+ * Documentation/DataHandlerEvents.md.
+ */
 #[Autoconfigure(public: true)]
 class DataHandlerEventDispatcherHook
 {
@@ -110,10 +122,8 @@ class DataHandlerEventDispatcherHook
         }
 
         if ($status === 'new') {
-            // A brand-new record only ever emits CREATED. The *_CHANGED variants
-            // describe a transition from a prior value, which does not exist yet;
-            // firing them here produced phantom "location/date changed" events for
-            // freshly created records and made listeners run twice per create.
+            // A brand-new record only ever emits CREATED. The *_CHANGED variants describe a
+            // transition from a prior value, which does not exist yet.
             $this->dispatchLifecycleEvent($table, $uid, ChangeType::CREATED, $this->buildChangedFields([], $fieldArray));
             return;
         }
@@ -300,7 +310,6 @@ class DataHandlerEventDispatcherHook
         $changedFields = $this->pendingDatamapEvents[$key];
         unset($this->pendingDatamapEvents[$key]);
 
-        // The empty-field guard lives in dispatchLifecycleEvent (ChangeType::allowsEmptyFields()).
         $this->dispatchLifecycleEvent($table, $uid, $changeType, $changedFields);
     }
 

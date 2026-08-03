@@ -14,13 +14,13 @@ use Xima\XimaTypo3Calendar\Database\EventRestriction;
  * Shared base for the calendar functional tests.
  *
  * `t3api` and `xima_typo3_recordlist` are declared as hard requirements in
- * ext_emconf-equivalent metadata, so the package manager refuses to activate
+ * composer.json, so the package manager refuses to activate
  * xima_typo3_calendar without them — they must be linked into the test instance
  * even though their own surfaces are not exercised here.
  *
- * The calendar tables are not declared in ext_tables.sql; they are derived from
- * the TCA in Configuration/TCA by the schema analyzer, so no additional SQL is
- * needed.
+ * The calendar tables themselves are not declared in ext_tables.sql (only a few
+ * column overrides are); they are derived from the TCA in Configuration/TCA by the
+ * schema analyzer, so no additional SQL is needed.
  */
 abstract class AbstractCalendarFunctionalTestCase extends FunctionalTestCase
 {

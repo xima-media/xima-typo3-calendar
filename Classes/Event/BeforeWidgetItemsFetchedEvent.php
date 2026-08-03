@@ -6,6 +6,13 @@ namespace Xima\XimaTypo3Calendar\Event;
 
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 
+/**
+ * Extension point for the calendar dashboard widgets.
+ *
+ * Dispatched by every widget data provider before its query runs. The QueryBuilder is mutable
+ * and re-read after dispatch, so a listener may narrow, re-order or replace the query outright.
+ * `$dispatchingClassName` is the calling provider's FQCN, so one listener can serve all widgets.
+ */
 class BeforeWidgetItemsFetchedEvent
 {
     public function __construct(

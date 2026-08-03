@@ -157,11 +157,8 @@ final class NotificationCategoryField
     }
 
     /**
-     * Starting points for the rendered tree. If the calendar site set defines a
-     * parent category UID (optional), only that category's subtree is offered;
-     * UIDs are collected across all sites. Defaults to the category roots (0).
-     *
-     * @return int[]
+     * Root of the rendered category tree: the optional parent category UID from the
+     * extension configuration, or 0 for the category roots.
      */
     private function getRootParentUid(): int
     {

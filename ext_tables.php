@@ -9,7 +9,6 @@ defined('TYPO3') or die();
 
 $ll = 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang_be.xlf:';
 
-// Expose the event notification preferences in the "User Settings" module.
 // Values are persisted to the be_users columns defined in TCA/Overrides/be_users.php.
 $GLOBALS['TYPO3_USER_SETTINGS']['columns']['tx_ximatypo3calendar_notify_review'] = [
     'type' => 'check',

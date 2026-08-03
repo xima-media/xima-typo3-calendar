@@ -16,6 +16,12 @@ use Xima\XimaTypo3Calendar\Service\StatusChangeContext;
 use Xima\XimaTypo3Recordlist\Controller\AbstractBackendController;
 use Xima\XimaTypo3Recordlist\Dto\RecordSource;
 
+/**
+ * Backend "Events" module: the xima_typo3_recordlist configuration plus the AJAX endpoint that
+ * writes an event's status.
+ *
+ * The requirement record type is only offered when features/requirementsManagement is enabled.
+ */
 class EventsController extends AbstractBackendController
 {
     private const EVENT_TABLE = 'tx_ximatypo3calendar_domain_model_event';
@@ -46,7 +52,6 @@ class EventsController extends AbstractBackendController
             return new JsonResponse(['success' => false], 400);
         }
 
-        // Publishing (setting an event live) requires the dedicated permission.
         if ($statusValue === EventStatus::LIVE->value && !$this->permissionService->canPublishLiveEvents()) {
             return new JsonResponse(['success' => false], 403);
         }
@@ -169,9 +174,6 @@ class EventsController extends AbstractBackendController
 
     protected function modifyTableConfiguration(): void
     {
-        // ============================================
-        // tx_ximatypo3calendar_domain_model_event (Event)
-        // ============================================
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['showIconColumn'] = false;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['status']['defaultPosition'] = 1;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['status']['partial'] = 'EventStatus';
@@ -183,9 +185,6 @@ class EventsController extends AbstractBackendController
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['publish_date']['defaultPosition'] = 7;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_event']['columns']['appointments']['defaultPosition'] = 8;
 
-        // ============================================
-        // tx_ximatypo3calendar_domain_model_entry (Appointment)
-        // ============================================
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['title']['defaultPosition'] = 1;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['event']['defaultPosition'] = 2;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['start_date']['defaultPosition'] = 3;
@@ -194,27 +193,15 @@ class EventsController extends AbstractBackendController
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['canceled']['defaultPosition'] = 6;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_entry']['columns']['speakers']['defaultPosition'] = 7;
 
-        // ============================================
-        // tx_ximatypo3calendar_domain_model_organizer (Organizer)
-        // ============================================
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_organizer']['columns']['title']['defaultPosition'] = 1;
 
-        // ============================================
-        // tx_ximatypo3calendar_domain_model_location (Location)
-        // ============================================
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_location']['columns']['name']['defaultPosition'] = 1;
 
-        // ============================================
-        // tx_ximatypo3calendar_domain_model_speaker (Speaker)
-        // ============================================
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_speaker']['columns']['last_name']['defaultPosition'] = 1;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_speaker']['columns']['title']['defaultPosition'] = 2;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_speaker']['columns']['first_name']['defaultPosition'] = 3;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_speaker']['columns']['department']['defaultPosition'] = 4;
 
-        // ============================================
-        // tx_ximatypo3calendar_domain_model_requirement (Requirement)
-        // ============================================
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_requirement']['columns']['title']['defaultPosition'] = 1;
         $this->tableConfiguration['tx_ximatypo3calendar_domain_model_requirement']['columns']['assignee']['defaultPosition'] = 2;
     }

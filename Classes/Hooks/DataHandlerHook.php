@@ -9,13 +9,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 
 #[Autoconfigure(public: true)]
+/**
+ * Maintains the derived workflow columns on events and appointments.
+ *
+ * Sole writer of approval_date on the event and of modified_date / modified_fields on the
+ * appointment; the latter two feed the changed-field list in the live-edit notification.
+ */
 class DataHandlerHook
 {
     protected bool $updatedEventStatus = false;
 
     public function processDatamap_postProcessFieldArray(string $status, string $table, mixed $id, array &$fieldArray, DataHandler $parentObject): void
     {
-        // Save approvalDate of an event if status was updated to LIVE, otherwise reset approvalDate
         if ($status === 'update' && $table === 'tx_ximatypo3calendar_domain_model_event' && array_key_exists('status', $fieldArray)) {
             if ($fieldArray['status'] == EventStatus::LIVE->value) {
                 $currentDateTime = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'full');
@@ -28,12 +33,10 @@ class DataHandlerHook
 
         if ($status === 'update' && $table === 'tx_ximatypo3calendar_domain_model_entry') {
             if (count($parentObject->datamap['tx_ximatypo3calendar_domain_model_event'] ?? []) === 1) {
-                // If event's status was changed, reset all logged modifications
                 if ($this->updatedEventStatus) {
                     $fieldArray['modified_date'] = null;
                     $fieldArray['modified_fields'] = '';
                 } else {
-                    // Save modifiedDate of an event appointment if startDate/endDate/canceled was changed
                     $modifiedFields = array_intersect_key(array_flip(['start_date', 'end_date', 'canceled']), $fieldArray);
                     if (count($modifiedFields)) {
                         $event = array_pop($parentObject->datamap['tx_ximatypo3calendar_domain_model_event']);

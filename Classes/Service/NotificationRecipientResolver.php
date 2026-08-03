@@ -8,6 +8,13 @@ use Doctrine\DBAL\ArrayParameterType;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
+/**
+ * Resolves who receives a workflow notification.
+ *
+ * Owners resolve to both the frontend owner and owner_be_user, deduplicated by e-mail. Backend
+ * subscribers opt in per preference in their user settings; an *empty* category selection means
+ * "all categories", not "none".
+ */
 final readonly class NotificationRecipientResolver
 {
     private const EVENT_TABLE = 'tx_ximatypo3calendar_domain_model_event';

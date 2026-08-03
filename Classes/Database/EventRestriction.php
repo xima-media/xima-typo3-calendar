@@ -24,13 +24,16 @@ use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
 /**
  * Enforced query restriction for the event table.
  *
- * Registered globally via {@see TYPO3_CONF_VARS['DB']['additionalQueryRestrictions']} in ext_localconf.php,
- * so it is appended to *every* query touching `tx_ximatypo3calendar_domain_model_event` automatically.
+ * Registered globally in ext_localconf.php under
+ * `TYPO3_CONF_VARS['DB']['additionalQueryRestrictions']`, so it is appended to *every* query
+ * touching `tx_ximatypo3calendar_domain_model_event` automatically.
  *
- * The restriction limits which events are visible in the frontend:
- *   - anonymous visitors only see events with status LIVE;
- *   - a logged-in frontend user additionally sees the events they own;
- *   - CLI and backend requests are never restricted.
+ * Visible events per context:
+ *   - CLI: everything, never restricted;
+ *   - frontend, anonymous: status LIVE only;
+ *   - frontend, logged-in user: additionally the events they own;
+ *   - backend with the view_all_events permission (or admin): everything;
+ *   - backend without it: LIVE events plus the events they own via owner_be_user.
  *
  * Per-record-type opt-out: record types listed in the extension setting
  * `restrictions.unrestrictedRecordTypes` (comma-separated) are exempt from the
@@ -87,7 +90,6 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
                 $orConditions[] = $expressionBuilder->eq($eventAlias . '.owner', $user->getUserId());
             }
 
-            // Events of configured record types are exempt from the visibility restriction
             $unrestrictedRecordTypes = $this->getUnrestrictedRecordTypes();
             if ($unrestrictedRecordTypes !== []) {
                 $orConditions[] = $expressionBuilder->in(
@@ -110,7 +112,6 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
                 return $expressionBuilder->and();
             }
 
-            // Everyone else only sees live events and the events they own.
             $eventAlias = array_search('tx_ximatypo3calendar_domain_model_event', $queriedTables, true);
             $qb = $this->connectionPool->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_event');
 
@@ -119,7 +120,6 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
                 $expressionBuilder->eq($eventAlias . '.owner_be_user', (int)$backendUser->getUserId()),
             ];
 
-            // Events of configured record types are exempt from the visibility restriction
             $unrestrictedRecordTypes = $this->getUnrestrictedRecordTypes();
             if ($unrestrictedRecordTypes !== []) {
                 $orConditions[] = $expressionBuilder->in(

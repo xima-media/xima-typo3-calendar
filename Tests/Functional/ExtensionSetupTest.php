@@ -35,9 +35,10 @@ final class ExtensionSetupTest extends AbstractCalendarFunctionalTestCase
     }
 
     /**
-     * The tables are not declared in ext_tables.sql — they are derived from the
-     * TCA in Configuration/TCA. If that derivation ever breaks, every other
-     * functional test fails with a confusing SQL error instead of this one.
+     * The tables themselves are not declared in ext_tables.sql (only a few column
+     * overrides are) — they are derived from the TCA in Configuration/TCA. If that
+     * derivation ever breaks, every other functional test fails with a confusing SQL
+     * error instead of this one.
      */
     #[Test]
     #[DataProvider('tableProvider')]

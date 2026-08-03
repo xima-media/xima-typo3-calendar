@@ -39,7 +39,6 @@ final readonly class EventWorkflowNotification
         if (array_key_exists('status', $event->changedFields)) {
             $newStatus = (int)($event->changedFields['status']['new'] ?? EventStatus::DRAFT->value);
 
-            // Submitted for approval → notify the backend reviewers.
             if ($newStatus === EventStatus::REVIEW->value) {
                 $recipients = $this->recipientResolver->getSubscribedBackendRecipients($event->uid, NotificationRecipientResolver::PREFERENCE_REVIEW);
                 $this->mailService->sendNotification('EventReviewNotification', $recipients, $eventRecord);

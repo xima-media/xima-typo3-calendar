@@ -9,6 +9,12 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+/**
+ * Converts calendar entry rows into event objects for the vkurko/calendar JS component.
+ *
+ * The output shape is that library's event contract, not an internal format (see
+ * Documentation/RestApi.md#calendar-feed).
+ */
 class VkurkoCalendarSerializer
 {
     /**
@@ -76,8 +82,8 @@ class VkurkoCalendarSerializer
      * Build the frontend URL of the event single view for the given record.
      *
      * The single view page is configured per site via the
-     * `xima_typo3_calendar.eventShowPid` site setting. The `event` argument
-     * (and cHash) are handled by the CalendarPlugin route enhancer / page router.
+     * `xima_typo3_calendar.eventShowPid` site setting. The `event` argument (and cHash) are
+     * handled by the CalendarEventDetailPlugin route enhancer / page router.
      */
     private static function buildEventSingleUrl(array $row): ?string
     {

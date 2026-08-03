@@ -29,17 +29,15 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->load('Xima\\XimaTypo3Calendar\\', '../Classes/*')
         ->exclude('../Classes/Domain/Model/*');
 
-    // Public services for T3api and the DataHandler hook.
+    // T3api resolves listeners from the container, so this one must be public.
     $services->set(BeforeOperationAccessGrantedEventListener::class)->public();
 
-    // Widget data provider tuning.
     $services->set(ReadyToPublishEventsDataProvider::class)
         ->arg('$limit', 8);
     $services->set(SoonNeededRequirementsDataProvider::class)
         ->arg('$daysInPreview', 2)
         ->arg('$limit', 10);
 
-    // Module button providers shared by the dashboard widgets.
     $services->set('xima_typo3_calendar_widget.button.calendar_events_event', ModuleButtonProvider::class)
         ->arg('$routeIdentifier', 'calendar_events')
         ->arg('$table', 'tx_ximatypo3calendar_domain_model_event')
@@ -100,9 +98,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'width' => 'large',
         ]);
 
-    // The "soon needed requirements" widget only makes sense when the
-    // requirements management feature is enabled, so it is registered
-    // conditionally.
+    // Gated on features/requirementsManagement.
     if ($requirementsManagementEnabled) {
         $services->set('dashboard.widget.xima_soonneededrequirements', CalendarWidget::class)
             ->arg('$buttonProvider', service('xima_typo3_calendar_widget.button.calendar_events_entry'))

@@ -21,9 +21,8 @@ use TYPO3\CMS\Core\SingletonInterface;
  * the modal (e.g. an event owner submitting for review from the frontend) never
  * populates it, so {@see isFromBackend()} stays false.
  *
- * Owner notifications default to enabled: any status change that does not
- * originate from the modal keeps the previous behaviour of always notifying the
- * owner.
+ * Owner notifications default to enabled, so status changes not coming from the
+ * modal always notify the owner.
  */
 final class StatusChangeContext implements SingletonInterface
 {

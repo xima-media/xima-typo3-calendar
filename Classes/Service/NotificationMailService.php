@@ -16,6 +16,13 @@ use TYPO3\CMS\Core\Mail\FluidEmail;
 use TYPO3\CMS\Core\Mail\MailerInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+/**
+ * Renders and sends the workflow notification e-mails.
+ *
+ * TEMPLATE_EMAIL_LABELS is the registry of the six templates in
+ * Resources/Private/Templates/Email/ and their subject labels; a template not listed there
+ * cannot be sent.
+ */
 final readonly class NotificationMailService
 {
     private const EVENT_TABLE = 'tx_ximatypo3calendar_domain_model_event';
@@ -110,8 +117,7 @@ final readonly class NotificationMailService
             ...$this->resolveEmailLabels($template),
         ];
 
-        // Expose the acting backend user (set for status changes performed through
-        // the backend status modal) so templates can name who made the change.
+        // Only set when the change came through the backend status modal.
         $changedByBeUser = $this->statusChangeContext->getBackendUser();
         if ($changedByBeUser !== null) {
             $assignments['changedByBeUser'] = $changedByBeUser;
@@ -133,7 +139,6 @@ final readonly class NotificationMailService
         foreach ($recipients as $recipient) {
             $recipientAssignments = $assignments;
 
-            // Only recipients with backend access get a backend edit link.
             if (($recipient['isBackendUser'] ?? false) === true) {
                 $eventEditUrl ??= $this->buildAbsoluteEditUrl($eventUid);
                 $recipientAssignments['eventEditUrl'] = $eventEditUrl;

@@ -9,8 +9,8 @@ defined('TYPO3') or die();
 $ll = 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang_be.xlf:';
 
 // Notification preferences for the event workflow. Also surfaced in the
-// "User Settings" module (see ext_tables.php). Stored on be_users so the
-// notification logic (DataHandlerHook) can query them.
+// "User Settings" module (see ext_tables.php). Stored on be_users so
+// NotificationRecipientResolver can query them.
 ExtensionManagementUtility::addTCAcolumns('be_users', [
     'tx_ximatypo3calendar_notify_review' => [
         'label' => $ll . 'notifications.notify_review',
