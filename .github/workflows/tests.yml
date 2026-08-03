@@ -103,7 +103,7 @@ jobs:
       # Uploaded separately so the two suites stay distinguishable as flags in
       # Codecov; codecov.yml expects exactly these two builds before commenting.
       - name: Upload unit coverage to Codecov
-        uses: codecov/codecov-action@v5.5.4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.unit.xml
@@ -111,7 +111,7 @@ jobs:
           fail_ci_if_error: true
 
       - name: Upload functional coverage to Codecov
-        uses: codecov/codecov-action@v5.5.4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.functional.xml
