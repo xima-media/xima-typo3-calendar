@@ -235,6 +235,10 @@ final class DataHandlerEventDispatcherHookTest extends AbstractCalendarFunctiona
         $updates = $this->listener->for(self::TABLE_EVENT, ChangeType::UPDATED);
         self::assertCount(1, $updates);
         self::assertSame(['title'], array_keys($updates[0]->changedFields));
+
+        $hidden = $this->listener->for(self::TABLE_EVENT, ChangeType::HIDDEN);
+        self::assertCount(1, $hidden, 'the visibility change is still reported alongside the edit');
+        self::assertSame([], $hidden[0]->changedFields);
     }
 
     #[Test]
