@@ -67,10 +67,9 @@ prefer the authenticated AJAX route for backend use.
 
 ## Building your own frontend API
 
-The extension deliberately stops at the data model and the backend workflows. There is no
-frontend REST API, and the `sourcebroker/t3api` coupling that used to provide one was removed —
-consuming projects expose events the way that suits them. Our own preferred route is
-[`xima/xima-typo3-tca-api`](https://github.com/xima-media/xima-typo3-tca-api).
+The extension deliberately stops at the data model and the backend workflows. It ships no
+frontend API — consuming projects expose events the way that suits them. Our own preferred route
+is [`xima/xima-typo3-tca-api`](https://github.com/xima-media/xima-typo3-tca-api).
 
 When you build one, read
 [Access Control → Working with the restrictions](AccessControl.md#working-with-the-restrictions)

@@ -49,9 +49,9 @@ composer require xima/xima-typo3-calendar
 Then, per site:
 
 1. Add the **XIMA TYPO3 Calendar** site set (`xima/xima-typo3-calendar`) to your site's
-   `dependencies` so the route enhancers and TypoScript load.
+  `dependencies` so the route enhancers and TypoScript load.
 2. Set the **Event detail page** site setting (`xima_typo3_calendar.eventShowPid`) to the page
-   holding the *Event Detail* plugin.
+  holding the *Event Detail* plugin.
 3. Store calendar records in a sysfolder and set that folder's **page module** to *Events*.
 4. Optionally adjust the [extension configuration](#extension-configuration).
 
@@ -220,6 +220,7 @@ Widget queries are mutable from other extensions via `BeforeWidgetItemsFetchedEv
 | [Extending](Documentation/Extending.md) | PSR-14 events, extension points, template overrides |
 | [DataHandler Events](Documentation/DataHandlerEvents.md) | Record change events in detail |
 | [Contributing](CONTRIBUTING.md) | Local setup, tests, static analysis, asset build |
+| [Changelog](CHANGELOG.md) | Notable changes, incl. breaking ones and upgrade notes |
 
 ## License
 
