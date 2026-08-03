@@ -1,0 +1,7 @@
+services:
+  Xima\XimaTypo3Calendar\Tests\Functional\Fixtures\RecordingEventListener:
+    public: true
+    tags:
+      - name: event.listener
+        identifier: 'calendar-test/recording-event-listener'
+        event: Xima\XimaTypo3Calendar\Event\AbstractRecordChangedEvent

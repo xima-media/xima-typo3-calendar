@@ -1,0 +1,51 @@
+codecov:
+  require_ci_to_pass: true
+
+coverage:
+  status:
+    # The suite starts at roughly 30% line coverage, so an absolute target would
+    # fail every build. `auto` compares against the base commit instead, which
+    # turns the check into "do not regress" and lets the number grow on its own.
+    project:
+      default:
+        target: auto
+        threshold: 1%
+    # New code should be covered, but this stays informational until the suite
+    # has grown far enough to make it a fair gate.
+    patch:
+      default:
+        target: 70%
+        threshold: 5%
+        informational: true
+
+flags:
+  unit:
+    paths:
+      - Classes/
+    carryforward: false
+  functional:
+    paths:
+      - Classes/
+    carryforward: false
+
+ignore:
+  - Tests/
+  - Resources/
+  - Configuration/
+  - Documentation/
+  - config/
+  - public/
+  - vendor/
+  - .ddev/
+  - ext_localconf.php
+  - ext_tables.php
+
+comment:
+  layout: "reach,diff,flags,files"
+  behavior: default
+  require_changes: true
+  # One coverage job uploads a unit and a functional report.
+  after_n_builds: 2
+
+github_checks:
+  annotations: true

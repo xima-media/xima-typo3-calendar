@@ -14,6 +14,11 @@ parameters:
 				- Classes
 				- Configuration
 				- Resources
+				- Tests
+
+		excludePaths:
+				analyseAndScan:
+						- Tests/Functional/Fixtures/Extensions/*/ext_emconf.php
 
 		ignoreErrors:
 				- '#return type has no value type specified in iterable type array#'

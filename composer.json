@@ -77,6 +77,18 @@
 			"@ci:typoscript:lint",
 			"@ci:yaml:lint"
 		],
+		"ci:tests": [
+			"@ci:tests:unit",
+			"@ci:tests:functional"
+		],
+		"ci:tests:coverage": [
+			"@ci:tests:coverage:unit",
+			"@ci:tests:coverage:functional"
+		],
+		"ci:tests:coverage:functional": "phpunit --testsuite Functional --do-not-cache-result --coverage-clover coverage.functional.xml",
+		"ci:tests:coverage:unit": "phpunit --testsuite Unit --do-not-cache-result --coverage-clover coverage.unit.xml",
+		"ci:tests:functional": "phpunit --testsuite Functional --do-not-cache-result",
+		"ci:tests:unit": "phpunit --testsuite Unit --do-not-cache-result",
 		"ci:typoscript:lint": "typoscript-lint --fail-on-warnings",
 		"ci:yaml:lint": "find ./ ! -path './vendor/*' ! -path '*/node_modules/*' \\( -name '*.yaml' -o -name '*.yml' \\) | xargs -r yaml-lint",
 		"composer:normalize": "@composer normalize --no-check-lock",
@@ -95,6 +107,13 @@
 			"@typoscript:lint",
 			"@yaml:lint"
 		],
+		"tests": [
+			"@tests:unit",
+			"@tests:functional"
+		],
+		"tests:coverage": "phpunit --coverage-html coverage --testsuite Unit --testsuite Functional",
+		"tests:functional": "phpunit --testsuite Functional",
+		"tests:unit": "phpunit --testsuite Unit",
 		"typoscript:lint": "typoscript-lint",
 		"yaml:lint": "find ./ ! -path './vendor/*' ! -path '*/node_modules/*' \\( -name '*.yaml' -o -name '*.yml' \\) | xargs -r yaml-lint"
 	}
