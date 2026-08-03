@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\Tests\Functional\Widgets\Provider;
 
-use Doctrine\DBAL\Exception as DbalException;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -93,20 +92,9 @@ final class WidgetDataProviderTest extends AbstractCalendarFunctionalTestCase
     }
 
     /**
-     * KNOWN DEFECT — ReadyToPublishEventsDataProvider groups by `e.uid` while
-     * selecting `en.start_date` from the joined entry table. Because that column
-     * is not functionally dependent on the grouping key, the widget reports an
-     * arbitrary appointment's date for an event that has several of them; the
-     * intended value is the earliest one. On a server running with
-     * `ONLY_FULL_GROUP_BY` — MySQL's default since 5.7, and enabled by the
-     * testing framework — the query does not merely return the wrong row, it
-     * throws and the dashboard breaks.
-     *
-     * The fix belongs in the provider's query: aggregate with `MIN(en.start_date)`
-     * rather than widening the GROUP BY, so the result is deterministic on every
-     * engine. These assertions describe the intended behaviour; the test reports
-     * itself incomplete for as long as the query still throws, and turns green on
-     * its own once the fix lands.
+     * The provider aggregates the appointment date with `MIN()` rather than selecting it bare,
+     * which keeps one row per event and stays valid under `ONLY_FULL_GROUP_BY` — MySQL's default
+     * since 5.7, and enabled by the testing framework.
      */
     #[Test]
     public function readyToPublishEventsReturnsEventsAwaitingReviewWithTheirEarliestAppointment(): void
@@ -120,13 +108,7 @@ final class WidgetDataProviderTest extends AbstractCalendarFunctionalTestCase
         $this->insertEntry(4, 3, 'Upcoming', time() + self::DAY);
         $this->insertEntry(5, 1, 'Past', time() - self::DAY);
 
-        try {
-            $items = $this->readyToPublishEvents()->getItems();
-        } catch (DbalException $exception) {
-            self::markTestIncomplete(
-                'Blocked by the GROUP BY defect described above: ' . $exception->getMessage()
-            );
-        }
+        $items = $this->readyToPublishEvents()->getItems();
 
         self::assertCount(1, $items, 'the event is reported once despite having several appointments');
         self::assertSame('Review event', $items[0]['title']);
