@@ -17,6 +17,12 @@ class EntryRepository extends Repository
     public function getBackendCalendarEntries(int $startTime, int $endTime, array $calendarUids = []): array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_entry');
+        $entryEndDateExpression = 'COALESCE(NULLIF('
+            . $queryBuilder->quoteIdentifier('e.end_date')
+            . ', 0), '
+            . $queryBuilder->quoteIdentifier('e.start_date')
+            . ')';
+
         $queryBuilder
             ->select(
                 'e.uid',
@@ -63,8 +69,8 @@ class EntryRepository extends Repository
             ->leftJoin('e', 'tx_ximatypo3calendar_domain_model_event', 'v', 'e.event = v.uid')
             ->leftJoin('e', 'tx_ximatypo3calendar_domain_model_location', 'loc', 'e.location = loc.uid')
             ->where(
-                $queryBuilder->expr()->gte('e.start_date', $queryBuilder->createNamedParameter($startTime, Connection::PARAM_INT)),
                 $queryBuilder->expr()->lte('e.start_date', $queryBuilder->createNamedParameter($endTime, Connection::PARAM_INT)),
+                $entryEndDateExpression . ' >= ' . $queryBuilder->createNamedParameter($startTime, Connection::PARAM_INT),
                 $queryBuilder->expr()->eq('e.deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
             );
 
