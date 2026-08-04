@@ -26,12 +26,17 @@ class VkurkoCalendarSerializer
 
     public static function serializeBackendEntries(array $backendEntries): array
     {
-        $events = array_map(function (array $row): array {
+        // The event contract carries no offset, so the consumer reads the string as local
+        // time. '@<timestamp>' yields a UTC DateTime, which would shift every time by the
+        // installation's offset — convert before formatting.
+        $timeZone = new \DateTimeZone(date_default_timezone_get());
+
+        $events = array_map(function (array $row) use ($timeZone): array {
             $start = ($row['start_date'] && $row['start_date'] > 0)
-                ? (new \DateTime('@' . $row['start_date']))->format('Y-m-d\TH:i:s')
+                ? (new \DateTime('@' . $row['start_date']))->setTimezone($timeZone)->format('Y-m-d\TH:i:s')
                 : null;
             $end = ($row['end_date'] && $row['end_date'] > 0)
-                ? (new \DateTime('@' . $row['end_date']))->format('Y-m-d\TH:i:s')
+                ? (new \DateTime('@' . $row['end_date']))->setTimezone($timeZone)->format('Y-m-d\TH:i:s')
                 : null;
 
             // If end date is missing, assume a default duration of 30 minutes, even if it's an all day event (vkurko/calendar needs it!)
