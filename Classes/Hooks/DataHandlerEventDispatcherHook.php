@@ -89,7 +89,8 @@ class DataHandlerEventDispatcherHook
             if (!in_array($table, $definition['tables'], true)) {
                 continue;
             }
-            $changedFields = $this->buildChangedFields($record, $fieldArray, $definition['fields'], $definition['exclude']);
+            $excluded = array_merge($definition['exclude'], $this->dataHandlerManagedFields($table));
+            $changedFields = $this->buildChangedFields($record, $fieldArray, $definition['fields'], $excluded);
             if ($changedFields !== []) {
                 $this->rememberDatamapEvent($table, $id, $definition['type'], $changedFields);
             }
@@ -262,10 +263,32 @@ class DataHandlerEventDispatcherHook
         return [
             // `hidden` is owned by the dedicated HIDDEN / REACTIVATED events, so a pure
             // visibility toggle must not also surface as a generic content UPDATED.
+            // DataHandler's own control fields are excluded separately, per table.
             ['type' => ChangeType::UPDATED, 'tables' => [self::TABLE_EVENT, self::TABLE_ENTRY, self::TABLE_REQUIREMENT_BOOKING], 'fields' => null, 'exclude' => ['hidden']],
             ['type' => ChangeType::LOCATION_CHANGED, 'tables' => [self::TABLE_ENTRY, self::TABLE_EVENT], 'fields' => ['location'], 'exclude' => []],
             ['type' => ChangeType::DATE_RANGE_CHANGED, 'tables' => [self::TABLE_ENTRY], 'fields' => ['start_date', 'end_date'], 'exclude' => []],
         ];
+    }
+
+    /**
+     * Fields DataHandler writes on its own for any modified record, so their presence in the
+     * incoming field array says nothing about what the editor changed. Read from TCA ctrl
+     * rather than hardcoded, so a table that renames its timestamp column stays covered.
+     *
+     * @return list<string>
+     */
+    private function dataHandlerManagedFields(string $table): array
+    {
+        $ctrl = $GLOBALS['TCA'][$table]['ctrl'] ?? [];
+        $fields = [];
+        foreach (['tstamp', 'crdate'] as $key) {
+            $fieldName = $ctrl[$key] ?? null;
+            if (is_string($fieldName) && $fieldName !== '') {
+                $fields[] = $fieldName;
+            }
+        }
+
+        return $fields;
     }
 
     /**

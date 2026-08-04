@@ -38,38 +38,4 @@ class EventRepository extends Repository
 
         return $eventRecord === false ? null : $eventRecord;
     }
-
-    /**
-     * Find published events
-     *
-     * @param int $limit Maximum number of events to return (0 for unlimited)
-     * @return array
-     */
-    public function findPublished(int $limit = 0): array
-    {
-        $query = $this->createQuery();
-        $query->matching(
-            $query->logicalAnd(
-                $query->equals('type', 'live'),
-                $query->equals('publishToWebsite', true)
-            )
-        );
-
-        if ($limit > 0) {
-            $query->setLimit($limit);
-        }
-
-        return $query->execute()->toArray();
-    }
-
-    /**
-     * Find latest published events
-     *
-     * @param int $limit Maximum number of events to return
-     * @return array
-     */
-    public function findLatest(int $limit = 3): array
-    {
-        return $this->findPublished($limit);
-    }
 }

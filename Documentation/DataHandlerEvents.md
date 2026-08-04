@@ -145,9 +145,13 @@ pass through `processCmdmap_postProcess`. The hook therefore dispatches from two
 Consequence for listeners: a cascaded child's `DELETED` arrives slightly earlier than a direct
 one, and **the record still exists in the database** at that moment.
 
-## Known limitation
+### Control fields never trigger an update
 
-A pure hidden/unhidden toggle currently also emits an `UPDATED` carrying only `tstamp`.
-DataHandler adds `tstamp` to the field array before the hook inspects it, so the `hidden`
-exclusion alone does not suppress the update. Listeners that must ignore visibility toggles
-should skip an `UPDATED` whose `changedFields` contains nothing but `tstamp`.
+DataHandler writes its own `tstamp` (and `crdate` on creation) into the field array before the
+hook inspects it, so excluding `hidden` from `UPDATED` is not enough on its own to keep a pure
+visibility toggle quiet. The hook therefore also excludes the DataHandler-managed control
+fields, resolved per table from TCA `ctrl` rather than hardcoded.
+
+Consequences for listeners: a visibility toggle dispatches `HIDDEN`/`REACTIVATED` only, and an
+`UPDATED` always carries at least one field the editor actually changed. Hiding a record while
+editing a field in the same save still reports the field change.

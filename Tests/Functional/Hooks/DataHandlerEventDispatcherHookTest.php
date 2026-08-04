@@ -198,18 +198,13 @@ final class DataHandlerEventDispatcherHookTest extends AbstractCalendarFunctiona
     }
 
     /**
-     * Characterizes current behaviour, which diverges from the intent stated in
-     * DataHandlerEventDispatcherHook::fieldChangeDefinitions(): excluding `hidden`
-     * from the UPDATED definition is not enough to keep a pure visibility toggle
-     * out of UPDATED, because DataHandler adds `tstamp` to the incoming field
-     * array before the hook sees it. The toggle therefore emits an extra UPDATED
-     * whose diff contains nothing but `tstamp`.
-     *
-     * If the hook starts excluding the DataHandler-managed control fields, flip
-     * this to assert that HIDDEN is the only dispatched change type.
+     * Excluding `hidden` from the UPDATED definition is not enough on its own, because
+     * DataHandler adds `tstamp` to the incoming field array before the hook sees it. The
+     * hook therefore also excludes the DataHandler-managed control fields, so a pure
+     * visibility toggle stays a single HIDDEN.
      */
     #[Test]
-    public function hidingARecordAlsoDispatchesATimestampOnlyUpdate(): void
+    public function hidingARecordDispatchesHiddenOnly(): void
     {
         $this->processDatamap([
             self::TABLE_EVENT => [
@@ -217,9 +212,33 @@ final class DataHandlerEventDispatcherHookTest extends AbstractCalendarFunctiona
             ],
         ]);
 
+        self::assertSame([], $this->listener->for(self::TABLE_EVENT, ChangeType::UPDATED));
+        self::assertSame(
+            [ChangeType::HIDDEN->value],
+            $this->listener->changeTypesFor(self::TABLE_EVENT)
+        );
+    }
+
+    /**
+     * The control-field exclusion must not swallow real edits: hiding a record while also
+     * changing a content field still reports the content change.
+     */
+    #[Test]
+    public function hidingARecordWhileEditingAFieldStillDispatchesUpdated(): void
+    {
+        $this->processDatamap([
+            self::TABLE_EVENT => [
+                1 => ['hidden' => 1, 'title' => 'Renamed while hiding'],
+            ],
+        ]);
+
         $updates = $this->listener->for(self::TABLE_EVENT, ChangeType::UPDATED);
         self::assertCount(1, $updates);
-        self::assertSame(['tstamp'], array_keys($updates[0]->changedFields));
+        self::assertSame(['title'], array_keys($updates[0]->changedFields));
+
+        $hidden = $this->listener->for(self::TABLE_EVENT, ChangeType::HIDDEN);
+        self::assertCount(1, $hidden, 'the visibility change is still reported alongside the edit');
+        self::assertSame([], $hidden[0]->changedFields);
     }
 
     #[Test]
