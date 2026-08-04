@@ -19,6 +19,7 @@ use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use Xima\XimaTypo3Calendar\Domain\Repository\CalendarRepository;
 use Xima\XimaTypo3Calendar\Domain\Repository\EntryRepository;
 use Xima\XimaTypo3Calendar\Serializer\VkurkoCalendarSerializer;
+use Xima\XimaTypo3Calendar\Utility\CalendarFeedRequestUtility;
 
 class CalendarController extends ActionController
 {
@@ -54,12 +55,9 @@ class CalendarController extends ActionController
     {
         $params = $request->getQueryParams();
 
-        $start = $params['start'] ?? null;
-        $end = $params['end'] ?? null;
-        $startDatetime = $start ? (new \DateTime($start))->getTimestamp() : 0;
-        $endDatetime = $end ? (new \DateTime($end))->getTimestamp() : (new \DateTime('9999-12-31 23:59:59'))->getTimestamp();
-
-        $calendarUids = array_map('intval', (array)($params['calendars'] ?? []));
+        $startDatetime = CalendarFeedRequestUtility::getStartTimestamp($params);
+        $endDatetime = CalendarFeedRequestUtility::getEndTimestamp($params);
+        $calendarUids = CalendarFeedRequestUtility::getCalendarUids($params);
 
         $rows = $this->entryRepository->getBackendCalendarEntries($startDatetime, $endDatetime, $calendarUids);
 

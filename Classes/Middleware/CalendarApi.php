@@ -9,6 +9,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use Xima\XimaTypo3Calendar\Domain\Repository\EntryRepository;
 use Xima\XimaTypo3Calendar\Serializer\VkurkoCalendarSerializer;
+use Xima\XimaTypo3Calendar\Utility\CalendarFeedRequestUtility;
 
 /**
  * Serves the calendar feed consumed by the backend Calendar module's JS component.
@@ -35,12 +36,9 @@ class CalendarApi implements MiddlewareInterface
         // middleware can run before it is populated.
         $GLOBALS['TYPO3_REQUEST'] ??= $request;
 
-        $start = $params['start'] ?? null;
-        $end = $params['end'] ?? null;
-        $startDatetime = $start ? (new \DateTime($start))->getTimestamp() : 0;
-        $endDatetime = $end ? (new \DateTime($end))->getTimestamp() : 99999999999;
-
-        $calendarUids = array_map('intval', (array)($params['calendars'] ?? []));
+        $startDatetime = CalendarFeedRequestUtility::getStartTimestamp($params);
+        $endDatetime = CalendarFeedRequestUtility::getEndTimestamp($params);
+        $calendarUids = CalendarFeedRequestUtility::getCalendarUids($params);
 
         $rows = $this->entryRepository->getBackendCalendarEntries($startDatetime, $endDatetime, $calendarUids);
 
