@@ -27,12 +27,37 @@ final class VkurkoCalendarSerializerTest extends TestCase
     #[Test]
     public function mapsStartAndEndToLocalIsoStrings(): void
     {
-        $result = VkurkoCalendarSerializer::serializeBackendEntries([
+        $result = $this->serializeInTimeZone('UTC', [
             $this->row(['start_date' => self::START, 'end_date' => self::END]),
         ]);
 
         self::assertSame('2025-01-01T00:00:00', $result[0]['start']);
         self::assertSame('2025-01-01T01:00:00', $result[0]['end']);
+    }
+
+    /**
+     * The emitted strings carry no offset, so they must already be in the installation's
+     * timezone — a consumer reads them as local time.
+     */
+    #[Test]
+    public function convertsTimestampsIntoTheInstallationTimezone(): void
+    {
+        $result = $this->serializeInTimeZone('Europe/Berlin', [
+            $this->row(['start_date' => self::START, 'end_date' => self::END]),
+        ]);
+
+        self::assertSame('2025-01-01T01:00:00', $result[0]['start']);
+        self::assertSame('2025-01-01T02:00:00', $result[0]['end']);
+    }
+
+    #[Test]
+    public function derivesTheThirtyMinuteFallbackFromTheConvertedStart(): void
+    {
+        $result = $this->serializeInTimeZone('Europe/Berlin', [
+            $this->row(['start_date' => self::START, 'end_date' => 0]),
+        ]);
+
+        self::assertSame('2025-01-01T01:30:00', $result[0]['end']);
     }
 
     /**
@@ -42,7 +67,7 @@ final class VkurkoCalendarSerializerTest extends TestCase
     #[Test]
     public function fallsBackToThirtyMinutesWhenTheEndDateIsMissing(): void
     {
-        $result = VkurkoCalendarSerializer::serializeBackendEntries([
+        $result = $this->serializeInTimeZone('UTC', [
             $this->row(['start_date' => self::START, 'end_date' => 0]),
         ]);
 
@@ -53,7 +78,7 @@ final class VkurkoCalendarSerializerTest extends TestCase
     #[Test]
     public function appliesTheThirtyMinuteFallbackToAllDayEntriesToo(): void
     {
-        $result = VkurkoCalendarSerializer::serializeBackendEntries([
+        $result = $this->serializeInTimeZone('UTC', [
             $this->row(['start_date' => self::START, 'end_date' => null, 'all_day' => 1]),
         ]);
 
@@ -238,6 +263,22 @@ final class VkurkoCalendarSerializerTest extends TestCase
         ]);
 
         self::assertSame(['entry-1', 'entry-2', 'entry-3'], array_column($result, 'id'));
+    }
+
+    /**
+     * @param list<array<string, mixed>> $rows
+     * @return array<int, array<string, mixed>>
+     */
+    private function serializeInTimeZone(string $timeZone, array $rows): array
+    {
+        $previousTimeZone = date_default_timezone_get();
+        date_default_timezone_set($timeZone);
+
+        try {
+            return VkurkoCalendarSerializer::serializeBackendEntries($rows);
+        } finally {
+            date_default_timezone_set($previousTimeZone);
+        }
     }
 
     /**
