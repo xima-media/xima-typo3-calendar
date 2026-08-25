@@ -13,12 +13,6 @@ parameters:
 			path: Classes/Database/EntryRestriction.php
 
 		-
-			message: '#^Parameter \#1 \$input of method TYPO3\\CMS\\Core\\Database\\Query\\QueryBuilder\:\:quote\(\) expects string, int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Classes/Database/EntryRestriction.php
-
-		-
 			message: '#^Parameter \#1 \$array \(list\<non\-empty\-string\>\) of array_values is already a list, call has no effect\.$#'
 			identifier: arrayValues.list
 			count: 1

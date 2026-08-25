@@ -101,8 +101,7 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             $unrestrictedRecordTypes = $this->getUnrestrictedRecordTypes();
             $quotedRecordTypes = array_map(static fn (string $type): string => $qb->quote($type), $unrestrictedRecordTypes);
 
-            // The parent event is exempt from the restriction when its record type is unrestricted
-            $ownerClauses = ['e.status = ' . $qb->quote(EventStatus::LIVE->value)];
+            $ownerClauses = ['e.status = ' . $qb->quote((string)EventStatus::LIVE->value)];
             if ($user && $user->getUserId()) {
                 $ownerClauses[] = 'e.owner = ' . (int)$user->getUserId();
             }
@@ -112,6 +111,7 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             $eventClause = count($ownerClauses) > 1
                 ? '(' . implode(' OR ', $ownerClauses) . ')'
                 : $ownerClauses[0];
+            // The parent event is exempt from the restriction when its record type is unrestricted
             if ($quotedRecordTypes !== []) {
                 $eventClause = '(' . $eventClause . ' OR e.record_type IN (' . implode(', ', $quotedRecordTypes) . '))';
             }
