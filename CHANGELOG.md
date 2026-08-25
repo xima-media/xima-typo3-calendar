@@ -16,6 +16,11 @@ All notable changes to this extension are documented here. The format follows
 
 ### Fixed
 
+- Backend users viewing an event or appointment in the **frontend** were answered with a 404
+  whenever the event was not `LIVE`. The frontend branch of the restrictions only ever knew about
+  frontend users, so neither the `view_all_events` permission nor event ownership via
+  `owner_be_user` counted there. The backend session is now honoured in the frontend as well, so
+  editors can preview their drafts on the website.
 - Documentation corrections against source: the requirements feature flag is the extension
   configuration key `features.requirementsManagement`, not the unused
   `SYS.features.ximaTypo3Calendar.requirementsManagement` global; route-enhancer variables are

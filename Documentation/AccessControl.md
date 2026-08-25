@@ -57,6 +57,7 @@ appended to **every** query against
 | CLI | Everything — never restricted. |
 | Frontend, anonymous | Events with status `LIVE`, and their appointments. |
 | Frontend, logged-in FE user | Additionally the events they **own**, and those appointments. |
+| Frontend, logged-in backend user | The backend rules below — an editor previewing a draft event on the website gets the page, not a 404. |
 | Backend, with `view_all_events` (or admin) | Everything. |
 | Backend, without `view_all_events` | `LIVE` events plus the events they own via `owner_be_user`. |
 | Any context | Plus every record whose type is [exempted](#exempting-record-types). |

@@ -260,6 +260,32 @@ final class EntryRestrictionTest extends AbstractCalendarFunctionalTestCase
         self::assertSame([1], $this->fetchVisibleEntryUids());
     }
 
+    /**
+     * Editors previewing their work on the website must not be answered with a
+     * 404: a backend user holding the "view all events" permission sees every
+     * appointment in the frontend too.
+     */
+    #[Test]
+    public function producesNoConditionForABackendUserAllowedToViewAllEventsInTheFrontend(): void
+    {
+        $this->givenFrontendRequest(null, $this->backendUser(16, canViewAllEvents: true));
+
+        $expression = $this->subject->buildExpression($this->queriedTables(), $this->expressionBuilder);
+
+        self::assertSame('', (string)$expression);
+        self::assertSame([1, 2], $this->fetchVisibleEntryUids());
+    }
+
+    #[Test]
+    public function aBackendUserWithoutThatPermissionSeesEntriesOfTheirOwnEventsInTheFrontend(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
+            ->update(self::TABLE_EVENT, ['owner_be_user' => 16], ['uid' => 2]);
+        $this->givenFrontendRequest(null, $this->backendUser(16, canViewAllEvents: false));
+
+        self::assertSame([1, 2], $this->fetchVisibleEntryUids());
+    }
+
     #[Test]
     public function producesNoConditionForBackendRequestsWithoutABackendUser(): void
     {
@@ -414,11 +440,14 @@ final class EntryRestrictionTest extends AbstractCalendarFunctionalTestCase
         );
     }
 
-    private function givenFrontendRequest(?FrontendUserAuthentication $user = null): void
+    private function givenFrontendRequest(?FrontendUserAuthentication $user = null, ?BackendUserAuthentication $backendUser = null): void
     {
         $request = $this->request(SystemEnvironmentBuilder::REQUESTTYPE_FE);
         if ($user !== null) {
             $request = $request->withAttribute('frontend.user', $user);
+        }
+        if ($backendUser !== null) {
+            $request = $request->withAttribute('backend.user', $backendUser);
         }
         $GLOBALS['TYPO3_REQUEST'] = $request;
     }

@@ -35,6 +35,8 @@ use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
  *   - CLI: everything, never restricted;
  *   - frontend, anonymous: entries whose event has status LIVE;
  *   - frontend, logged-in user: additionally entries of events they own;
+ *   - frontend, logged-in backend user: like the backend rules below, so an editor
+ *     previewing a draft appointment on the website is not answered with a 404;
  *   - backend with the view_all_events permission (or admin): everything;
  *   - backend without it: entries of LIVE events plus of events they own via owner_be_user.
  *
@@ -85,6 +87,13 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
         $applicationType = ApplicationType::fromRequest($request);
 
         if ($applicationType->isFrontend()) {
+            $backendUser = $this->getBackendUserAuthentication($request);
+            if ($backendUser instanceof BackendUserAuthentication
+                && $this->permissionService->canViewAllEvents($backendUser)
+            ) {
+                return $expressionBuilder->and();
+            }
+
             $entryAlias = array_search('tx_ximatypo3calendar_domain_model_entry', $queriedTables, true);
             $qb = $this->connectionPool->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_entry');
             $user = $this->getFrontendUserAuthentication();
@@ -93,9 +102,16 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             $quotedRecordTypes = array_map(static fn (string $type): string => $qb->quote($type), $unrestrictedRecordTypes);
 
             // The parent event is exempt from the restriction when its record type is unrestricted
-            $eventClause = $user && $user->getUserId()
-                ? '(e.status = ' . $qb->quote(EventStatus::LIVE->value) . ' OR e.owner = ' . (int)$user->getUserId() . ')'
-                : 'e.status = ' . $qb->quote(EventStatus::LIVE->value);
+            $ownerClauses = ['e.status = ' . $qb->quote(EventStatus::LIVE->value)];
+            if ($user && $user->getUserId()) {
+                $ownerClauses[] = 'e.owner = ' . (int)$user->getUserId();
+            }
+            if ($backendUser instanceof BackendUserAuthentication) {
+                $ownerClauses[] = 'e.owner_be_user = ' . (int)$backendUser->getUserId();
+            }
+            $eventClause = count($ownerClauses) > 1
+                ? '(' . implode(' OR ', $ownerClauses) . ')'
+                : $ownerClauses[0];
             if ($quotedRecordTypes !== []) {
                 $eventClause = '(' . $eventClause . ' OR e.record_type IN (' . implode(', ', $quotedRecordTypes) . '))';
             }
@@ -112,7 +128,7 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
         }
 
         if ($applicationType->isBackend()) {
-            $backendUser = $GLOBALS['BE_USER'] ?? null;
+            $backendUser = $this->getBackendUserAuthentication($request);
             if (!$backendUser instanceof BackendUserAuthentication) {
                 return $expressionBuilder->and();
             }
@@ -151,6 +167,21 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
     private function getFrontendUserAuthentication(): ?FrontendUserAuthentication
     {
         return $this->getRequest()?->getAttribute('frontend.user') ?? null;
+    }
+
+    /**
+     * The backend user is available in the frontend as well: the frontend
+     * BackendUserAuthenticator middleware authenticates an existing backend
+     * session and exposes it as the `backend.user` request attribute.
+     */
+    private function getBackendUserAuthentication(ServerRequestInterface $request): ?BackendUserAuthentication
+    {
+        $backendUser = $request->getAttribute('backend.user') ?? $GLOBALS['BE_USER'] ?? null;
+        if (!$backendUser instanceof BackendUserAuthentication || !$backendUser->getUserId()) {
+            return null;
+        }
+
+        return $backendUser;
     }
 
     /**

@@ -32,6 +32,8 @@ use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
  *   - CLI: everything, never restricted;
  *   - frontend, anonymous: status LIVE only;
  *   - frontend, logged-in user: additionally the events they own;
+ *   - frontend, logged-in backend user: like the backend rules below, so an editor
+ *     previewing a draft event on the website is not answered with a 404;
  *   - backend with the view_all_events permission (or admin): everything;
  *   - backend without it: LIVE events plus the events they own via owner_be_user.
  *
@@ -79,6 +81,13 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
         }
 
         if ($applicationType->isFrontend()) {
+            $backendUser = $this->getBackendUserAuthentication($request);
+            if ($backendUser instanceof BackendUserAuthentication
+                && $this->permissionService->canViewAllEvents($backendUser)
+            ) {
+                return $expressionBuilder->and();
+            }
+
             $eventAlias = array_search('tx_ximatypo3calendar_domain_model_event', $queriedTables, true);
             $qb = $this->connectionPool->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_event');
             $user = $this->getFrontendUserAuthentication();
@@ -88,6 +97,9 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             ];
             if ($user && $user->getUserId()) {
                 $orConditions[] = $expressionBuilder->eq($eventAlias . '.owner', $user->getUserId());
+            }
+            if ($backendUser instanceof BackendUserAuthentication) {
+                $orConditions[] = $expressionBuilder->eq($eventAlias . '.owner_be_user', (int)$backendUser->getUserId());
             }
 
             $unrestrictedRecordTypes = $this->getUnrestrictedRecordTypes();
@@ -102,7 +114,7 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
         }
 
         if ($applicationType->isBackend()) {
-            $backendUser = $GLOBALS['BE_USER'] ?? null;
+            $backendUser = $this->getBackendUserAuthentication($request);
             if (!$backendUser instanceof BackendUserAuthentication) {
                 return $expressionBuilder->and();
             }
@@ -137,6 +149,21 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
     private function getFrontendUserAuthentication(): ?FrontendUserAuthentication
     {
         return $this->getRequest()?->getAttribute('frontend.user') ?? null;
+    }
+
+    /**
+     * The backend user is available in the frontend as well: the frontend
+     * BackendUserAuthenticator middleware authenticates an existing backend
+     * session and exposes it as the `backend.user` request attribute.
+     */
+    private function getBackendUserAuthentication(ServerRequestInterface $request): ?BackendUserAuthentication
+    {
+        $backendUser = $request->getAttribute('backend.user') ?? $GLOBALS['BE_USER'] ?? null;
+        if (!$backendUser instanceof BackendUserAuthentication || !$backendUser->getUserId()) {
+            return null;
+        }
+
+        return $backendUser;
     }
 
     /**
