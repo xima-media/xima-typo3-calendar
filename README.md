@@ -126,7 +126,9 @@ produces four URL shapes:
 ```
 
 `event_slug` is a cosmetic static segment — there is no slug field and no mapping aspect for
-it, so any value resolves.
+it, so any value resolves. It is declared `static` *and* given a requirement, because TYPO3
+discards a `static` flag for a variable that has none; without both, `event_slug` stays a
+dynamic argument and every generated URL carries a `cHash`.
 
 ## Configuration
 

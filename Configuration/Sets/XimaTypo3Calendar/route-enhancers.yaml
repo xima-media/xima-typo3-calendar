@@ -25,6 +25,10 @@ routeEnhancers:
     defaultController: 'Event::show'
     defaults:
       event_slug: ''
+    # Without a requirement, AbstractEnhancer::applyStaticVariables() discards the
+    # `static` flag below, leaving event_slug a dynamic argument that forces a cHash.
+    requirements:
+      event_slug: '[^/]*'
     static:
       event_slug: true
     aspects:
