@@ -6,6 +6,7 @@ namespace Xima\XimaTypo3Calendar\Tests\Functional\Database;
 
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
@@ -191,6 +192,44 @@ final class EventRestrictionTest extends AbstractCalendarFunctionalTestCase
         self::assertSame([1], $this->fetchVisibleEventUids());
     }
 
+    /**
+     * Editors previewing their work on the website must not be answered with a
+     * 404: a backend user holding the "view all events" permission sees every
+     * event in the frontend too.
+     */
+    #[Test]
+    public function aBackendUserAllowedToViewAllEventsIsUnrestrictedInTheFrontend(): void
+    {
+        $this->givenFrontendRequest(null, $this->backendUser(5, customOptions: CalendarPermissionService::PERMISSION_GROUP . ':' . CalendarPermissionService::PERMISSION_VIEW_ALL_EVENTS));
+
+        $expression = $this->subject->buildExpression($this->queriedTables(), $this->expressionBuilder);
+
+        self::assertSame('', (string)$expression);
+        self::assertSame([1, 2, 3], $this->fetchVisibleEventUids());
+    }
+
+    #[Test]
+    public function anAdministratorIsUnrestrictedInTheFrontend(): void
+    {
+        $this->givenFrontendRequest(null, $this->backendUser(1, admin: true));
+
+        self::assertSame([1, 2, 3], $this->fetchVisibleEventUids());
+    }
+
+    /**
+     * Without the permission the backend user is treated like in the backend:
+     * live events plus the ones they own.
+     */
+    #[Test]
+    public function aBackendUserWithoutThePermissionSeesTheirOwnEventsInTheFrontend(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
+            ->update(self::TABLE_EVENT, ['owner_be_user' => 5], ['uid' => 2]);
+        $this->givenFrontendRequest(null, $this->backendUser(5));
+
+        self::assertSame([1, 2], $this->fetchVisibleEventUids());
+    }
+
     #[Test]
     public function producesNoConditionForBackendRequestsWithoutABackendUser(): void
     {
@@ -273,13 +312,29 @@ final class EventRestrictionTest extends AbstractCalendarFunctionalTestCase
         return array_map('intval', $queryBuilder->executeQuery()->fetchFirstColumn());
     }
 
-    private function givenFrontendRequest(?FrontendUserAuthentication $user = null): void
+    private function givenFrontendRequest(?FrontendUserAuthentication $user = null, ?BackendUserAuthentication $backendUser = null): void
     {
         $request = $this->request(SystemEnvironmentBuilder::REQUESTTYPE_FE);
         if ($user !== null) {
             $request = $request->withAttribute('frontend.user', $user);
         }
+        if ($backendUser !== null) {
+            $request = $request->withAttribute('backend.user', $backendUser);
+        }
         $GLOBALS['TYPO3_REQUEST'] = $request;
+    }
+
+    /**
+     * Mirrors what the frontend BackendUserAuthenticator middleware hands over:
+     * an authenticated backend user with its resolved group data.
+     */
+    private function backendUser(int $uid, bool $admin = false, string $customOptions = ''): BackendUserAuthentication
+    {
+        $backendUser = new BackendUserAuthentication();
+        $backendUser->user = ['uid' => $uid, 'username' => 'be_user_' . $uid, 'admin' => (int)$admin];
+        $backendUser->groupData['custom_options'] = $customOptions;
+
+        return $backendUser;
     }
 
     private function frontendUser(int $uid): FrontendUserAuthentication
