@@ -274,7 +274,7 @@ final class EventsControllerTest extends AbstractCalendarFunctionalTestCase
         self::assertContains(self::TABLE_CALENDAR, $tableNames);
         self::assertContains(self::TABLE_LOCATION, $tableNames);
         self::assertContains('tx_ximatypo3calendar_domain_model_organizer', $tableNames);
-        self::assertContains('tx_ximatypo3calendar_domain_model_speaker', $tableNames);
+        self::assertNotContains('tx_ximatypo3calendar_domain_model_speaker', $tableNames);
     }
 
     /**

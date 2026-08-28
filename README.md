@@ -58,7 +58,8 @@ Then, per site:
 ## Features
 
 - **Structured event model** — events, their appointments (dates/occurrences), organizers,
-  speakers, locations, and optional requirements, each as a first-class record type.
+  locations, and optional requirements as first-class record types; speakers are captured as
+  free text on each appointment.
 - **Backend modules** — a record-list module for the calendar records and an interactive
   calendar overview.
 - **Frontend plugins** — event list and combined event/appointment detail view, with clean
@@ -82,7 +83,6 @@ Then, per site:
 | Event Appointment   | One dated occurrence: date/time, location, appointment type   | `tx_ximatypo3calendar_domain_model_entry`              |
 | Organizer           | Event organizer                                               | `tx_ximatypo3calendar_domain_model_organizer`          |
 | Location            | Event location                                                | `tx_ximatypo3calendar_domain_model_location`           |
-| Speaker             | Speaker/presenter                                             | `tx_ximatypo3calendar_domain_model_speaker`            |
 | Requirement         | Requirement for an appointment (speaker desk, beamer)         | `tx_ximatypo3calendar_domain_model_requirement`        |
 | Requirement Booking | Booking of a requirement for a given appointment              | `tx_ximatypo3calendar_domain_model_requirementbooking` |
 
@@ -90,7 +90,7 @@ An **Event** has a status (`DRAFT`, `REVIEW`, `LIVE`, `REJECTED`), an owning fro
 a backend owner (`owner_be_user`, set automatically on creation). Registration fields
 (`requires_registration`, `registration_link`, `registration_deadline`, `fee`) live on the
 event. An **Event Appointment** is one dated occurrence; its type is `inPerson`, `online`, or
-`hybrid`. Requirements are only relevant with the
+`hybrid`, and its speakers are stored as free text. Requirements are only relevant with the
 [requirements feature](#requirements-management) enabled.
 
 ![Class Diagram](Documentation/Images/calendar.png)
@@ -100,7 +100,7 @@ event. An **Event Appointment** is one dated occurrence; its type is `inPerson`,
 The extension registers a **Calendar** module group with two modules:
 
 - **Events** — a record list (built on `xima/xima-typo3-recordlist`) of the calendar record
-  types: calendar, event, appointment, organizer, speaker, location, and — with the
+  types: calendar, event, appointment, organizer, location, and — with the
   requirements feature enabled — requirement. Records are collected from all pages whose page
   module is set to `events`, including one level of subpages. Requirement bookings are edited
   inline on the appointment.

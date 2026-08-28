@@ -43,6 +43,7 @@ class Location {
 
 class EventAppointment {
     + description: string
+    + speakers: string
     + type: EventAppointmentType
     + onlineLink: string
     + directions: string
@@ -54,13 +55,6 @@ class EventAppointment {
     + address: string
     + additionalInformation: string
     + url: string
-}
-
-class Speaker {
-    + title: string
-    + firstName: string
-    + lastName: string <<required>>
-    + department: string
 }
 
 class Requirement {
@@ -147,7 +141,6 @@ Event "*" -- "*" fe_users : owner
 Event "*" -- "1" be_user : ownerBeUser
 
 EventAppointment "*" -- "1" Location
-EventAppointment "*" -- "*" Speaker
 EventAppointment "*" -- "*" fe_users : hosts
 EventAppointment "1" -- "*" sys_file_reference : files
 
