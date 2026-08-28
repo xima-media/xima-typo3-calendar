@@ -10,13 +10,54 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
 
 class EntryRepository extends Repository
 {
+    private const TABLE = 'tx_ximatypo3calendar_domain_model_entry';
+
+    /**
+     * Returns the last-write timestamps of the given entries, keyed by uid.
+     *
+     * `tstamp` is a control field rather than a TCA column, so Extbase never maps it onto the
+     * domain model and it has to be read from the row.
+     *
+     * @param int[] $uids
+     * @return array<int, int>
+     * @throws Exception
+     */
+    public function getTimestampsByUids(array $uids): array
+    {
+        if ($uids === []) {
+            return [];
+        }
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(self::TABLE);
+        $queryBuilder->getRestrictions()->removeAll();
+
+        $rows = $queryBuilder
+            ->select('uid', 'tstamp')
+            ->from(self::TABLE)
+            ->where(
+                $queryBuilder->expr()->in(
+                    'uid',
+                    $queryBuilder->createNamedParameter($uids, Connection::PARAM_INT_ARRAY)
+                )
+            )
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        $timestamps = [];
+        foreach ($rows as $row) {
+            $timestamps[(int)$row['uid']] = (int)$row['tstamp'];
+        }
+
+        return $timestamps;
+    }
+
     /**
      * @param int[] $calendarUids
      * @throws Exception
      */
     public function getBackendCalendarEntries(int $startTime, int $endTime, array $calendarUids = []): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_entry');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(self::TABLE);
         $entryEndDateExpression = 'COALESCE(NULLIF('
             . $queryBuilder->quoteIdentifier('e.end_date')
             . ', 0), '
@@ -64,7 +105,7 @@ class EntryRepository extends Repository
                 . ' AND cat.deleted = 0'
                 . ' ORDER BY mm.sorting LIMIT 1) as event_category_id'
             )
-            ->from('tx_ximatypo3calendar_domain_model_entry', 'e')
+            ->from(self::TABLE, 'e')
             ->leftJoin('e', 'tx_ximatypo3calendar_domain_model_calendar', 'c', 'e.calendar = c.uid')
             ->leftJoin('e', 'tx_ximatypo3calendar_domain_model_event', 'v', 'e.event = v.uid')
             ->leftJoin('e', 'tx_ximatypo3calendar_domain_model_location', 'loc', 'e.location = loc.uid')

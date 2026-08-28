@@ -4,6 +4,32 @@ routeEnhancers:
     extension: XimaTypo3Calendar
     plugin: EventDetail
     routes:
+      # The `.ics` variants come first: `event_slug` matches anything but a slash, so the
+      # plain routes below would happily swallow the extension into the slug.
+      - routePath: '/{event_uid}-{event_slug}/a{appointment_uid}.ics'
+        _controller: 'Event::ics'
+        _arguments:
+          event_uid: 'event'
+          appointment_uid: 'appointment'
+      - routePath: '/{event_uid}/a{appointment_uid}.ics'
+        _controller: 'Event::ics'
+        _arguments:
+          event_uid: 'event'
+          appointment_uid: 'appointment'
+      - routePath: '/a{appointment_uid}.ics'
+        _controller: 'Event::ics'
+        _arguments:
+          appointment_uid: 'appointment'
+      # `event_slug` has no source field, so a generated event URL would read `/1-.ics`
+      # without a slug-less variant to fall back to.
+      - routePath: '/{event_uid}.ics'
+        _controller: 'Event::ics'
+        _arguments:
+          event_uid: 'event'
+      - routePath: '/{event_uid}-{event_slug}.ics'
+        _controller: 'Event::ics'
+        _arguments:
+          event_uid: 'event'
       - routePath: '/a{appointment_uid}'
         _controller: 'Event::show'
         _arguments:

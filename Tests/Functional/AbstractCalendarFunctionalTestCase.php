@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\Tests\Functional;
 
+use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\EnforceableQueryRestrictionInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use Xima\XimaTypo3Calendar\Database\EntryRestriction;
 use Xima\XimaTypo3Calendar\Database\EventRestriction;
@@ -67,6 +69,46 @@ abstract class AbstractCalendarFunctionalTestCase extends FunctionalTestCase
             ],
         ],
     ];
+
+    /**
+     * Writes a site rooted on page 1 that uses the extension's own route enhancers.
+     *
+     * They are imported from the shipped file rather than restated here, so a route the
+     * extension stops shipping fails a test instead of passing against a copy. Site sets do
+     * not carry route enhancers, which is why the import is needed at all.
+     */
+    protected function writeCalendarSiteConfiguration(int $eventShowPid = 3): void
+    {
+        $routeEnhancers = Yaml::parseFile(
+            __DIR__ . '/../../Configuration/Sets/XimaTypo3Calendar/route-enhancers.yaml'
+        );
+
+        $configuration = [
+            'rootPageId' => 1,
+            'base' => 'https://example.org/',
+            'dependencies' => ['typo3/fluid-styled-content', 'xima/xima-typo3-calendar'],
+            'languages' => [
+                [
+                    'title' => 'English',
+                    'enabled' => true,
+                    'languageId' => 0,
+                    'base' => '/',
+                    'locale' => 'en_US.UTF-8',
+                    'navigationTitle' => 'English',
+                    'flag' => 'us',
+                ],
+            ],
+            'settings' => [
+                'xima_typo3_calendar' => [
+                    'eventShowPid' => $eventShowPid,
+                ],
+            ],
+        ] + (is_array($routeEnhancers) ? $routeEnhancers : []);
+
+        $path = $this->instancePath . '/typo3conf/sites/calendar';
+        GeneralUtility::mkdir_deep($path);
+        file_put_contents($path . '/config.yaml', Yaml::dump($configuration, 99, 2));
+    }
 
     /**
      * Reads a single record with every restriction removed.

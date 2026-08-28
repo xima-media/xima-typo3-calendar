@@ -8,6 +8,7 @@ use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Xima\XimaTypo3Calendar\Utility\AppointmentDateUtility;
 
 /**
  * Converts calendar entry rows into event objects for the vkurko/calendar JS component.
@@ -39,10 +40,10 @@ class VkurkoCalendarSerializer
                 ? (new \DateTime('@' . $row['end_date']))->setTimezone($timeZone)->format('Y-m-d\TH:i:s')
                 : null;
 
-            // If end date is missing, assume a default duration of 30 minutes, even if it's an all day event (vkurko/calendar needs it!)
+            // If end date is missing, assume the default duration, even if it's an all day event (vkurko/calendar needs it!)
             if ($end === null && $start) {
                 $end = new \DateTime($start);
-                $end->modify('+30 minutes');
+                $end->modify('+' . AppointmentDateUtility::DEFAULT_DURATION_MINUTES . ' minutes');
                 $end = $end->format('Y-m-d\TH:i:s');
             }
 

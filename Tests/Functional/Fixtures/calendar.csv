@@ -7,13 +7,13 @@
 ,1,2,"Room 101",0,0
 ,2,2,"Room 202",0,0
 
-"tx_ximatypo3calendar_domain_model_event",,,,,,,,,,
-,"uid","pid","record_type","title","status","owner","owner_be_user","location","hidden","deleted"
-,1,2,"event","Live event",2,0,0,0,0,0
-,2,2,"event","Draft event",0,0,0,0,0,0
-,3,2,"event","Review event",1,0,0,0,0,0
+"tx_ximatypo3calendar_domain_model_event",,,,,,,,,,,
+,"uid","pid","tstamp","record_type","title","status","owner","owner_be_user","location","hidden","deleted"
+,1,2,1767000000,"event","Live event",2,0,0,0,0,0
+,2,2,1767000000,"event","Draft event",0,0,0,0,0,0
+,3,2,1767000000,"event","Review event",1,0,0,0,0,0
 
-"tx_ximatypo3calendar_domain_model_entry",,,,,,,,,,,
-,"uid","pid","record_type","event","calendar","title","start_date","end_date","location","canceled","hidden","deleted"
-,1,2,"event-appointment",1,1,"Live appointment",1767225600,1767229200,1,0,0,0
-,2,2,"event-appointment",2,1,"Draft appointment",1767225600,1767229200,1,0,0,0
+"tx_ximatypo3calendar_domain_model_entry",,,,,,,,,,,,
+,"uid","pid","tstamp","record_type","event","calendar","title","start_date","end_date","location","canceled","hidden","deleted"
+,1,2,1767100000,"event-appointment",1,1,"Live appointment",1767225600,1767229200,1,0,0,0
+,2,2,1767100000,"event-appointment",2,1,"Draft appointment",1767225600,1767229200,1,0,0,0

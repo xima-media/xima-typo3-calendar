@@ -1,4 +1,6 @@
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true" lang="de">
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:calendar="http://typo3.org/ns/Xima/XimaTypo3Calendar/ViewHelpers"
+    data-namespace-typo3-fluid="true" lang="de">
     <article class="event-detail" itemscope itemtype="https://schema.org/Event">
         <header class="event-detail__header">
             <h1 class="event-detail__title" itemprop="name">{event.title}</h1>
@@ -22,6 +24,14 @@
                     <p class="event-detail__meta-item">Registration is required for this event.</p>
                 </f:if>
             </div>
+
+            <calendar:exportLinks event="{event}" as="eventExport">
+                <f:if condition="{eventExport.ics}">
+                    <p class="event-detail__export">
+                        <a href="{eventExport.ics}" download>Add all appointments to your calendar</a>
+                    </p>
+                </f:if>
+            </calendar:exportLinks>
         </header>
 
         <f:if condition="{event.previewImage}">
@@ -222,6 +232,21 @@
                                 </f:if>
 
                                 <footer class="event-appointment-card__footer">
+                                    <calendar:exportLinks appointment="{appointment}" as="appointmentExport">
+                                        <f:if condition="{appointmentExport.ics}">
+                                            <a href="{appointmentExport.ics}" download>Download as .ics</a>
+                                        </f:if>
+                                        <f:if condition="{appointmentExport.google}">
+                                            <a href="{appointmentExport.google}" target="_blank" rel="noopener noreferrer">Add to Google Calendar</a>
+                                        </f:if>
+                                        <f:if condition="{appointmentExport.outlookPersonal}">
+                                            <a href="{appointmentExport.outlookPersonal}" target="_blank" rel="noopener noreferrer">Add to Outlook.com</a>
+                                        </f:if>
+                                        <f:if condition="{appointmentExport.outlookBusiness}">
+                                            <a href="{appointmentExport.outlookBusiness}" target="_blank" rel="noopener noreferrer">Add to Outlook 365</a>
+                                        </f:if>
+                                    </calendar:exportLinks>
+
                                     <f:if condition="{appointment.onlineLink}">
                                         <meta itemprop="eventAttendanceMode" content="https://schema.org/OnlineEventAttendanceMode" />
                                         <span itemprop="location" itemscope itemtype="https://schema.org/VirtualLocation">

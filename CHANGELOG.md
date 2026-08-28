@@ -8,6 +8,11 @@ All notable changes to this extension are documented here. The format follows
 
 ### Added
 
+- **Calendar export.** Appointments and whole events can be taken into a visitor's own
+  calendar, as an RFC 5545 `.ics` download or through a Google / Outlook deep link. New
+  `.ics` routes on the event detail plugin, a `CalendarExportService` returning the links as
+  data, and an `exportLinks` ViewHelper — so a Fluid site and an API-driven frontend both get
+  them without reimplementing date handling. See [Calendar Export](Documentation/Ics.md).
 - Test suite: 75 unit and 147 functional tests, with coverage reporting to Codecov.
 - Documentation set — [Access Control](Documentation/AccessControl.md),
   [Notifications](Documentation/Notifications.md), [Calendar Feed](Documentation/CalendarFeed.md),
@@ -21,6 +26,9 @@ All notable changes to this extension are documented here. The format follows
   frontend users, so neither the `view_all_events` permission nor event ownership via
   `owner_be_user` counted there. The backend session is now honoured in the frontend as well, so
   editors can preview their drafts on the website.
+- The installation instructions claimed that adding the site set loads the route enhancers. Site
+  sets carry TypoScript and settings, not routing; the enhancers have to be imported into the
+  site's `config.yaml` explicitly.
 - Documentation corrections against source: the requirements feature flag is the extension
   configuration key `features.requirementsManagement`, not the unused
   `SYS.features.ximaTypo3Calendar.requirementsManagement` global; route-enhancer variables are

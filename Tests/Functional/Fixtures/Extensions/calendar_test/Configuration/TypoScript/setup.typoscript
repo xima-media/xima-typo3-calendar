@@ -1,0 +1,14 @@
+page = PAGE
+page {
+  typeNum = 0
+  10 = CONTENT
+  10 {
+    table = tt_content
+    select {
+      orderBy = sorting
+      where = {#colPos}=0
+    }
+  }
+}
+
+plugin.tx_ximatypo3calendar.persistence.storagePid = 2
