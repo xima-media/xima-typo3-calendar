@@ -9,7 +9,8 @@ All notable changes to this extension are documented here. The format follows
 ### Added
 
 - **Calendar export.** Appointments and whole events can be taken into a visitor's own
-  calendar, as an RFC 5545 `.ics` download or through a Google / Outlook deep link. New
+  calendar as an RFC 5545 `.ics` download; Google and Outlook deep links accompany it wherever
+  the export covers a single appointment, since those services compose one entry. New
   `.ics` routes on the event detail plugin, a `CalendarExportService` returning the links as
   data, and an `exportLinks` ViewHelper — so a Fluid site and an API-driven frontend both get
   them without reimplementing date handling. See [Calendar Export](Documentation/Ics.md).

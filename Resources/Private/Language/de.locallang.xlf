@@ -190,6 +190,26 @@
 				<source>Changed by</source>
 				<target>Geändert von</target>
 			</trans-unit>
+			<trans-unit id="export.event">
+				<source>Add all appointments to your calendar</source>
+				<target>Alle Termine zum Kalender hinzufügen</target>
+			</trans-unit>
+			<trans-unit id="export.ics">
+				<source>Download as .ics</source>
+				<target>Als .ics herunterladen</target>
+			</trans-unit>
+			<trans-unit id="export.google">
+				<source>Add to Google Calendar</source>
+				<target>Zu Google Kalender hinzufügen</target>
+			</trans-unit>
+			<trans-unit id="export.outlook.personal">
+				<source>Add to Outlook.com</source>
+				<target>Zu Outlook.com hinzufügen</target>
+			</trans-unit>
+			<trans-unit id="export.outlook.business">
+				<source>Add to Outlook 365</source>
+				<target>Zu Outlook 365 hinzufügen</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

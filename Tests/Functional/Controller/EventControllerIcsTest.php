@@ -127,4 +127,59 @@ final class EventControllerIcsTest extends AbstractCalendarFunctionalTestCase
         self::assertStringContainsString('text/html', $response->getHeaderLine('Content-Type'));
         self::assertStringContainsString('Live event', (string)$response->getBody());
     }
+
+    /**
+     * A label whose key does not resolve renders as an empty string, so the export links would
+     * silently lose their text.
+     */
+    #[Test]
+    public function rendersTheExportLinksWithResolvedLabels(): void
+    {
+        $body = (string)$this->executeFrontendSubRequest(
+            new InternalRequest('https://example.org/detail/1-live-event')
+        )->getBody();
+
+        self::assertStringContainsString('href="https://example.org/detail/1/a1.ics"', $body);
+        self::assertStringContainsString('Download as .ics', $body);
+        self::assertStringContainsString('Add to Google Calendar', $body);
+        self::assertStringContainsString('Add all appointments to your calendar', $body);
+    }
+
+    /**
+     * A URL may name an event the appointment does not belong to. The export follows the
+     * appointment, not the URL, so the file describes exactly one record either way — the
+     * event segment of such a URL is decoration the export never reads.
+     */
+    #[Test]
+    public function exportsTheAppointmentsOwnEventWhenTheUrlNamesAnother(): void
+    {
+        $response = $this->executeFrontendSubRequest(
+            new InternalRequest('https://example.org/detail/4/a1.ics')
+        );
+
+        self::assertSame(200, $response->getStatusCode());
+        self::assertSame(
+            'attachment; filename="live-appointment.ics"',
+            $response->getHeaderLine('Content-Disposition')
+        );
+
+        $body = (string)$response->getBody();
+        self::assertSame(1, substr_count($body, 'BEGIN:VEVENT'));
+        self::assertStringContainsString('UID:entry-1@example.org', $body);
+        self::assertStringContainsString('SUMMARY:Live appointment', $body);
+        self::assertStringContainsString('URL:https://example.org/detail/1/a1', $body);
+        self::assertStringNotContainsString('Other', $body);
+    }
+
+    #[Test]
+    public function servesEachEventSeparately(): void
+    {
+        $response = $this->executeFrontendSubRequest(
+            new InternalRequest('https://example.org/detail/4.ics')
+        );
+
+        self::assertSame(200, $response->getStatusCode());
+        self::assertStringContainsString('SUMMARY:Other appointment', (string)$response->getBody());
+        self::assertStringNotContainsString('Live appointment', (string)$response->getBody());
+    }
 }

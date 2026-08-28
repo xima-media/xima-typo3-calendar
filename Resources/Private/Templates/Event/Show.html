@@ -28,7 +28,7 @@
             <calendar:exportLinks event="{event}" as="eventExport">
                 <f:if condition="{eventExport.ics}">
                     <p class="event-detail__export">
-                        <a href="{eventExport.ics}" download>Add all appointments to your calendar</a>
+                        <a href="{eventExport.ics}" download><f:translate key="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:export.event" /></a>
                     </p>
                 </f:if>
             </calendar:exportLinks>
@@ -234,16 +234,16 @@
                                 <footer class="event-appointment-card__footer">
                                     <calendar:exportLinks appointment="{appointment}" as="appointmentExport">
                                         <f:if condition="{appointmentExport.ics}">
-                                            <a href="{appointmentExport.ics}" download>Download as .ics</a>
+                                            <a href="{appointmentExport.ics}" download><f:translate key="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:export.ics" /></a>
                                         </f:if>
                                         <f:if condition="{appointmentExport.google}">
-                                            <a href="{appointmentExport.google}" target="_blank" rel="noopener noreferrer">Add to Google Calendar</a>
+                                            <a href="{appointmentExport.google}" target="_blank" rel="noopener noreferrer"><f:translate key="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:export.google" /></a>
                                         </f:if>
                                         <f:if condition="{appointmentExport.outlookPersonal}">
-                                            <a href="{appointmentExport.outlookPersonal}" target="_blank" rel="noopener noreferrer">Add to Outlook.com</a>
+                                            <a href="{appointmentExport.outlookPersonal}" target="_blank" rel="noopener noreferrer"><f:translate key="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:export.outlook.personal" /></a>
                                         </f:if>
                                         <f:if condition="{appointmentExport.outlookBusiness}">
-                                            <a href="{appointmentExport.outlookBusiness}" target="_blank" rel="noopener noreferrer">Add to Outlook 365</a>
+                                            <a href="{appointmentExport.outlookBusiness}" target="_blank" rel="noopener noreferrer"><f:translate key="LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang.xlf:export.outlook.business" /></a>
                                         </f:if>
                                     </calendar:exportLinks>
 
