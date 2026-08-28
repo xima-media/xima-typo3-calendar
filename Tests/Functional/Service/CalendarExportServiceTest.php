@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Xima\XimaTypo3Calendar\Tests\Functional\Service;
 
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use Xima\XimaTypo3Calendar\Domain\Model\Event;
 use Xima\XimaTypo3Calendar\Domain\Model\EventAppointment;
 use Xima\XimaTypo3Calendar\Domain\Repository\EventRepository;
@@ -30,6 +33,12 @@ final class CalendarExportServiceTest extends AbstractCalendarFunctionalTestCase
         $this->writeCalendarSiteConfiguration();
 
         $this->subject = $this->get(CalendarExportService::class);
+    }
+
+    protected function tearDown(): void
+    {
+        unset($GLOBALS['TYPO3_REQUEST']);
+        parent::tearDown();
     }
 
     #[Test]
@@ -84,6 +93,24 @@ final class CalendarExportServiceTest extends AbstractCalendarFunctionalTestCase
         $links = $this->subject->linksForAppointment($this->loadAppointment(1));
 
         self::assertSame('https://example.org/detail/1/a1.ics', $links->ics);
+    }
+
+    #[Test]
+    public function keepsTheActiveFrontendLanguageInGeneratedLinks(): void
+    {
+        $appointment = $this->loadAppointment(1);
+        $site = $this->get(SiteFinder::class)->getSiteByPageId(2);
+        $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest())
+            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
+            ->withAttribute('language', $site->getLanguageById(1));
+
+        $links = $this->subject->linksForAppointment($appointment);
+
+        self::assertSame('https://example.org/de/detail/1/a1.ics', $links->ics);
+        self::assertStringContainsString(
+            'https://example.org/de/detail/1/a1',
+            urldecode((string)$links->google)
+        );
     }
 
     /**

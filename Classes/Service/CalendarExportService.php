@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\Service;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use Xima\XimaTypo3Calendar\Domain\Model\Dto\CalendarExportLinks;
 use Xima\XimaTypo3Calendar\Domain\Model\Dto\IcsEvent;
@@ -318,7 +320,20 @@ class CalendarExportService
             $arguments['appointment'] = $appointment->getUid();
         }
 
-        return (string)$site->getRouter()->generateUri($detailPid, [self::PLUGIN_NAMESPACE => $arguments]);
+        $parameters = [self::PLUGIN_NAMESPACE => $arguments];
+        $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
+        $requestLanguage = $request instanceof ServerRequestInterface
+            ? $request->getAttribute('language')
+            : null;
+        if ($requestLanguage instanceof SiteLanguage) {
+            try {
+                $parameters['_language'] = $site->getLanguageById($requestLanguage->getLanguageId());
+            } catch (\InvalidArgumentException) {
+                // The target site does not offer the request's language; use its default.
+            }
+        }
+
+        return (string)$site->getRouter()->generateUri($detailPid, $parameters);
     }
 
     private function buildGoogleUrl(IcsEvent $icsEvent): string

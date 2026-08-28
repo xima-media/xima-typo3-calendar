@@ -97,6 +97,17 @@ abstract class AbstractCalendarFunctionalTestCase extends FunctionalTestCase
                     'navigationTitle' => 'English',
                     'flag' => 'us',
                 ],
+                [
+                    'title' => 'German',
+                    'enabled' => true,
+                    'languageId' => 1,
+                    'base' => '/de/',
+                    'locale' => 'de_DE.UTF-8',
+                    'navigationTitle' => 'Deutsch',
+                    'flag' => 'de',
+                    'fallbackType' => 'fallback',
+                    'fallbacks' => '0',
+                ],
             ],
             'settings' => [
                 'xima_typo3_calendar' => [
