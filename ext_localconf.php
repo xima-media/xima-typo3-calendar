@@ -42,12 +42,16 @@ ExtensionUtility::configurePlugin(
     ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
+// `ics` is non-cacheable on purpose: it answers with a text/calendar body that must never
+// end up in the page cache of the detail page.
 ExtensionUtility::configurePlugin(
     'XimaTypo3Calendar',
     'EventDetail',
     [
-        EventController::class => 'show',
+        EventController::class => 'show,ics',
     ],
-    [],
+    [
+        EventController::class => 'ics',
+    ],
     ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );

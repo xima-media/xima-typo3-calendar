@@ -30,7 +30,7 @@ application is left to the consuming project — see
 - [Requirements](#requirements) · [Installation](#installation) · [Features](#features)
 - [Record Types](#record-types) · [Backend Modules](#backend-modules) · [Frontend Plugins](#frontend-plugins)
 - [Configuration](#configuration) · [Access Control](#access-control) · [Notifications](#notifications) · [Dashboard Widgets](#dashboard-widgets)
-- Guides: [Access Control](Documentation/AccessControl.md) · [Notifications](Documentation/Notifications.md) · [Calendar Feed](Documentation/CalendarFeed.md) · [Extending](Documentation/Extending.md) · [DataHandler Events](Documentation/DataHandlerEvents.md) · [Contributing](CONTRIBUTING.md)
+- Guides: [Access Control](Documentation/AccessControl.md) · [Notifications](Documentation/Notifications.md) · [Calendar Feed](Documentation/CalendarFeed.md) · [Calendar Export](Documentation/Ics.md) · [Extending](Documentation/Extending.md) · [DataHandler Events](Documentation/DataHandlerEvents.md) · [Contributing](CONTRIBUTING.md)
 
 ## Requirements
 
@@ -49,7 +49,13 @@ composer require xima/xima-typo3-calendar
 Then, per site:
 
 1. Add the **XIMA TYPO3 Calendar** site set (`xima/xima-typo3-calendar`) to your site's
-  `dependencies` so the route enhancers and TypoScript load.
+  `dependencies` so the TypoScript and site settings load. Site sets do not carry routing, so
+  import the route enhancers separately in the site's `config.yaml` if you want clean URLs:
+
+  ```yaml
+  imports:
+    - resource: "EXT:xima_typo3_calendar/Configuration/Sets/XimaTypo3Calendar/route-enhancers.yaml"
+  ```
 2. Set the **Event detail page** site setting (`xima_typo3_calendar.eventShowPid`) to the page
   holding the *Event Detail* plugin.
 3. Store calendar records in a sysfolder and set that folder's **page module** to *Events*.
@@ -63,7 +69,9 @@ Then, per site:
 - **Backend modules** — a record-list module for the calendar records and an interactive
   calendar overview.
 - **Frontend plugins** — event list and combined event/appointment detail view, with clean
-  URLs via site-set route enhancers.
+  URLs via the shipped route enhancers.
+- **Calendar export** — RFC 5545 `.ics` download of an appointment or a whole event, plus
+  Google and Outlook deep links, offered as data so any frontend stack can render them.
 - **Publishing workflow** — draft → review → live/rejected status flow with e-mail
   notifications to reviewers and owners.
 - **Access control** — per-group permissions gate publishing and cross-editor visibility;
@@ -113,6 +121,7 @@ The extension registers a **Calendar** module group with two modules:
 |--------------|-------------------------|-------------------------------------------------------|
 | Event List   | `EventController::list` | Lists events.                                         |
 | Event Detail | `EventController::show` | Renders a single event **or** one appointment of it.   |
+| Event Detail | `EventController::ics`  | Serves the same as an iCalendar download.              |
 
 The detail plugin accepts either an `event` or an `appointment` argument — given only an
 appointment, its parent event is resolved automatically. The site set's route enhancer
@@ -124,6 +133,9 @@ produces four URL shapes:
 /{event_uid}/a{appointment_uid}                → slug-less fallback
 /a{appointment_uid}                            → appointment only
 ```
+
+Each of them has an `.ics` variant serving the [calendar export](Documentation/Ics.md), plus a
+slug-less `/{event_uid}.ics` for the whole event.
 
 `event_slug` is a cosmetic static segment — there is no slug field and no mapping aspect for
 it, so any value resolves. It is declared `static` *and* given a requirement, because TYPO3
@@ -219,6 +231,7 @@ Widget queries are mutable from other extensions via `BeforeWidgetItemsFetchedEv
 | [Access Control](Documentation/AccessControl.md) | Permissions, query restrictions, record-type exemptions |
 | [Notifications](Documentation/Notifications.md) | Workflow transitions, recipients, templates |
 | [Calendar Feed](Documentation/CalendarFeed.md) | The vkurko/calendar JSON feed; building your own frontend API |
+| [Calendar Export](Documentation/Ics.md) | ICS download and provider deep links; what belongs to the project |
 | [Extending](Documentation/Extending.md) | PSR-14 events, extension points, template overrides |
 | [DataHandler Events](Documentation/DataHandlerEvents.md) | Record change events in detail |
 | [Contributing](CONTRIBUTING.md) | Local setup, tests, static analysis, asset build |

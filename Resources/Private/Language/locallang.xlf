@@ -143,6 +143,21 @@
 			<trans-unit id="email.changedBy">
 				<source>Changed by</source>
 			</trans-unit>
+			<trans-unit id="export.event">
+				<source>Add all appointments to your calendar</source>
+			</trans-unit>
+			<trans-unit id="export.ics">
+				<source>Download as .ics</source>
+			</trans-unit>
+			<trans-unit id="export.google">
+				<source>Add to Google Calendar</source>
+			</trans-unit>
+			<trans-unit id="export.outlook.personal">
+				<source>Add to Outlook.com</source>
+			</trans-unit>
+			<trans-unit id="export.outlook.business">
+				<source>Add to Outlook 365</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

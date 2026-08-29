@@ -65,6 +65,12 @@ extension — no TypoScript `PAGE` object, no route enhancer — and it calls
 [frontend visibility rules](AccessControl.md#query-restrictions). Verify before exposing it, and
 prefer the authenticated AJAX route for backend use.
 
+## The other machine-readable output
+
+Appointments are also served as RFC 5545 iCalendar, for visitors rather than for the backend
+module — see [Calendar Export](Ics.md). That path goes through the event detail plugin, so
+unlike the middleware above it *does* apply the frontend visibility rules.
+
 ## Building your own frontend API
 
 The extension deliberately stops at the data model and the backend workflows. It ships no
