@@ -55,6 +55,8 @@ controller resolved, without registering a project plugin:
 
 ```php
 use TYPO3\CMS\Core\Attribute\AsEventListener;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use Xima\XimaTypo3Calendar\Event\ModifyEventDetailViewEvent;
 
 #[AsEventListener(identifier: 'my-ext/event-detail-view')]
@@ -62,9 +64,11 @@ final readonly class EnrichEventDetailView
 {
     public function __invoke(ModifyEventDetailViewEvent $event): void
     {
+        $pageId = $event->getRequest()->getAttribute('routing')->getPageId();
+
         $values = $event->getAssignedValues();
-        $values['breadcrumb'] = $this->buildBreadcrumb(
-            $event->getRequest()->getAttribute('routing')->getPageId(),
+        $values['breadcrumb'] = array_reverse(
+            GeneralUtility::makeInstance(RootlineUtility::class, $pageId)->get(),
         );
 
         $event->setAssignedValues($values);
