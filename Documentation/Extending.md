@@ -10,6 +10,7 @@ What other extensions can hook into, and how to register it.
 | `Event\EntryChangedEvent` | same | Appointment record changes, incl. location and date-range changes |
 | `Event\RequirementBookingChangedEvent` | same | Requirement booking changes |
 | `Event\BeforeWidgetItemsFetchedEvent` | all four widget data providers | Modify a widget's query before it runs |
+| `Event\ModifyEventDetailViewEvent` | `Controller\EventController::showAction()` | Add or replace the detail view's assigned variables |
 
 The three record-change events share `AbstractRecordChangedEvent` (`uid`, `table`, `changeType`,
 `changedFields`) and are documented in detail in [DataHandler Events](DataHandlerEvents.md). They
@@ -41,6 +42,32 @@ final readonly class ScopeCalendarWidgets
             $queryBuilder->expr()->eq('calendar', $queryBuilder->createNamedParameter(7)),
         );
         $event->setQueryBuilder($queryBuilder);
+    }
+}
+```
+
+### Enriching the detail view
+
+`ModifyEventDetailViewEvent` carries the variables the detail view is about to be rendered with
+(`event`, `appointment`) plus the Extbase request. The controller re-reads them after dispatch, so
+a listener can add variables of its own — a breadcrumb, related records — or replace what the
+controller resolved, without registering a project plugin:
+
+```php
+use TYPO3\CMS\Core\Attribute\AsEventListener;
+use Xima\XimaTypo3Calendar\Event\ModifyEventDetailViewEvent;
+
+#[AsEventListener(identifier: 'my-ext/event-detail-view')]
+final readonly class EnrichEventDetailView
+{
+    public function __invoke(ModifyEventDetailViewEvent $event): void
+    {
+        $values = $event->getAssignedValues();
+        $values['breadcrumb'] = $this->buildBreadcrumb(
+            $event->getRequest()->getAttribute('routing')->getPageId(),
+        );
+
+        $event->setAssignedValues($values);
     }
 }
 ```

@@ -15,6 +15,7 @@ use TYPO3\CMS\Frontend\Controller\ErrorController;
 use Xima\XimaTypo3Calendar\Domain\Model\Event;
 use Xima\XimaTypo3Calendar\Domain\Model\EventAppointment;
 use Xima\XimaTypo3Calendar\Domain\Repository\EventRepository;
+use Xima\XimaTypo3Calendar\Event\ModifyEventDetailViewEvent;
 use Xima\XimaTypo3Calendar\Service\CalendarExportService;
 
 class EventController extends ActionController
@@ -40,8 +41,13 @@ class EventController extends ActionController
     {
         $event = $this->resolveEvent($event, $appointment);
 
-        $this->view->assign('event', $event);
-        $this->view->assign('appointment', $appointment);
+        $viewEvent = new ModifyEventDetailViewEvent(
+            ['event' => $event, 'appointment' => $appointment],
+            $this->request,
+        );
+        $this->eventDispatcher->dispatch($viewEvent);
+
+        $this->view->assignMultiple($viewEvent->getAssignedValues());
 
         return $this->htmlResponse();
     }
