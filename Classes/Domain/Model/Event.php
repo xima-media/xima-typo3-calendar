@@ -251,6 +251,38 @@ class Event extends AbstractEntity
         $this->appointments = $appointments;
     }
 
+    /**
+     * The appointment that represents the event: the next one that has not started yet, or the
+     * earliest of a series that lies entirely in the past. Cancelled appointments are included,
+     * so a cancelled next date is what a detail view shows and can mark as such.
+     *
+     * The dates are compared rather than the relation order, so the result does not depend on
+     * how the appointments are sorted.
+     */
+    public function getNextAppointment(): ?EventAppointment
+    {
+        $next = null;
+        $earliest = null;
+        $now = new \DateTime();
+
+        foreach ($this->appointments ?? [] as $appointment) {
+            $startDate = $appointment->getStartDate();
+            if ($startDate === null) {
+                continue;
+            }
+
+            if ($earliest === null || $startDate < $earliest->getStartDate()) {
+                $earliest = $appointment;
+            }
+
+            if ($startDate >= $now && ($next === null || $startDate < $next->getStartDate())) {
+                $next = $appointment;
+            }
+        }
+
+        return $next ?? $earliest;
+    }
+
     public function getOrganizer(): ?FrontendUser
     {
         return $this->organizer;

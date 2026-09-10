@@ -49,7 +49,8 @@ final readonly class ScopeCalendarWidgets
 ### Enriching the detail view
 
 `ModifyEventDetailViewEvent` carries the variables the detail view is about to be rendered with
-(`event`, `appointment`) plus the Extbase request. The controller re-reads them after dispatch, so
+(`event`, `appointment`, and `nextAppointment` — the requested appointment, or the one representing
+the series when the URL addresses the event alone) plus the Extbase request. The controller re-reads them after dispatch, so
 a listener can add variables of its own — a breadcrumb, related records — or replace what the
 controller resolved, without registering a project plugin:
 
