@@ -188,6 +188,7 @@ return [
                 'type' => 'inline',
                 'foreign_table' => 'tx_ximatypo3calendar_domain_model_entry',
                 'foreign_field' => 'event',
+                'foreign_default_sortby' => 'start_date',
             ],
         ],
         'organizer' => [
