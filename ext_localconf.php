@@ -8,6 +8,9 @@ defined('TYPO3') || die();
 $GLOBALS['TYPO3_CONF_VARS']['DB']['additionalQueryRestrictions'][Xima\XimaTypo3Calendar\Database\EventRestriction::class] = [];
 $GLOBALS['TYPO3_CONF_VARS']['DB']['additionalQueryRestrictions'][Xima\XimaTypo3Calendar\Database\EntryRestriction::class] = [];
 
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['XimaTypo3CalendarEventPathMapper']
+    = \Xima\XimaTypo3Calendar\Routing\Aspect\EventPathMapper::class;
+
 $GLOBALS['TYPO3_CONF_VARS']['MAIL']['templateRootPaths'][1783341481] = 'EXT:xima_typo3_calendar/Resources/Private/Templates/Email/';
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['xima_typo3_calendar']
