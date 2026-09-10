@@ -57,7 +57,7 @@ routeEnhancers:
     defaultController: 'Event::show'
     aspects:
       event_path:
-        type: PersistedPatternMapper
+        type: XimaTypo3CalendarEventPathMapper
         tableName: tx_ximatypo3calendar_domain_model_event
         routeFieldPattern: '^(?P<uid>\d+)-(?P<slug>.+)$'
         routeFieldResult: '{uid}-{slug}'
