@@ -30,7 +30,7 @@ application is left to the consuming project — see
 - [Requirements](#requirements) · [Installation](#installation) · [Features](#features)
 - [Record Types](#record-types) · [Backend Modules](#backend-modules) · [Frontend Plugins](#frontend-plugins)
 - [Configuration](#configuration) · [Access Control](#access-control) · [Notifications](#notifications) · [Dashboard Widgets](#dashboard-widgets)
-- Guides: [Access Control](Documentation/AccessControl.md) · [Notifications](Documentation/Notifications.md) · [Calendar Feed](Documentation/CalendarFeed.md) · [Calendar Export](Documentation/Ics.md) · [Extending](Documentation/Extending.md) · [DataHandler Events](Documentation/DataHandlerEvents.md) · [Contributing](CONTRIBUTING.md)
+- Guides: [Access Control](Documentation/AccessControl.md) · [Notifications](Documentation/Notifications.md) · [Calendar Feed](Documentation/CalendarFeed.md) · [Calendar Export](Documentation/Ics.md) · [XML Sitemap](Documentation/Sitemap.md) · [Extending](Documentation/Extending.md) · [DataHandler Events](Documentation/DataHandlerEvents.md) · [Contributing](CONTRIBUTING.md)
 
 ## Requirements
 
@@ -232,6 +232,7 @@ Widget queries are mutable from other extensions via `BeforeWidgetItemsFetchedEv
 | [Notifications](Documentation/Notifications.md) | Workflow transitions, recipients, templates |
 | [Calendar Feed](Documentation/CalendarFeed.md) | The vkurko/calendar JSON feed; building your own frontend API |
 | [Calendar Export](Documentation/Ics.md) | ICS download and provider deep links; what belongs to the project |
+| [XML Sitemap](Documentation/Sitemap.md) | The shipped sitemap definition, what it lists, how to narrow or disable it |
 | [Extending](Documentation/Extending.md) | PSR-14 events, extension points, template overrides |
 | [DataHandler Events](Documentation/DataHandlerEvents.md) | Record change events in detail |
 | [Contributing](CONTRIBUTING.md) | Local setup, tests, static analysis, asset build |
