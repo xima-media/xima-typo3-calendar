@@ -4,12 +4,16 @@ routeEnhancers:
     extension: XimaTypo3Calendar
     plugin: EventDetail
     routes:
-      # The `.ics` variants come first: `event_slug` matches anything but a slash, so the
+      # `event_path` resolves to `<uid>-<slug>` and is listed before the bare `event_uid`
+      # variants, so a generated URL carries the slug whenever the event has one and falls
+      # back to the slug-less shape when it does not.
+      #
+      # The `.ics` variants come first: `event_path` matches anything but a slash, so the
       # plain routes below would happily swallow the extension into the slug.
-      - routePath: '/{event_uid}-{event_slug}/a{appointment_uid}.ics'
+      - routePath: '/{event_path}/a{appointment_uid}.ics'
         _controller: 'Event::ics'
         _arguments:
-          event_uid: 'event'
+          event_path: 'event'
           appointment_uid: 'appointment'
       - routePath: '/{event_uid}/a{appointment_uid}.ics'
         _controller: 'Event::ics'
@@ -20,13 +24,11 @@ routeEnhancers:
         _controller: 'Event::ics'
         _arguments:
           appointment_uid: 'appointment'
-      # `event_slug` has no source field, so a generated event URL would read `/1-.ics`
-      # without a slug-less variant to fall back to.
-      - routePath: '/{event_uid}.ics'
+      - routePath: '/{event_path}.ics'
         _controller: 'Event::ics'
         _arguments:
-          event_uid: 'event'
-      - routePath: '/{event_uid}-{event_slug}.ics'
+          event_path: 'event'
+      - routePath: '/{event_uid}.ics'
         _controller: 'Event::ics'
         _arguments:
           event_uid: 'event'
@@ -34,30 +36,31 @@ routeEnhancers:
         _controller: 'Event::show'
         _arguments:
           appointment_uid: 'appointment'
+      - routePath: '/{event_path}/a{appointment_uid}'
+        _controller: 'Event::show'
+        _arguments:
+          event_path: 'event'
+          appointment_uid: 'appointment'
       - routePath: '/{event_uid}/a{appointment_uid}'
         _controller: 'Event::show'
         _arguments:
           event_uid: 'event'
           appointment_uid: 'appointment'
-      - routePath: '/{event_uid}-{event_slug}/a{appointment_uid}'
+      - routePath: '/{event_path}'
         _controller: 'Event::show'
         _arguments:
-          event_uid: 'event'
-          appointment_uid: 'appointment'
-      - routePath: '/{event_uid}-{event_slug}'
+          event_path: 'event'
+      - routePath: '/{event_uid}'
         _controller: 'Event::show'
         _arguments:
           event_uid: 'event'
     defaultController: 'Event::show'
-    defaults:
-      event_slug: ''
-    # Without a requirement, AbstractEnhancer::applyStaticVariables() discards the
-    # `static` flag below, leaving event_slug a dynamic argument that forces a cHash.
-    requirements:
-      event_slug: '[^/]*'
-    static:
-      event_slug: true
     aspects:
+      event_path:
+        type: PersistedPatternMapper
+        tableName: tx_ximatypo3calendar_domain_model_event
+        routeFieldPattern: '^(?P<uid>\d+)-(?P<slug>.+)$'
+        routeFieldResult: '{uid}-{slug}'
       event_uid:
         type: PersistedAliasMapper
         tableName: tx_ximatypo3calendar_domain_model_event
