@@ -6,6 +6,20 @@
             <h1 class="event-detail__title" itemprop="name">{event.title}</h1>
 
             <div class="event-detail__meta">
+                <f:if condition="{nextAppointment.startDate}">
+                    <p class="event-detail__meta-item">
+                        <time itemprop="startDate" datetime="{nextAppointment.startDate -> f:format.date(format: 'c')}">
+                            {nextAppointment.startDate -> f:format.date(format: 'd.m.Y H:i')}
+                        </time>
+                        <f:if condition="{nextAppointment.endDate}">
+                            –
+                            <time itemprop="endDate" datetime="{nextAppointment.endDate -> f:format.date(format: 'c')}">
+                                {nextAppointment.endDate -> f:format.date(format: 'd.m.Y H:i')}
+                            </time>
+                        </f:if>
+                    </p>
+                </f:if>
+
                 <f:if condition="{event.publishDate}">
                     <p class="event-detail__meta-item">
                         Published on

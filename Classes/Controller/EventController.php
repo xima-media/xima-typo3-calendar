@@ -42,7 +42,13 @@ class EventController extends ActionController
         $event = $this->resolveEvent($event, $appointment);
 
         $viewEvent = new ModifyEventDetailViewEvent(
-            ['event' => $event, 'appointment' => $appointment],
+            [
+                'event' => $event,
+                'appointment' => $appointment,
+                // The series URL carries no appointment, but date, attendance mode and location
+                // only exist per appointment.
+                'nextAppointment' => $appointment ?? $event->getNextAppointment(),
+            ],
             $this->request,
         );
         $this->eventDispatcher->dispatch($viewEvent);
