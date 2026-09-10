@@ -13,3 +13,34 @@ plugin.tx_ximatypo3calendar {
     storagePid = {$plugin.tx_ximatypo3calendar.persistence.storagePid}
   }
 }
+
+# XML sitemap for the event detail pages. The records are the appointments, because that is what
+# the route enhancer addresses and what list views link to. Remove the definition in your own
+# TypoScript to opt out:
+#   plugin.tx_seo.config.xmlSitemap.sitemaps.ximaTypo3CalendarEvents >
+plugin.tx_seo.config.xmlSitemap.sitemaps.ximaTypo3CalendarEvents {
+  provider = TYPO3\CMS\Seo\XmlSitemap\RecordsXmlSitemapDataProvider
+  config {
+    table = tx_ximatypo3calendar_domain_model_entry
+    sortField = start_date
+    lastModifiedField = tstamp
+    pid = {$plugin.tx_ximatypo3calendar.persistence.storagePid}
+    recursive = 0
+    url {
+      pageId = {$xima_typo3_calendar.eventShowPid}
+      # Both arguments are mapped, so the sitemap emits the URL a list view links to instead of a
+      # second, appointment-only variant of the same page.
+      fieldToParameterMap {
+        uid = tx_ximatypo3calendar_eventdetail[appointment]
+        event = tx_ximatypo3calendar_eventdetail[event]
+      }
+
+      additionalGetParameters {
+        tx_ximatypo3calendar_eventdetail.controller = Event
+        tx_ximatypo3calendar_eventdetail.action = show
+      }
+
+      useCacheHash = 1
+    }
+  }
+}
