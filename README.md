@@ -130,6 +130,7 @@ produces four URL shapes:
 ```
 /{event_uid}-{event_slug}                      → event
 /{event_uid}-{event_slug}/a{appointment_uid}   → appointment of that event
+/{event_uid}                                   → slug-less fallback
 /{event_uid}/a{appointment_uid}                → slug-less fallback
 /a{appointment_uid}                            → appointment only
 ```
@@ -137,10 +138,10 @@ produces four URL shapes:
 Each of them has an `.ics` variant serving the [calendar export](Documentation/Ics.md), plus a
 slug-less `/{event_uid}.ics` for the whole event.
 
-`event_slug` is a cosmetic static segment — there is no slug field and no mapping aspect for
-it, so any value resolves. It is declared `static` *and* given a requirement, because TYPO3
-discards a `static` flag for a variable that has none; without both, `event_slug` stays a
-dynamic argument and every generated URL carries a `cHash`.
+The slug comes from the event's `slug` field through the `XimaTypo3CalendarEventPathMapper`
+aspect, which maps an event to `<uid>-<slug>` and back. Generated URLs therefore carry the slug;
+the slug-less shapes stay as incoming fallbacks and are used for events whose slug is empty.
+A wrong slug still resolves — the uid decides — and the canonical tag points at the correct URL.
 
 ## Configuration
 
