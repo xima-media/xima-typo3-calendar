@@ -33,6 +33,12 @@ Create an indexer configuration of type **Calendar events** and set
 | Startingpoints / sysfolder | Where the events are stored |
 | Target page | The detail page the results link to |
 | Storage pid | Where ke_search keeps the index entries |
+| Index past events | Index events whose appointments have all ended, too |
+
+**Index past events** turns off the time window. By default an event is indexed only while at
+least one of its appointments has not ended yet; with the option set, every live event in the
+configured folders is indexed regardless of when its appointments were. Use it for an archive
+that stays searchable.
 
 The indexer runs in full indexing mode only. That is deliberate: ke_search runs its cleanup in
 full mode alone, and the cleanup is what removes an event once its last appointment has passed.

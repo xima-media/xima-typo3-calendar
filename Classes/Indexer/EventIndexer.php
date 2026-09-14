@@ -57,7 +57,9 @@ class EventIndexer extends IndexerBase
             return 'No site found for the configured target page, nothing indexed.';
         }
 
-        $admitted = $this->findAdmittedAppointments($indexerConfig, $now);
+        $indexPastEvents = (bool)($indexerConfig['ximatypo3calendar_index_past_events'] ?? false);
+
+        $admitted = $this->findAdmittedAppointments($indexerConfig, $now, $indexPastEvents);
         if ($admitted === []) {
             return 'No events found!';
         }
@@ -72,7 +74,7 @@ class EventIndexer extends IndexerBase
             $this->indexerStatusService->setRunningStatus($this->indexerConfig, $counter++, $totalCount);
 
             $appointments = $appointmentsByEvent[(int)$eventRow['uid']] ?? [];
-            if (!$this->hasAppointmentInWindow($appointments, $now)) {
+            if (!$indexPastEvents && !$this->hasAppointmentInWindow($appointments, $now)) {
                 continue;
             }
 
@@ -92,8 +94,11 @@ class EventIndexer extends IndexerBase
      * @param array<string, mixed> $indexerConfig
      * @return array<int, list<int>>
      */
-    private function findAdmittedAppointments(array $indexerConfig, \DateTimeImmutable $now): array
-    {
+    private function findAdmittedAppointments(
+        array $indexerConfig,
+        \DateTimeImmutable $now,
+        bool $indexPastEvents
+    ): array {
         $indexPids = $this->getPagelist(
             (string)($indexerConfig['startingpoints_recursive'] ?? ''),
             (string)($indexerConfig['sysfolder'] ?? '')
@@ -106,28 +111,33 @@ class EventIndexer extends IndexerBase
         $appointmentEnd = 'COALESCE(NULLIF(' . $queryBuilder->quoteIdentifier('a.end_date') . ', 0), '
             . $queryBuilder->quoteIdentifier('a.start_date') . ')';
 
+        $constraints = [
+            $queryBuilder->expr()->eq('e.deleted', 0),
+            $queryBuilder->expr()->eq('e.hidden', 0),
+            $queryBuilder->expr()->eq(
+                'e.status',
+                $queryBuilder->createNamedParameter(EventStatus::LIVE->value, Connection::PARAM_INT)
+            ),
+            $queryBuilder->expr()->in(
+                'e.pid',
+                $queryBuilder->createNamedParameter($indexPids, Connection::PARAM_INT_ARRAY)
+            ),
+            $queryBuilder->expr()->eq('a.deleted', 0),
+            $queryBuilder->expr()->eq('a.hidden', 0),
+        ];
+
+        if (!$indexPastEvents) {
+            $constraints[] = $appointmentEnd . ' >= ' . $queryBuilder->createNamedParameter(
+                $now->getTimestamp() - self::PREFILTER_TOLERANCE_SECONDS,
+                Connection::PARAM_INT
+            );
+        }
+
         $queryBuilder
             ->select('a.uid AS appointment_uid', 'e.uid AS event_uid')
             ->from(self::EVENT_TABLE, 'e')
             ->innerJoin('e', self::ENTRY_TABLE, 'a', 'a.event = e.uid')
-            ->where(
-                $queryBuilder->expr()->eq('e.deleted', 0),
-                $queryBuilder->expr()->eq('e.hidden', 0),
-                $queryBuilder->expr()->eq(
-                    'e.status',
-                    $queryBuilder->createNamedParameter(EventStatus::LIVE->value, Connection::PARAM_INT)
-                ),
-                $queryBuilder->expr()->in(
-                    'e.pid',
-                    $queryBuilder->createNamedParameter($indexPids, Connection::PARAM_INT_ARRAY)
-                ),
-                $queryBuilder->expr()->eq('a.deleted', 0),
-                $queryBuilder->expr()->eq('a.hidden', 0),
-                $appointmentEnd . ' >= ' . $queryBuilder->createNamedParameter(
-                    $now->getTimestamp() - self::PREFILTER_TOLERANCE_SECONDS,
-                    Connection::PARAM_INT
-                )
-            );
+            ->where(...$constraints);
 
         $event = new ModifyKeSearchIndexerQueryEvent($queryBuilder, $indexerConfig, $now->getTimestamp());
         GeneralUtility::makeInstance(EventDispatcherInterface::class)->dispatch($event);
