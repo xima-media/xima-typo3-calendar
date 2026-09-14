@@ -52,6 +52,80 @@ final class AppointmentDateUtility
     }
 
     /**
+     * The start of an appointment read straight from its database row.
+     *
+     * The row variants exist for consumers that never hydrate a model, such as the ke_search
+     * indexer, and answer the same question as the model variants above.
+     *
+     * @param array<string, mixed> $row
+     */
+    public static function getStartFromRow(array $row): ?\DateTimeImmutable
+    {
+        $start = (int)($row['start_date'] ?? 0);
+        if ($start <= 0) {
+            return null;
+        }
+
+        return (new \DateTimeImmutable())->setTimestamp($start);
+    }
+
+    /**
+     * @param array<string, mixed> $row
+     * @see self::getEnd()
+     */
+    public static function getEndFromRow(array $row): ?\DateTimeImmutable
+    {
+        $start = self::getStartFromRow($row);
+        if ($start === null) {
+            return null;
+        }
+
+        $endTimestamp = (int)($row['end_date'] ?? 0);
+        $end = $endTimestamp > 0 ? (new \DateTimeImmutable())->setTimestamp($endTimestamp) : null;
+
+        if ((bool)($row['all_day'] ?? false)) {
+            return self::toLocalMidnight($end ?? $start)->modify('+1 day');
+        }
+
+        return $end ?? $start->modify('+' . self::DEFAULT_DURATION_MINUTES . ' minutes');
+    }
+
+    /**
+     * The row of the appointment representing a series: the next one that has not started yet,
+     * or the earliest when all of them lie in the past. Mirrors Event::getNextAppointment(),
+     * which answers the same question for hydrated models.
+     *
+     * @param list<array<string, mixed>> $rows
+     * @return array<string, mixed>|null
+     */
+    public static function pickRepresentativeRow(array $rows, \DateTimeImmutable $now): ?array
+    {
+        $next = null;
+        $nextStart = null;
+        $earliest = null;
+        $earliestStart = null;
+
+        foreach ($rows as $row) {
+            $start = self::getStartFromRow($row);
+            if ($start === null) {
+                continue;
+            }
+
+            if ($earliestStart === null || $start < $earliestStart) {
+                $earliest = $row;
+                $earliestStart = $start;
+            }
+
+            if ($start >= $now && ($nextStart === null || $start < $nextStart)) {
+                $next = $row;
+                $nextStart = $start;
+            }
+        }
+
+        return $next ?? $earliest;
+    }
+
+    /**
      * Start of the calendar day the given moment falls into, in the installation timezone.
      *
      * All-day values carry a date and no time, so they have to be read in the timezone the

@@ -1,7 +1,10 @@
 <?php
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 use Xima\XimaTypo3Calendar\Controller\EventController;
+use Xima\XimaTypo3Calendar\Indexer\EventIndexer;
+use Xima\XimaTypo3Calendar\Indexer\EventIndexerConfiguration;
 
 defined('TYPO3') || die();
 
@@ -58,3 +61,11 @@ ExtensionUtility::configurePlugin(
     ],
     ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
+
+// EventIndexer extends a ke_search class, so even naming it without the extension is fatal.
+if (ExtensionManagementUtility::isLoaded('ke_search')) {
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ke_search']['registerIndexerConfiguration'][1789000001]
+        = EventIndexerConfiguration::class;
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ke_search']['customIndexer'][1789000002]
+        = EventIndexer::class;
+}
