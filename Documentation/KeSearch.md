@@ -47,8 +47,9 @@ full mode alone, and the cleanup is what removes an event once its last appointm
 
 Two PSR-14 events, both documented with examples in [Extending](Extending.md#ke-search-indexing).
 
-`ModifyKeSearchIndexerQueryEvent` narrows which events are indexed. The extension filters on
-visibility and the time window only. Anything installation-specific belongs here, in particular
+`ModifyKeSearchIndexerQueryEvent` narrows which events are indexed. The extension filters on the
+configured folders, the live status, the deleted and hidden flags, and the time window. Anything
+installation-specific belongs here, in particular
 
 - `record_type`, when a project has introduced its own event types, and
 - `publish_to_website`, which is not filtered by default because installations that leave the

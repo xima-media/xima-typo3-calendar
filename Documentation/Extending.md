@@ -87,9 +87,10 @@ the indexer selects and how to set it up.
 `ModifyKeSearchIndexerQueryEvent` carries the mutable query that collects what to index. It
 selects `a.uid AS appointment_uid` and `e.uid AS event_uid` from the entry table aliased `a`,
 joined to the event table aliased `e`; the aliases and both column aliases are part of the
-contract. The extension filters on visibility and the time window only, so project rules go here
-— on either table, since the appointments this query admits are the ones the time window and the
-sort date are measured against:
+contract. The extension filters on the configured folders, the live status, the deleted and
+hidden flags of both tables, and the time window; project rules go here — on either table, since
+the appointments this query admits are the ones the time window and the sort date are measured
+against:
 
 ```php
 use TYPO3\CMS\Core\Attribute\AsEventListener;
