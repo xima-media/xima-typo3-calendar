@@ -22,7 +22,7 @@ class EventIndexerConfiguration
         $params['items'][] = [
             'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang_be.xlf:indexer.event.title',
             self::INDEXER_TYPE,
-            'EXT:xima_typo3_calendar/Resources/Public/Icons/recordtype-event.svg',
+            'tx-ximatypo3calendar-event',
         ];
     }
 }
