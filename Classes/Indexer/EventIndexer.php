@@ -226,7 +226,7 @@ class EventIndexer extends IndexerBase
     {
         foreach ($appointments as $appointment) {
             $end = AppointmentDateUtility::getEndFromRow($appointment);
-            if ($end !== null && $end >= $now) {
+            if ($end !== null && $end > $now) {
                 return true;
             }
         }
