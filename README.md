@@ -141,7 +141,6 @@ slug-less `/{event_uid}.ics` for the whole event.
 The slug comes from the event's `slug` field through the `XimaTypo3CalendarEventPathMapper`
 aspect, which maps an event to `<uid>-<slug>` and back. Generated URLs therefore carry the slug;
 the slug-less shapes stay as incoming fallbacks and are used for events whose slug is empty.
-A wrong slug still resolves — the uid decides — and the canonical tag points at the correct URL.
 
 ## Configuration
 
