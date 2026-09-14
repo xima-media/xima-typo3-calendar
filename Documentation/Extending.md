@@ -139,9 +139,6 @@ final readonly class ShapeEventIndexEntry
 }
 ```
 
-`params` defaults to the arguments of the extension's own `EventDetail` plugin, including the
-slug, so the shipped route enhancer produces the same URL a list view links to.
-
 ## Fluid ViewHelpers
 
 `ViewHelpers\Backend\CanPublishLiveEventsViewHelper` exposes the publish permission to backend
