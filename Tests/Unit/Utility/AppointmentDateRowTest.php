@@ -67,6 +67,21 @@ final class AppointmentDateRowTest extends TestCase
     }
 
     #[Test]
+    public function anAllDayAppointmentLastsTwentyFiveHoursOnADstFallbackDay(): void
+    {
+        $start = $this->timestamp('2026-10-25 00:00');
+
+        $end = AppointmentDateUtility::getEndFromRow([
+            'start_date' => $start,
+            'end_date' => 0,
+            'all_day' => 1,
+        ]);
+
+        self::assertSame('2026-10-26 00:00', $end?->format('Y-m-d H:i'));
+        self::assertSame(90000, $end->getTimestamp() - $start);
+    }
+
+    #[Test]
     public function theRowVariantsAgreeWithTheModelVariants(): void
     {
         $row = [

@@ -39,8 +39,11 @@ class EventIndexer extends IndexerBase
      * Appointments may end before the window opens without the event leaving it, because the
      * exact end depends on the all-day rule. The query casts a day-wide net and
      * AppointmentDateUtility decides.
+     *
+     * The net is a calendar day plus an hour: an all-day appointment ends at the next local
+     * midnight, which is 25 hours after its start on the day a DST fallback lengthens.
      */
-    private const PREFILTER_TOLERANCE_SECONDS = 86400;
+    private const PREFILTER_TOLERANCE_SECONDS = 90000;
 
     /**
      * @param array<string, mixed> $indexerConfig
