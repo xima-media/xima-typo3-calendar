@@ -87,6 +87,38 @@
 				<source>Allows seeing all draft, review and rejected events, not only the own ones.</source>
 				<target>Erlaubt das Sehen aller Entwürfe, Prüfungen und abgelehnten Veranstaltungen, nicht nur der eigenen.</target>
 			</trans-unit>
+			<trans-unit id="calendar.button.today">
+				<source>today</source>
+				<target>Heute</target>
+			</trans-unit>
+			<trans-unit id="calendar.button.dayGridMonth">
+				<source>month</source>
+				<target>Monat</target>
+			</trans-unit>
+			<trans-unit id="calendar.button.timeGridWeek">
+				<source>week</source>
+				<target>Woche</target>
+			</trans-unit>
+			<trans-unit id="calendar.button.listMonth">
+				<source>list</source>
+				<target>Liste</target>
+			</trans-unit>
+			<trans-unit id="calendar.button.prev.month">
+				<source>Previous month</source>
+				<target>Voriger Monat</target>
+			</trans-unit>
+			<trans-unit id="calendar.button.next.month">
+				<source>Next month</source>
+				<target>Nächster Monat</target>
+			</trans-unit>
+			<trans-unit id="calendar.button.prev.week">
+				<source>Previous week</source>
+				<target>Vorige Woche</target>
+			</trans-unit>
+			<trans-unit id="calendar.button.next.week">
+				<source>Next week</source>
+				<target>Nächste Woche</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

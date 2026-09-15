@@ -13,6 +13,20 @@ DocumentService.ready().then(() => {
     }
 
     const ajaxUrl = container.dataset.ajaxUrl ?? '';
+    const locale = container.dataset.locale || undefined;
+    const firstDay = Number.parseInt(container.dataset.firstDay ?? '', 10);
+
+    const labels: Record<string, string> = (window as any).TYPO3?.lang ?? (top as any)?.TYPO3?.lang ?? {};
+    const label = (key: string, fallback: string): string => labels['calendar.button.' + key] ?? fallback;
+
+    type ButtonText = Record<string, string>;
+    const navigationLabels = (unit: 'month' | 'week') => ({
+        buttonText: (text: ButtonText): ButtonText => ({
+            ...text,
+            prev: label('prev.' + unit, text.prev),
+            next: label('next.' + unit, text.next),
+        }),
+    });
 
     const getSelectedUids = (): number[] =>
         Array.from(document.querySelectorAll<HTMLInputElement>('.xima-cal-filter__checkbox:checked'))
@@ -24,6 +38,20 @@ DocumentService.ready().then(() => {
             plugins: [DayGrid, TimeGrid, List],
             options: {
                 view: 'dayGridMonth',
+                locale,
+                firstDay: Number.isNaN(firstDay) ? 0 : firstDay,
+                buttonText: (text: ButtonText): ButtonText => ({
+                    ...text,
+                    today: label('today', text.today),
+                    dayGridMonth: label('dayGridMonth', text.dayGridMonth),
+                    timeGridWeek: label('timeGridWeek', text.timeGridWeek),
+                    listMonth: label('listMonth', text.listMonth),
+                }),
+                views: {
+                    dayGridMonth: navigationLabels('month'),
+                    timeGridWeek: navigationLabels('week'),
+                    listMonth: navigationLabels('month'),
+                },
                 headerToolbar: {
                     start: 'prev,next today',
                     center: 'title',

@@ -10956,6 +10956,17 @@ DocumentService.ready().then(() => {
     return;
   }
   const ajaxUrl = container.dataset.ajaxUrl ?? "";
+  const locale = container.dataset.locale || void 0;
+  const firstDay = Number.parseInt(container.dataset.firstDay ?? "", 10);
+  const labels = window.TYPO3?.lang ?? top?.TYPO3?.lang ?? {};
+  const label = (key, fallback) => labels["calendar.button." + key] ?? fallback;
+  const navigationLabels = (unit) => ({
+    buttonText: (text2) => ({
+      ...text2,
+      prev: label("prev." + unit, text2.prev),
+      next: label("next." + unit, text2.next)
+    })
+  });
   const getSelectedUids = () => Array.from(document.querySelectorAll(".xima-cal-filter__checkbox:checked")).map((cb) => parseInt(cb.value, 10));
   const ec = new Calendar({
     target: container,
@@ -10963,6 +10974,20 @@ DocumentService.ready().then(() => {
       plugins: [index, index2, index3],
       options: {
         view: "dayGridMonth",
+        locale,
+        firstDay: Number.isNaN(firstDay) ? 0 : firstDay,
+        buttonText: (text2) => ({
+          ...text2,
+          today: label("today", text2.today),
+          dayGridMonth: label("dayGridMonth", text2.dayGridMonth),
+          timeGridWeek: label("timeGridWeek", text2.timeGridWeek),
+          listMonth: label("listMonth", text2.listMonth)
+        }),
+        views: {
+          dayGridMonth: navigationLabels("month"),
+          timeGridWeek: navigationLabels("week"),
+          listMonth: navigationLabels("month")
+        },
         headerToolbar: {
           start: "prev,next today",
           center: "title",
