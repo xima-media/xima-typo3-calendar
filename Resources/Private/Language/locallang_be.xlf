@@ -65,6 +65,30 @@
 			<trans-unit id="permissions.view_all_events.description">
 				<source>Allows seeing all draft, review and rejected events, not only the own ones.</source>
 			</trans-unit>
+			<trans-unit id="calendar.button.today">
+				<source>today</source>
+			</trans-unit>
+			<trans-unit id="calendar.button.dayGridMonth">
+				<source>month</source>
+			</trans-unit>
+			<trans-unit id="calendar.button.timeGridWeek">
+				<source>week</source>
+			</trans-unit>
+			<trans-unit id="calendar.button.listMonth">
+				<source>list</source>
+			</trans-unit>
+			<trans-unit id="calendar.button.prev.month">
+				<source>Previous month</source>
+			</trans-unit>
+			<trans-unit id="calendar.button.next.month">
+				<source>Next month</source>
+			</trans-unit>
+			<trans-unit id="calendar.button.prev.week">
+				<source>Previous week</source>
+			</trans-unit>
+			<trans-unit id="calendar.button.next.week">
+				<source>Next week</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

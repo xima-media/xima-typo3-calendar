@@ -12,6 +12,7 @@ use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -43,9 +44,17 @@ class CalendarController extends ActionController
         $ajaxUrl = (string)$this->backendUriBuilder->buildUriFromRoute('ajax_xima_calendar_events');
 
         $this->pageRenderer->loadJavaScriptModule('@xima/xima-typo3-calendar/calendar.js');
+        $this->pageRenderer->addInlineLanguageLabelFile(
+            'EXT:xima_typo3_calendar/Resources/Private/Language/locallang_be.xlf',
+            'calendar.button.'
+        );
+
+        $locale = $this->getLanguageService()->getLocale()?->getName() ?? 'en-US';
 
         $moduleTemplate->assignMultiple([
             'ajaxUrl' => $ajaxUrl,
+            'locale' => $locale,
+            'firstDay' => $this->getFirstDayOfWeek($locale),
         ]);
 
         return $moduleTemplate->renderResponse('Backend/Calendar');
@@ -64,5 +73,18 @@ class CalendarController extends ActionController
         $events = VkurkoCalendarSerializer::serializeBackendEntries($rows);
 
         return new JsonResponse($events);
+    }
+
+    /**
+     * The calendar counts weekdays from Sunday (0), IntlCalendar from Sunday (1).
+     */
+    private function getFirstDayOfWeek(string $locale): int
+    {
+        return \IntlCalendar::createInstance(null, $locale)->getFirstDayOfWeek() - 1;
+    }
+
+    private function getLanguageService(): LanguageService
+    {
+        return $GLOBALS['LANG'];
     }
 }
