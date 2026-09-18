@@ -11,6 +11,16 @@ if (!ExtensionManagementUtility::isLoaded('ke_search')) {
     return;
 }
 
+// ke_search gates the two storage-selection fields on a whitelist of its own indexer types, so
+// a custom type renders the form without any way to say where its records live.
+foreach (['startingpoints_recursive', 'sysfolder'] as $storageField) {
+    $displayCond = $GLOBALS['TCA']['tx_kesearch_indexerconfig']['columns'][$storageField]['displayCond'] ?? null;
+    if (is_string($displayCond) && str_starts_with($displayCond, 'FIELD:type:IN:')) {
+        $GLOBALS['TCA']['tx_kesearch_indexerconfig']['columns'][$storageField]['displayCond']
+            = $displayCond . ',' . EventIndexerConfiguration::INDEXER_TYPE;
+    }
+}
+
 ExtensionManagementUtility::addToAllTCAtypes(
     'tx_kesearch_indexerconfig',
     'ximatypo3calendar_index_past_events',
