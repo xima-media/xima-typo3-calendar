@@ -8,6 +8,8 @@ All notable changes to this extension are documented here. The format follows
 
 ### Added
 
+- **Dashboard preset.** A *Calendar* preset with all calendar widgets, selectable when adding
+  a dashboard and assignable to new users via `options.dashboard.dashboardPresetsForNewUsers`.
 - **Calendar export.** Appointments and whole events can be taken into a visitor's own
   calendar as an RFC 5545 `.ics` download; Google and Outlook deep links accompany it wherever
   the export covers a single appointment, since those services compose one entry. New
