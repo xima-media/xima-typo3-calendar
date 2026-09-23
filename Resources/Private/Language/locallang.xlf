@@ -29,6 +29,12 @@
 			<trans-unit id="widget_group.calendar">
 				<source>Calendar</source>
 			</trans-unit>
+			<trans-unit id="dashboard_preset.calendar">
+				<source>Calendar</source>
+			</trans-unit>
+			<trans-unit id="dashboard_preset.calendar.description">
+				<source>Events awaiting review, upcoming and canceled appointments at a glance.</source>
+			</trans-unit>
 			<trans-unit id="widget.ready_to_publish_events.title">
 				<source>Ready to publish events</source>
 			</trans-unit>

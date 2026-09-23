@@ -38,6 +38,14 @@
 				<source />
 				<target>Kalender</target>
 			</trans-unit>
+			<trans-unit id="dashboard_preset.calendar">
+				<source />
+				<target>Kalender</target>
+			</trans-unit>
+			<trans-unit id="dashboard_preset.calendar.description">
+				<source />
+				<target>Freizugebende Veranstaltungen, anstehende und abgesagte Termine auf einen Blick.</target>
+			</trans-unit>
 			<trans-unit id="widget.ready_to_publish_events.title">
 				<source />
 				<target>Freizugebende Veranstaltungen</target>
