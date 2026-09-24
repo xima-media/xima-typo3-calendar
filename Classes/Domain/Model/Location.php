@@ -10,6 +10,8 @@ class Location extends AbstractEntity
 {
     protected string $name = '';
 
+    protected ?Location $parent = null;
+
     public function getName(): string
     {
         return $this->name;
@@ -18,5 +20,15 @@ class Location extends AbstractEntity
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    public function getParent(): ?Location
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?Location $parent): void
+    {
+        $this->parent = $parent;
     }
 }

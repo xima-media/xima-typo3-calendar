@@ -9,6 +9,9 @@
 			<trans-unit id="name.label">
 				<source>Name</source>
 			</trans-unit>
+			<trans-unit id="parent.label">
+				<source>Parent location</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

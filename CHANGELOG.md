@@ -16,6 +16,9 @@ All notable changes to this extension are documented here. The format follows
   `.ics` routes on the event detail plugin, a `CalendarExportService` returning the links as
   data, and an `exportLinks` ViewHelper — so a Fluid site and an API-driven frontend both get
   them without reimplementing date handling. See [Calendar Export](Documentation/Ics.md).
+- **Location tree.** Locations get a *Parent location* field, picked from a tree in the
+  backend form, so venues can be nested (city → building → room). `Location::getParent()`
+  exposes it to Extbase.
 - Test suite: 75 unit and 147 functional tests, with coverage reporting to Codecov.
 - Documentation set — [Access Control](Documentation/AccessControl.md),
   [Notifications](Documentation/Notifications.md), [Calendar Feed](Documentation/CalendarFeed.md),
