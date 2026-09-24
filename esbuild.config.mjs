@@ -1,20 +1,38 @@
 import * as esbuild from 'esbuild';
 
-const buildConfig = {
-    entryPoints: ['./Resources/Private/TypeScript/calendar.ts'],
+const commonConfig = {
     format: 'esm',
     bundle: true,
     sourcemap: true,
-    outdir: 'Resources/Public/JavaScript/',
     logLevel: 'info',
     external: ["@typo3/*", "interactjs", "lit", "lit/decorators.js", "css-tree", "nprogress"],
 };
 
+const javascriptConfig = {
+    ...commonConfig,
+    entryPoints: ['./Resources/Private/TypeScript/calendar.ts'],
+    outdir: 'Resources/Public/JavaScript/',
+};
+
+const cssConfig = {
+    ...commonConfig,
+    entryPoints: ['./Resources/Private/Css/calendar.css'],
+    outdir: 'Resources/Public/Css/',
+    entryNames: 'calendar',
+};
+
 if (process.argv.includes('--build')) {
-    buildConfig.sourcemap = false;
-    buildConfig.minify = true;
-    await esbuild.build(buildConfig);
+    await Promise.all([
+        esbuild.build({...javascriptConfig, sourcemap: false, minify: true}),
+        esbuild.build({...cssConfig, sourcemap: false, minify: true}),
+    ]);
 } else {
-    const ctx = await esbuild.context(buildConfig);
-    await ctx.watch();
+    const [javascriptContext, cssContext] = await Promise.all([
+        esbuild.context(javascriptConfig),
+        esbuild.context(cssConfig),
+    ]);
+    await Promise.all([
+        javascriptContext.watch(),
+        cssContext.watch(),
+    ]);
 }

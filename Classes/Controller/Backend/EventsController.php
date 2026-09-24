@@ -147,7 +147,15 @@ class EventsController extends AbstractBackendController
             foreach ($this->records as &$record) {
                 foreach ($record as $key => &$value) {
                     if (str_starts_with($key, '_')) {
+                        if (!is_array($value) && !is_object($value)) {
+                            continue;
+                        }
+
                         foreach ($value as $table => &$relatedRecords) {
+                            if (!is_array($relatedRecords) && !is_object($relatedRecords)) {
+                                continue;
+                            }
+
                             foreach ($relatedRecords as &$relatedRecord) {
                                 $labelField = $GLOBALS['TCA'][$table]['ctrl']['label'] ?? null;
                                 if ($labelField) {

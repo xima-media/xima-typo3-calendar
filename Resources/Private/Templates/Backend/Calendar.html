@@ -2,28 +2,39 @@
 
 <f:section name="Content">
     <f:be.pageRenderer
-        pageTitle="calendar-css"
-        includeCssFiles="{0: 'EXT:xima_typo3_calendar/Resources/Public/JavaScript/calendar.css'}" />
+    includeCssFiles="{
+        0: 'EXT:xima_typo3_calendar/Resources/Public/Css/calendar.css'
+    }" />
 
-    <f:if condition="{calendars}">
-        <div class="xima-cal-filter mb-3 d-flex flex-wrap gap-3">
-            <f:for each="{calendars}" as="calendar">
-                <div class="form-check form-check-inline">
-                    <input class="xima-cal-filter__checkbox form-check-input"
-                        type="checkbox"
-                        id="cal-{calendar.uid}"
-                        value="{calendar.uid}"
-                        checked="checked" />
-                    <label class="form-check-label" for="cal-{calendar.uid}">
-                        {calendar.title}
-                    </label>
-                </div>
-            </f:for>
+    <div class="xima-calendar-module">
+        <f:if condition="{calendars}">
+            <div class="xima-cal-filter mb-3 d-flex flex-wrap gap-3">
+                <f:for each="{calendars}" as="calendar">
+                    <div class="form-check form-check-inline">
+                        <input class="xima-cal-filter__checkbox form-check-input"
+                            type="checkbox"
+                            id="cal-{calendar.uid}"
+                            value="{calendar.uid}"
+                            checked="checked" />
+                        <label class="form-check-label" for="cal-{calendar.uid}">
+                            {calendar.title}
+                        </label>
+                    </div>
+                </f:for>
+            </div>
+        </f:if>
+
+        <div class="xima-calendar-content">
+            <div id="xima-calendar-mount"
+                data-ajax-url="{ajaxUrl}">
+            </div>
+
+            <f:if condition="{enableEventPreview}">
+                <section class="xima-calendar-event-detail" aria-label="Kalenderdetails" aria-live="polite">
+                    <span class="xima-calendar-event-detail__title"></span>
+                </section>
+            </f:if>
         </div>
-    </f:if>
-
-    <div id="xima-calendar-mount"
-        data-ajax-url="{ajaxUrl}">
     </div>
 
 </f:section>

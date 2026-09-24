@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Imaging\IconFactory;
@@ -46,6 +47,7 @@ class CalendarController extends ActionController
 
         $moduleTemplate->assignMultiple([
             'ajaxUrl' => $ajaxUrl,
+            'enableEventPreview' => $this->isEventPreviewEnabled($request),
         ]);
 
         return $moduleTemplate->renderResponse('Backend/Calendar');
@@ -64,5 +66,13 @@ class CalendarController extends ActionController
         $events = VkurkoCalendarSerializer::serializeBackendEntries($rows);
 
         return new JsonResponse($events);
+    }
+
+    private function isEventPreviewEnabled(RequestInterface $request): bool
+    {
+        $pageId = (int)($request->getQueryParams()['id'] ?? 0);
+        $pageTsConfig = BackendUtility::getPagesTSconfig($pageId);
+
+        return (bool)($pageTsConfig['mod.']['tx_ximatypo3calendar.']['enableEventPreview'] ?? false);
     }
 }

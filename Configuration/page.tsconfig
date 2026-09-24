@@ -16,3 +16,7 @@ TCEMAIN.preview {
     }
   }
 }
+
+mod.tx_ximatypo3calendar {
+    enableEventPreview = 0
+}
