@@ -16,3 +16,20 @@ TCEMAIN.preview {
     }
   }
 }
+
+mod.tx_ximatypo3calendar {
+    enableEventPreview = 0
+
+    newEvent {
+        interaction {
+            enableDrag = 1
+            enableClick = 1
+        }
+
+        defaults {
+            startTime = 10:00
+            endTime = 15:30
+            allDay = 0
+        }
+    }
+}

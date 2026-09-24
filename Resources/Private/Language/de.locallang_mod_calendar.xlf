@@ -14,6 +14,38 @@
 				<source />
 				<target>Kalender</target>
 			</trans-unit>
+			<trans-unit id="newEvent" resname="newEvent">
+				<source />
+				<target>Event erstellen</target>
+			</trans-unit>
+			<trans-unit id="newEventAppointment" resname="newEventAppointment">
+				<source />
+				<target>Event-Termin erstellen</target>
+			</trans-unit>
+			<trans-unit id="newEventType.title" resname="newEventType.title">
+				<source />
+				<target>Was möchten Sie erstellen?</target>
+			</trans-unit>
+			<trans-unit id="newEventType.event" resname="newEventType.event">
+				<source />
+				<target>Event</target>
+			</trans-unit>
+			<trans-unit id="newEventType.appointment" resname="newEventType.appointment">
+				<source />
+				<target>Event-Termin</target>
+			</trans-unit>
+			<trans-unit id="newEventType.calendar" resname="newEventType.calendar">
+				<source />
+				<target>Kalender</target>
+			</trans-unit>
+			<trans-unit id="newEventType.selectCalendar" resname="newEventType.selectCalendar">
+				<source />
+				<target>Kalender auswählen</target>
+			</trans-unit>
+			<trans-unit id="newEventType.start" resname="newEventType.start"><source /><target>Beginn</target></trans-unit>
+			<trans-unit id="newEventType.end" resname="newEventType.end"><source /><target>Ende</target></trans-unit>
+			<trans-unit id="newEventType.allDay" resname="newEventType.allDay"><source /><target>Ganztägig</target></trans-unit>
+			<trans-unit id="newEventType.create" resname="newEventType.create"><source /><target>Erstellen</target></trans-unit>
 		</body>
 	</file>
 </xliff>

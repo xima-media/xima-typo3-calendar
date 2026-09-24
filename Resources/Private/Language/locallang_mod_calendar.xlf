@@ -11,6 +11,31 @@
 			<trans-unit id="mlang_tabs_tab" resname="mlang_tabs_tab">
 				<source>Calendar</source>
 			</trans-unit>
+			<trans-unit id="newEvent" resname="newEvent">
+				<source>New Event</source>
+			</trans-unit>
+			<trans-unit id="newEventAppointment" resname="newEventAppointment">
+				<source>New Event Appointment</source>
+			</trans-unit>
+			<trans-unit id="newEventType.title" resname="newEventType.title">
+				<source>What do you want to create?</source>
+			</trans-unit>
+			<trans-unit id="newEventType.event" resname="newEventType.event">
+				<source>Event</source>
+			</trans-unit>
+			<trans-unit id="newEventType.appointment" resname="newEventType.appointment">
+				<source>Event Appointment</source>
+			</trans-unit>
+			<trans-unit id="newEventType.calendar" resname="newEventType.calendar">
+				<source>Calendar</source>
+			</trans-unit>
+			<trans-unit id="newEventType.selectCalendar" resname="newEventType.selectCalendar">
+				<source>Select a calendar</source>
+			</trans-unit>
+			<trans-unit id="newEventType.start" resname="newEventType.start"><source>Start</source></trans-unit>
+			<trans-unit id="newEventType.end" resname="newEventType.end"><source>End</source></trans-unit>
+			<trans-unit id="newEventType.allDay" resname="newEventType.allDay"><source>All-day</source></trans-unit>
+			<trans-unit id="newEventType.create" resname="newEventType.create"><source>Create</source></trans-unit>
 		</body>
 	</file>
 </xliff>

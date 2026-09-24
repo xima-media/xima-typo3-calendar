@@ -16,6 +16,9 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
  */
 final class CalendarPermissionService
 {
+    private const APPOINTMENT_TABLE = 'tx_ximatypo3calendar_domain_model_entry';
+    private const EVENT_TABLE = 'tx_ximatypo3calendar_domain_model_event';
+
     public const PERMISSION_GROUP = 'tx_ximatypo3calendar_permissions';
 
     /** Grants publishing events (setting the LIVE status). */
@@ -34,6 +37,46 @@ final class CalendarPermissionService
         return $this->checkCustomOption(self::PERMISSION_VIEW_ALL_EVENTS, $backendUser);
     }
 
+    public function canCreateAppointmentAtPid(
+        int $pid,
+        ?BackendUserAuthentication $backendUser = null,
+    ): bool {
+        return $this->canEditTableAtPid(self::APPOINTMENT_TABLE, $pid, $backendUser);
+    }
+
+    public function canCreateEventAtPid(
+        int $pid,
+        ?BackendUserAuthentication $backendUser = null,
+    ): bool {
+        return $this->canEditTableAtPid(self::EVENT_TABLE, $pid, $backendUser);
+    }
+
+    private function canEditTableAtPid(
+        string $table,
+        int $pid,
+        ?BackendUserAuthentication $backendUser = null,
+    ): bool {
+        $backendUser ??= $this->getBackendUser();
+        if (!$backendUser instanceof BackendUserAuthentication) {
+            return false;
+        }
+
+        return $backendUser->recordEditAccessInternals(
+            $table,
+            ['pid' => $pid],
+            true,
+        );
+    }
+
+    public function canCreateEventAndAppointmentAtPid(
+        int $pid,
+        ?BackendUserAuthentication $backendUser = null,
+    ): bool {
+        return $pid > 0
+            && $this->canCreateEventAtPid($pid, $backendUser)
+            && $this->canCreateAppointmentAtPid($pid, $backendUser);
+    }
+
     private function checkCustomOption(string $option, ?BackendUserAuthentication $backendUser): bool
     {
         $backendUser ??= $this->getBackendUser();
@@ -41,7 +84,6 @@ final class CalendarPermissionService
             return false;
         }
 
-        // BackendUserAuthentication::check() returns true for administrators.
         return $backendUser->check('custom_options', self::PERMISSION_GROUP . ':' . $option);
     }
 

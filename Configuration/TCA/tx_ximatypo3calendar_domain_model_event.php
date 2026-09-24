@@ -66,6 +66,7 @@ return [
                 'type' => 'input',
                 'size' => 60,
                 'max' => 255,
+                'required' => true,
             ],
         ],
         'slug' => [

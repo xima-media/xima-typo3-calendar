@@ -9,10 +9,12 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Http\JsonResponse;
+use TYPO3\CMS\Core\Imaging\IconSize;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
 use Xima\XimaTypo3Calendar\Service\StatusChangeContext;
+use Xima\XimaTypo3Calendar\Utility\RecordTypeUtility;
 use Xima\XimaTypo3Recordlist\Controller\AbstractBackendController;
 use Xima\XimaTypo3Recordlist\Dto\RecordSource;
 
@@ -139,6 +141,73 @@ class EventsController extends AbstractBackendController
         return $tableNames;
     }
 
+    protected function addNewButtonToModuleTemplate(): void
+    {
+        if (!$this->isActionAllowedInCurrentTemplate('newRecord')) {
+            return;
+        }
+
+        $accessiblePages = $this->getAccessiblePages();
+        if ($accessiblePages === []) {
+            return;
+        }
+
+        $tableName = $this->getTableName();
+        $defVals = $this->getActiveLanguage() > 0
+            ? [$tableName => ['sys_language_uid' => $this->getActiveLanguage()]]
+            : [];
+        if ($tableName === self::EVENT_TABLE) {
+            $eventRecordType = RecordTypeUtility::getDefault(self::EVENT_TABLE);
+            if ($eventRecordType !== null) {
+                $defVals[$tableName]['record_type'] = $eventRecordType;
+            }
+        }
+
+        $buttonBar = $this->moduleTemplate->getDocHeaderComponent()->getButtonBar();
+        $recordLabel = $this->getLanguageService()->sL($GLOBALS['TCA'][$tableName]['ctrl']['title']);
+        $newLabel = 'New ' . ucfirst($recordLabel);
+        $buildHref = fn (int $pid): string => (string)$this->backendUriBuilder->buildUriFromRoute(
+            'record_edit',
+            [
+                'edit' => [$tableName => [$pid => 'new']],
+                'returnUrl' => $this->getCurrentUrl(),
+                'defVals' => $defVals,
+                'module' => $this->getModuleName(),
+                'workspaceId' => self::WORKSPACE_ID,
+            ]
+        );
+
+        if (count($accessiblePages) === 1) {
+            $buttonBar->addButton(
+                $buttonBar->makeLinkButton()
+                    ->setHref($buildHref((int)$accessiblePages[0]['uid']))
+                    ->setClasses('new-record-in-page')
+                    ->setTitle($newLabel)
+                    ->setShowLabelText(true)
+                    ->setIcon($this->iconFactory->getIcon('actions-add', IconSize::SMALL))
+            );
+            return;
+        }
+
+        $pages = [];
+        foreach ($accessiblePages as $page) {
+            $pages[] = [
+                'href' => $buildHref((int)$page['uid']),
+                'title' => $this->getPageDisplayTitle($page),
+            ];
+        }
+
+        $buttonBar->addButton(
+            $buttonBar->makeLinkButton()
+                ->setHref('#')
+                ->setClasses('new-record-trigger')
+                ->setTitle($newLabel)
+                ->setShowLabelText(true)
+                ->setIcon($this->iconFactory->getIcon('actions-add', IconSize::SMALL))
+                ->setDataAttributes(['pages' => (string)json_encode($pages)])
+        );
+    }
+
     protected function modifyPaginatedRecords(): void
     {
         parent::modifyPaginatedRecords();
@@ -147,7 +216,15 @@ class EventsController extends AbstractBackendController
             foreach ($this->records as &$record) {
                 foreach ($record as $key => &$value) {
                     if (str_starts_with($key, '_')) {
+                        if (!is_array($value) && !is_object($value)) {
+                            continue;
+                        }
+
                         foreach ($value as $table => &$relatedRecords) {
+                            if (!is_array($relatedRecords) && !is_object($relatedRecords)) {
+                                continue;
+                            }
+
                             foreach ($relatedRecords as &$relatedRecord) {
                                 $labelField = $GLOBALS['TCA'][$table]['ctrl']['label'] ?? null;
                                 if ($labelField) {
