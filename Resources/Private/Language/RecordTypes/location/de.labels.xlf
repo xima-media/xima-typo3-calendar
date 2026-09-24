@@ -11,6 +11,10 @@
 				<source />
 				<target>Name</target>
 			</trans-unit>
+			<trans-unit id="parent.label">
+				<source />
+				<target>Übergeordneter Veranstaltungsort</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

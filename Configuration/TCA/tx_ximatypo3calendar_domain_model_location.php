@@ -31,10 +31,31 @@ return [
                 'required' => true,
             ],
         ],
+        'parent' => [
+            'label' => 'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/RecordTypes/location/labels.xlf:parent.label',
+            'exclude' => true,
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectTree',
+                'foreign_table' => 'tx_ximatypo3calendar_domain_model_location',
+                'foreign_table_where' => 'AND {#tx_ximatypo3calendar_domain_model_location}.{#uid} != ###THIS_UID###',
+                'treeConfig' => [
+                    'parentField' => 'parent',
+                    'appearance' => [
+                        'expandAll' => true,
+                        'showHeader' => true,
+                    ],
+                ],
+                'size' => 20,
+                'minitems' => 0,
+                'maxitems' => 1,
+                'default' => 0,
+            ],
+        ],
     ],
     'types' => [
         '1' => [
-            'showitem' => '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,name,--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,--palette--;;hidden',
+            'showitem' => '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,name,parent,--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,--palette--;;hidden',
         ],
     ],
 ];

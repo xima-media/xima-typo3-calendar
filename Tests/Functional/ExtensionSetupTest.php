@@ -57,6 +57,16 @@ final class ExtensionSetupTest extends AbstractCalendarFunctionalTestCase
     }
 
     #[Test]
+    public function locationsCanReferenceAParentLocation(): void
+    {
+        $table = $this->getConnectionPool()->getConnectionForTable(self::TABLE_LOCATION)
+            ->createSchemaManager()->introspectTable(self::TABLE_LOCATION);
+
+        self::assertTrue($table->hasColumn('parent'));
+        self::assertSame('parent', $GLOBALS['TCA'][self::TABLE_LOCATION]['columns']['parent']['config']['treeConfig']['parentField']);
+    }
+
+    #[Test]
     public function bothQueryRestrictionsAreRegisteredGlobally(): void
     {
         $restrictions = $GLOBALS['TYPO3_CONF_VARS']['DB']['additionalQueryRestrictions'] ?? [];
