@@ -179,6 +179,19 @@ event types.
    `restrictions.unrestrictedRecordTypes` — see
    [Access Control](AccessControl.md#exempting-record-types).
 
+A record type may leave `status` out of its `showitem`. Its events are stored with a `NULL`
+status, while new events of a type that shows the field start as `DRAFT`. An event without a
+status is never `LIVE`, so the restrictions hide it from anyone who neither owns it nor holds
+`view_all_events`, and the dashboard widgets and the ke_search indexer skip it. Such a type
+usually belongs in `restrictions.unrestrictedRecordTypes` as well.
+
+The column only changes for new records. Rows created before a record type dropped the field
+keep their old value:
+
+```sql
+UPDATE tx_ximatypo3calendar_domain_model_event SET status = NULL WHERE record_type = 'plain-event';
+```
+
 ## Service configuration
 
 `Configuration/Services.php` autoloads `Xima\XimaTypo3Calendar\` and **excludes**
@@ -195,7 +208,7 @@ Useful when writing listeners against the raw field values:
 
 | Enum | Backing | Cases |
 |------|---------|-------|
-| `EventStatus` | `int` | `DRAFT=0`, `REVIEW=1`, `LIVE=2`, `REJECTED=3` |
+| `EventStatus` | `int` | `DRAFT=0`, `REVIEW=1`, `LIVE=2`, `REJECTED=3`; the column is `NULL` for record types without the status field |
 | `EventAppointmentType` | `string` | `inPerson`, `online`, `hybrid` |
 | `EventLanguage` | `string` | `ALL=''`, `de`, `en` |
 

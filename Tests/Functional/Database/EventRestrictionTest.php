@@ -171,6 +171,38 @@ final class EventRestrictionTest extends AbstractCalendarFunctionalTestCase
     }
 
     #[Test]
+    public function anEventWithoutStatusIsHiddenFromAnonymousVisitors(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
+            ->update(self::TABLE_EVENT, ['record_type' => 'plain-event', 'status' => null], ['uid' => 3]);
+        $this->givenFrontendRequest();
+
+        self::assertSame([1], $this->fetchVisibleEventUids());
+    }
+
+    #[Test]
+    public function anEventWithoutStatusIsHiddenFromBackendUsersWithoutThePermission(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
+            ->update(self::TABLE_EVENT, ['record_type' => 'plain-event', 'status' => null], ['uid' => 3]);
+        $GLOBALS['BE_USER'] = $this->backendUser(5);
+        $this->givenBackendRequest();
+
+        self::assertSame([1], $this->fetchVisibleEventUids());
+    }
+
+    #[Test]
+    public function anEventWithoutStatusOfAnUnrestrictedRecordTypeStaysVisible(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
+            ->update(self::TABLE_EVENT, ['record_type' => 'plain-event', 'status' => null], ['uid' => 3]);
+        $this->givenUnrestrictedRecordTypes('plain-event');
+        $this->givenFrontendRequest();
+
+        self::assertSame([1, 3], $this->fetchVisibleEventUids());
+    }
+
+    #[Test]
     public function theRecordTypeExemptionAcceptsACommaSeparatedList(): void
     {
         $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)

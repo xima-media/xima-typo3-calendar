@@ -22,6 +22,14 @@ All notable changes to this extension are documented here. The format follows
   [Extending](Documentation/Extending.md) — and a [CONTRIBUTING](CONTRIBUTING.md) guide covering
   local setup, tests, static analysis, and the asset build.
 
+### Changed
+
+- The event `status` column is nullable and defaults to `NULL`, so a custom record type that
+  does not show the status field stores no status. New events of a record type that shows it
+  still start as *Draft*. Existing rows keep their value; set it to `NULL` in the consuming
+  project for record types without a status. See
+  [Extending](Documentation/Extending.md#custom-event-record-types).
+
 ### Fixed
 
 - Backend users viewing an event or appointment in the **frontend** were answered with a 404
