@@ -59,6 +59,11 @@ GET /?type=1778227923&start=2026-01-01&end=2026-12-31&calendars[]=3
 | `start`, `end` | Any `\DateTime`-parsable string; unbounded when omitted |
 | `calendars[]` | Calendar UIDs to include |
 
+The site language resolved from the URL (`/en/?type=1778227923`) localizes the feed:
+`eventCategoryTitle` uses the category translation when a visible one exists, and
+`extendedProps.url` points to the detail view in that language. `eventCategoryId` stays the
+default-language UID. The backend module always requests the default language.
+
 **Treat this endpoint as backend-internal.** The page type is declared nowhere else in the
 extension — no TypoScript `PAGE` object, no route enhancer — and it calls
 `EntryRepository::getBackendCalendarEntries()`, the *backend* query, which does not apply the

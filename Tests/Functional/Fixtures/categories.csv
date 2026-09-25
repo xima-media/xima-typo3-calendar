@@ -1,0 +1,9 @@
+"sys_category",,,,,,,
+,"uid","pid","sys_language_uid","l10n_parent","title","hidden","deleted"
+,10,2,0,0,"Vorträge",0,0
+,11,2,1,10,"Lectures",0,0
+,12,2,2,10,"Conférences cachées",1,0
+
+"sys_category_record_mm",,,,,
+,"uid_local","uid_foreign","tablenames","fieldname","sorting"
+,10,1,"tx_ximatypo3calendar_domain_model_event","categories",1
