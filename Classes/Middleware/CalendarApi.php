@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use Xima\XimaTypo3Calendar\Domain\Repository\EntryRepository;
 use Xima\XimaTypo3Calendar\Serializer\VkurkoCalendarSerializer;
 use Xima\XimaTypo3Calendar\Utility\CalendarFeedRequestUtility;
@@ -40,9 +41,12 @@ class CalendarApi implements MiddlewareInterface
         $endDatetime = CalendarFeedRequestUtility::getEndTimestamp($params);
         $calendarUids = CalendarFeedRequestUtility::getCalendarUids($params);
 
-        $rows = $this->entryRepository->getBackendCalendarEntries($startDatetime, $endDatetime, $calendarUids);
+        $language = $request->getAttribute('language');
+        $languageId = $language instanceof SiteLanguage ? $language->getLanguageId() : 0;
 
-        $events = VkurkoCalendarSerializer::serializeBackendEntries($rows);
+        $rows = $this->entryRepository->getBackendCalendarEntries($startDatetime, $endDatetime, $calendarUids, $languageId);
+
+        $events = VkurkoCalendarSerializer::serializeBackendEntries($rows, $languageId);
 
         return new JsonResponse($events);
     }

@@ -25,14 +25,14 @@ class VkurkoCalendarSerializer
      */
     private static array $siteCache = [];
 
-    public static function serializeBackendEntries(array $backendEntries): array
+    public static function serializeBackendEntries(array $backendEntries, int $languageId = 0): array
     {
         // The event contract carries no offset, so the consumer reads the string as local
         // time. '@<timestamp>' yields a UTC DateTime, which would shift every time by the
         // installation's offset — convert before formatting.
         $timeZone = new \DateTimeZone(date_default_timezone_get());
 
-        $events = array_map(function (array $row) use ($timeZone): array {
+        $events = array_map(function (array $row) use ($timeZone, $languageId): array {
             $start = ($row['start_date'] && $row['start_date'] > 0)
                 ? (new \DateTime('@' . $row['start_date']))->setTimezone($timeZone)->format('Y-m-d\TH:i:s')
                 : null;
@@ -61,7 +61,7 @@ class VkurkoCalendarSerializer
                 'end' => $end,
                 'allDay' => (bool)$row['all_day'],
                 'extendedProps' => [
-                    'url' => self::buildEventSingleUrl($row),
+                    'url' => self::buildEventSingleUrl($row, $languageId),
                     'calendarUid' => (int)$row['calendar'],
                     'calendarTitle' => $row['calendar_title'] ?? '',
                     'recordType' => $row['record_type'] ?? '',
@@ -91,7 +91,7 @@ class VkurkoCalendarSerializer
      * `xima_typo3_calendar.eventShowPid` site setting. The `event` argument (and cHash) are
      * handled by the CalendarEventDetailPlugin route enhancer / page router.
      */
-    private static function buildEventSingleUrl(array $row): ?string
+    private static function buildEventSingleUrl(array $row, int $languageId): ?string
     {
         $pid = (int)($row['pid'] ?? 0);
         $eventUid = (int)($row['event_uid'] ?? 0);
@@ -118,6 +118,7 @@ class VkurkoCalendarSerializer
                     'event' => $eventUid,
                     'appointment' => (int)$row['uid'],
                 ],
+                '_language' => $languageId,
             ]
         );
     }
