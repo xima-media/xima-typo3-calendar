@@ -33,6 +33,7 @@ use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
  * from the WHERE-clause table list, so the join alias is not reliably available here. The
  * restriction therefore checks the parent event through a correlated `EXISTS` subquery instead:
  *   - CLI: everything, never restricted;
+ *   - while DataHandler processes a write: everything (see DataHandlerWriteScope);
  *   - frontend, anonymous: entries whose event has status LIVE;
  *   - frontend, logged-in user: additionally entries of events they own;
  *   - frontend, logged-in backend user: like the backend rules below, so an editor
@@ -59,6 +60,7 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
         protected ConnectionPool $connectionPool,
         protected ExtensionConfiguration $extensionConfiguration,
         protected CalendarPermissionService $permissionService,
+        protected DataHandlerWriteScope $writeScope,
     ) {
     }
 
@@ -70,6 +72,10 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
     public function buildExpression(array $queriedTables, ExpressionBuilder $expressionBuilder): CompositeExpression
     {
         if (!in_array('tx_ximatypo3calendar_domain_model_entry', $queriedTables, true)) {
+            return $expressionBuilder->and();
+        }
+
+        if ($this->writeScope->isActive()) {
             return $expressionBuilder->and();
         }
 

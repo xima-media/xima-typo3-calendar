@@ -35,6 +35,11 @@ All notable changes to this extension are documented here. The format follows
 
 ### Fixed
 
+- Appointments written through DataHandler in a **frontend** request (e.g. by an API creating
+  events for website users) were stored with `event = 0` (#52). Sorting the inline children by
+  `start_date` re-reads them through the enforced entry restriction, which hides an appointment
+  that has no event yet. The event and entry restrictions now stand aside while DataHandler
+  processes a write; who may write is checked before DataHandler runs.
 - Backend users viewing an event or appointment in the **frontend** were answered with a 404
   whenever the event was not `LIVE`. The frontend branch of the restrictions only ever knew about
   frontend users, so neither the `view_all_events` permission nor event ownership via

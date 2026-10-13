@@ -15,6 +15,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use Xima\XimaTypo3Calendar\Database\DataHandlerWriteScope;
 use Xima\XimaTypo3Calendar\Database\EntryRestriction;
 use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
 use Xima\XimaTypo3Calendar\Tests\Functional\AbstractCalendarFunctionalTestCase;
@@ -50,6 +51,7 @@ final class EntryRestrictionTest extends AbstractCalendarFunctionalTestCase
             $connectionPool,
             $this->get(ExtensionConfiguration::class),
             new CalendarPermissionService(),
+            new DataHandlerWriteScope(),
         );
         $this->expressionBuilder = $connectionPool
             ->getQueryBuilderForTable(self::TABLE_ENTRY)
@@ -88,6 +90,25 @@ final class EntryRestrictionTest extends AbstractCalendarFunctionalTestCase
         $this->givenFrontendRequest();
 
         $expression = $this->subject->buildExpression(['e' => self::TABLE_EVENT], $this->expressionBuilder);
+
+        self::assertSame('', (string)$expression);
+    }
+
+    #[Test]
+    public function producesNoConditionWhileDataHandlerProcessesAWrite(): void
+    {
+        $this->givenFrontendRequest();
+        $writeScope = new DataHandlerWriteScope();
+        $writeScope->enter();
+        $subject = new EntryRestriction(
+            $this->get(Context::class),
+            $this->get(ConnectionPool::class),
+            $this->get(ExtensionConfiguration::class),
+            new CalendarPermissionService(),
+            $writeScope,
+        );
+
+        $expression = $subject->buildExpression($this->queriedTables(), $this->expressionBuilder);
 
         self::assertSame('', (string)$expression);
     }
@@ -437,6 +458,7 @@ final class EntryRestrictionTest extends AbstractCalendarFunctionalTestCase
             $this->get(ConnectionPool::class),
             $extensionConfiguration,
             new CalendarPermissionService(),
+            new DataHandlerWriteScope(),
         );
     }
 

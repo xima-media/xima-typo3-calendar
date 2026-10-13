@@ -16,6 +16,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['XimaTypo3CalendarEvent
 
 $GLOBALS['TYPO3_CONF_VARS']['MAIL']['templateRootPaths'][1783341481] = 'EXT:xima_typo3_calendar/Resources/Private/Templates/Email/';
 
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['xima_typo3_calendar_write_scope']
+    = \Xima\XimaTypo3Calendar\Hooks\DataHandlerWriteScopeHook::class;
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['xima_typo3_calendar_write_scope']
+    = \Xima\XimaTypo3Calendar\Hooks\DataHandlerWriteScopeHook::class;
+
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['xima_typo3_calendar']
     = \Xima\XimaTypo3Calendar\Hooks\DataHandlerHook::class;
 

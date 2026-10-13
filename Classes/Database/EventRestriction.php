@@ -30,6 +30,7 @@ use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
  *
  * Visible events per context:
  *   - CLI: everything, never restricted;
+ *   - while DataHandler processes a write: everything (see DataHandlerWriteScope);
  *   - frontend, anonymous: status LIVE only;
  *   - frontend, logged-in user: additionally the events they own;
  *   - frontend, logged-in backend user: like the backend rules below, so an editor
@@ -53,6 +54,7 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
         protected ConnectionPool $connectionPool,
         protected ExtensionConfiguration $extensionConfiguration,
         protected CalendarPermissionService $permissionService,
+        protected DataHandlerWriteScope $writeScope,
     ) {
     }
 
@@ -64,6 +66,10 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
     public function buildExpression(array $queriedTables, ExpressionBuilder $expressionBuilder): CompositeExpression
     {
         if (!in_array('tx_ximatypo3calendar_domain_model_event', $queriedTables, true)) {
+            return $expressionBuilder->and();
+        }
+
+        if ($this->writeScope->isActive()) {
             return $expressionBuilder->and();
         }
 
