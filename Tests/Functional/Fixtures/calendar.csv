@@ -16,4 +16,4 @@
 "tx_ximatypo3calendar_domain_model_entry",,,,,,,,,,,,
 ,"uid","pid","tstamp","record_type","event","calendar","title","start_date","end_date","location","canceled","hidden","deleted"
 ,1,2,1767100000,"event-appointment",1,1,"Live appointment",1767225600,1767229200,1,0,0,0
-,2,2,1767100000,"event-appointment",2,1,"Draft appointment",1767225600,1767229200,1,0,0,0
+,2,2,1767100000,"event-appointment",2,1,"Draft appointment",1767225600,1767229200,1,1,0,0

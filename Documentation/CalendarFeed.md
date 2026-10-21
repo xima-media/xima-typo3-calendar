@@ -1,7 +1,9 @@
 # Calendar Feed
 
-The backend Calendar module renders appointments with the
-[vkurko/calendar](https://github.com/vkurko/calendar) JS component, fed with JSON.
+The backend Calendar module renders appointments with
+[`@event-calendar/core` v5](https://github.com/vkurko/calendar), fed with JSON. The migration
+changed the frontend implementation and its CSS Grid/DOM structure, but not the feed contract
+described below.
 
 Two entry points produce that JSON, both through `Serializer\VkurkoCalendarSerializer`:
 

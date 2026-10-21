@@ -1,0 +1,71 @@
+.xima-calendar-event-tooltip {
+    position: fixed;
+    z-index: 2000;
+    min-inline-size: 12rem;
+    max-inline-size: min(24rem, calc(100vw - 1rem));
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--typo3-component-border-color, #777);
+    border-radius: var(--typo3-component-border-radius, 0.25rem);
+    background: var(--typo3-component-bg, #555);
+    color: var(--typo3-component-color, #fff);
+    box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 25%);
+    font-size: 0.875rem;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+    pointer-events: none;
+}
+
+.xima-calendar-event-tooltip__title {
+    margin-block-end: 0.65rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.xima-calendar-event-tooltip__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: start;
+    margin-block-start: 0.35rem;
+}
+
+.xima-calendar-event-tooltip__row--time {
+    justify-content: flex-start;
+    margin-block-start: 0;
+    padding-block-end: 0.65rem;
+    border-block-end: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+}
+
+.xima-calendar-event-tooltip__clock {
+    display: inline-flex;
+    inline-size: 1.15rem;
+    block-size: 1.15rem;
+    color: currentColor;
+}
+
+.xima-calendar-event-tooltip__row--time .xima-calendar-event-tooltip__value {
+    text-align: start;
+}
+
+.xima-calendar-event-tooltip__clock svg {
+    inline-size: 100%;
+    block-size: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+}
+
+.xima-calendar-event-tooltip__label {
+    flex: 0 0 auto;
+    opacity: 0.7;
+    white-space: nowrap;
+}
+
+.xima-calendar-event-tooltip__value {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    white-space: pre-line;
+    text-align: end;
+}

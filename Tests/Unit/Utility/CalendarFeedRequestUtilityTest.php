@@ -39,4 +39,20 @@ final class CalendarFeedRequestUtilityTest extends TestCase
     {
         self::assertSame([1, 2], CalendarFeedRequestUtility::getCalendarUids(['calendars' => ['1', '2']]));
     }
+
+    #[Test]
+    public function parsesGenericFilterValues(): void
+    {
+        $queryParams = [
+            'filters' => json_encode([
+                'categories' => [1, '2', '2'],
+                'statuses' => ['live', 'canceled'],
+            ], JSON_THROW_ON_ERROR),
+        ];
+
+        self::assertSame([
+            'categories' => [1, 2],
+            'statuses' => ['live', 'canceled'],
+        ], CalendarFeedRequestUtility::getTreeFilters($queryParams));
+    }
 }

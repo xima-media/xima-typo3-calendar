@@ -1,0 +1,8 @@
+"sys_category",,,,,,
+,"uid","pid","title","hidden","deleted"
+,1,2,"Parent category",0,0
+,2,2,"Child category",0,0
+
+"sys_category_record_mm",,,,,,
+,"uid_local","uid_foreign","tablenames","fieldname","sorting","sorting_foreign"
+,2,2,"tx_ximatypo3calendar_domain_model_event","categories",1,1

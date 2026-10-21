@@ -17,6 +17,7 @@ final class EntryRepositoryTest extends AbstractCalendarFunctionalTestCase
 
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/pages.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/calendar.csv');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/calendar-categories.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/categories.csv');
     }
 
@@ -29,6 +30,88 @@ final class EntryRepositoryTest extends AbstractCalendarFunctionalTestCase
         );
 
         self::assertContains(1, array_map('intval', array_column($rows, 'uid')));
+    }
+
+    #[Test]
+    public function backendCalendarEntriesCanBeFilteredByEventStatus(): void
+    {
+        $rows = $this->get(EntryRepository::class)->getBackendCalendarEntries(
+            1767225600,
+            1767229200,
+            [],
+            ['statuses' => [2]],
+        );
+
+        self::assertSame([1], array_map('intval', array_column($rows, 'uid')));
+    }
+
+    #[Test]
+    public function backendCalendarEntriesCanBeFilteredByCanceledStatus(): void
+    {
+        $rows = $this->get(EntryRepository::class)->getBackendCalendarEntries(
+            1767225600,
+            1767229200,
+            [],
+            ['statuses' => ['canceled']],
+        );
+
+        self::assertSame([2], array_map('intval', array_column($rows, 'uid')));
+    }
+
+    #[Test]
+    public function canceledStatusNarrowsSelectedEventStatuses(): void
+    {
+        $rows = $this->get(EntryRepository::class)->getBackendCalendarEntries(
+            1767225600,
+            1767229200,
+            [],
+            ['statuses' => [2, 'canceled']],
+        );
+
+        self::assertSame([], $rows);
+    }
+
+    #[Test]
+    public function backendCalendarEntriesCanBeFilteredByParentEventType(): void
+    {
+        $rows = $this->get(EntryRepository::class)->getBackendCalendarEntries(
+            1767225600,
+            1767229200,
+            [],
+            [
+                'filters' => [
+                    'recordTypes' => ['event'],
+                ],
+            ],
+        );
+
+        self::assertCount(2, $rows);
+
+        $rows = $this->get(EntryRepository::class)->getBackendCalendarEntries(
+            1767225600,
+            1767229200,
+            [],
+            [
+                'filters' => [
+                    'recordTypes' => ['event-appointment'],
+                ],
+            ],
+        );
+
+        self::assertSame([], $rows);
+    }
+
+    #[Test]
+    public function backendCalendarEntriesCanBeFilteredByCategory(): void
+    {
+        $rows = $this->get(EntryRepository::class)->getBackendCalendarEntries(
+            1767225600,
+            1767229200,
+            [],
+            ['categories' => [2]],
+        );
+
+        self::assertSame([2], array_map('intval', array_column($rows, 'uid')));
     }
 
     /**
@@ -49,6 +132,7 @@ final class EntryRepositoryTest extends AbstractCalendarFunctionalTestCase
         $rows = $this->get(EntryRepository::class)->getBackendCalendarEntries(
             1767227400,
             1767231000,
+            [],
             [],
             $languageId,
         );

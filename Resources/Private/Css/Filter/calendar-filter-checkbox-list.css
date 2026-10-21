@@ -1,0 +1,87 @@
+.xima-calendar-filter__checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+}
+
+.xima-calendar-filter__checkbox-list .form-check {
+    display: grid;
+    grid-template-columns: 1.5rem auto auto;
+    align-items: center;
+    column-gap: 0.25rem;
+    margin: 0;
+}
+
+.xima-calendar-filter__checkbox-list .form-check-input {
+    grid-column: 1;
+    justify-self: center;
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+}
+
+.xima-calendar-filter__checkbox-list--statuses .form-check {
+    grid-template-columns: 1.5rem minmax(0, 1fr) 2.25rem;
+}
+
+.xima-calendar-filter__checkbox-label {
+    grid-column: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.xima-calendar-filter__checkbox-label typo3-backend-icon {
+    display: inline-flex;
+    flex: 0 0 auto;
+}
+
+.xima-calendar-filter__checkbox-appearance {
+    grid-column: 3;
+    display: inline-block;
+    flex: 0 0 2.25rem;
+    width: 2.25rem;
+    height: 1rem;
+    border-radius: 0.2rem;
+    background-color: var(--typo3-component-bg);
+}
+
+.xima-calendar-filter__checkbox-appearance--hatched {
+    background:
+        repeating-linear-gradient(
+            135deg,
+            transparent 0,
+            transparent 4px,
+            color-mix(in srgb, var(--typo3-component-color) 28%, transparent) 4px,
+            color-mix(in srgb, var(--typo3-component-color) 28%, transparent) 5px
+        ),
+        repeating-linear-gradient(
+            45deg,
+            transparent 0,
+            transparent 4px,
+            color-mix(in srgb, var(--typo3-component-color) 28%, transparent) 4px,
+            color-mix(in srgb, var(--typo3-component-color) 28%, transparent) 5px
+        );
+}
+
+.xima-calendar-filter__checkbox-appearance--dashed {
+    border: 1px dashed var(--typo3-component-color);
+}
+
+.xima-calendar-filter__checkbox-appearance--outlined {
+    border: 1px solid var(--typo3-component-color);
+}
+
+.xima-calendar-filter__checkbox-appearance--empty {
+    visibility: hidden;
+}
+
+.xima-calendar-filter__checkbox-appearance--marker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    background: transparent;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}

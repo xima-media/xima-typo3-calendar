@@ -8,6 +8,11 @@ All notable changes to this extension are documented here. The format follows
 
 ### Added
 
+- **Event Calendar v5 migration.** The backend calendar now uses `@event-calendar/core` v5
+  with `createCalendar()` and the bundled `DayGrid`, `TimeGrid`, `List`, and `Interaction`
+  plugins. The frontend follows the v5 CSS Grid/DOM structure; custom integrations that relied
+  on the old v2 plugin packages or selectors such as `.ec-days` need to be reviewed. The JSON
+  feed contract remains unchanged.
 - **Dashboard preset.** A *Calendar* preset with all calendar widgets, selectable when adding
   a dashboard and assignable to new users via `options.dashboard.dashboardPresetsForNewUsers`.
 - **Calendar export.** Appointments and whole events can be taken into a visitor's own

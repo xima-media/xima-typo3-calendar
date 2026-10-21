@@ -11,6 +11,49 @@
 			<trans-unit id="mlang_tabs_tab" resname="mlang_tabs_tab">
 				<source>Calendar</source>
 			</trans-unit>
+			<trans-unit id="newEvent" resname="newEvent">
+				<source>New Event</source>
+			</trans-unit>
+			<trans-unit id="newEventAppointment" resname="newEventAppointment">
+				<source>New Event Appointment</source>
+			</trans-unit>
+			<trans-unit id="filter.search" resname="filter.search">
+				<source>Enter search term</source>
+			</trans-unit>
+			<trans-unit id="filter.type" resname="filter.type"><source>Type</source></trans-unit>
+			<trans-unit id="filter.categories" resname="filter.categories"><source>Categories</source></trans-unit>
+			<trans-unit id="filter.status" resname="filter.status"><source>Status</source></trans-unit>
+			<trans-unit id="filter.canceled.label" resname="filter.canceled.label"><source>Canceled</source></trans-unit>
+			<trans-unit id="filter.canceled.marker" resname="filter.canceled.marker"><source>[C]</source></trans-unit>
+			<trans-unit id="filter.loading" resname="filter.loading"><source>Loading filters …</source></trans-unit>
+			<trans-unit id="filter.error" resname="filter.error"><source>Filters could not be loaded.</source></trans-unit>
+			<trans-unit id="filter.hideSubcategories" resname="filter.hideSubcategories"><source>Hide subcategories</source></trans-unit>
+			<trans-unit id="filter.showSubcategories" resname="filter.showSubcategories"><source>Show subcategories</source></trans-unit>
+			<trans-unit id="filter.moreActions" resname="filter.moreActions"><source>More actions</source></trans-unit>
+			<trans-unit id="filter.selectAllChildren" resname="filter.selectAllChildren"><source>Select all nested ###name###</source></trans-unit>
+			<trans-unit id="filter.deselectAllChildren" resname="filter.deselectAllChildren"><source>Deselect all nested ###name###</source></trans-unit>
+			<trans-unit id="newEventType.title" resname="newEventType.title">
+				<source>What do you want to create?</source>
+			</trans-unit>
+			<trans-unit id="newEventType.event" resname="newEventType.event">
+				<source>Event</source>
+			</trans-unit>
+			<trans-unit id="newEventType.appointment" resname="newEventType.appointment">
+				<source>Event Appointment</source>
+			</trans-unit>
+			<trans-unit id="newEventType.recordType" resname="newEventType.recordType">
+				<source>Record type</source>
+			</trans-unit>
+			<trans-unit id="newEventType.calendar" resname="newEventType.calendar">
+				<source>Calendar</source>
+			</trans-unit>
+			<trans-unit id="newEventType.selectCalendar" resname="newEventType.selectCalendar">
+				<source>Select a calendar</source>
+			</trans-unit>
+			<trans-unit id="newEventType.start" resname="newEventType.start"><source>Start</source></trans-unit>
+			<trans-unit id="newEventType.end" resname="newEventType.end"><source>End</source></trans-unit>
+			<trans-unit id="newEventType.allDay" resname="newEventType.allDay"><source>All-day</source></trans-unit>
+			<trans-unit id="newEventType.create" resname="newEventType.create"><source>Create</source></trans-unit>
 		</body>
 	</file>
 </xliff>

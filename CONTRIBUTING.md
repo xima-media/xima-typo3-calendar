@@ -76,6 +76,11 @@ npm run watch   # sourcemaps, rebuild on change
 `Resources/Private/TypeScript/calendar.ts` → `Resources/Public/JavaScript/calendar.js` **and**
 `calendar.css` (the CSS is emitted because the entrypoint imports `@event-calendar/core/index.css`).
 
+The backend calendar uses Event Calendar v5. All view plugins are imported from
+`@event-calendar/core`; the v5 CSS Grid/DOM structure is used by the custom selection and
+calendar styling code. Changes to those selectors should be checked in month, week, list, and
+popup views.
+
 **Built assets are committed.** `.gitignore` excludes `public` but re-includes
 `!Resources/Public`, so run the build and commit its output with your change. There is no
 `package-lock.json` in the repo.

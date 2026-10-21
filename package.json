@@ -7,10 +7,7 @@
 		"watch": "node esbuild.config.mjs --watch"
 	},
 	"dependencies": {
-		"@event-calendar/core": "^2",
-		"@event-calendar/day-grid": "^2",
-		"@event-calendar/time-grid": "^2",
-		"@event-calendar/list": "^2"
+		"@event-calendar/core": "^5.10.0"
 	},
 	"devDependencies": {
 		"esbuild": "^0.25.0",

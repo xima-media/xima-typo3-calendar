@@ -3,14 +3,22 @@
 namespace Xima\XimaTypo3Calendar\Domain\Repository;
 
 use Doctrine\DBAL\Exception;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
+use Xima\XimaTypo3Calendar\Event\ApplyCalendarFilterEvent;
+use Xima\XimaTypo3Calendar\Event\BuildCalendarEntriesQueryEvent;
 
 class EntryRepository extends Repository
 {
     private const TABLE = 'tx_ximatypo3calendar_domain_model_entry';
+
+    public function __construct(
+        private readonly ConnectionPool $connectionPool,
+        protected EventDispatcherInterface $eventDispatcher,
+    ) {
+    }
 
     /**
      * Returns the last-write timestamps of the given entries, keyed by uid.
@@ -28,7 +36,7 @@ class EntryRepository extends Repository
             return [];
         }
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(self::TABLE);
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE);
         $queryBuilder->getRestrictions()->removeAll();
 
         $rows = $queryBuilder
@@ -51,13 +59,14 @@ class EntryRepository extends Repository
         return $timestamps;
     }
 
-    /**
-     * @param int[] $calendarUids
-     * @throws Exception
-     */
-    public function getBackendCalendarEntries(int $startTime, int $endTime, array $calendarUids = [], int $languageId = 0): array
-    {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(self::TABLE);
+    public function getBackendCalendarEntries(
+        int $startTime,
+        int $endTime,
+        array $calendarUids = [],
+        array $filters = [],
+        int $languageId = 0,
+    ): array {
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE);
         $entryEndDateExpression = 'COALESCE(NULLIF('
             . $queryBuilder->quoteIdentifier('e.end_date')
             . ', 0), '
@@ -73,7 +82,6 @@ class EntryRepository extends Repository
                 'e.end_date',
                 'e.all_day',
                 'e.calendar',
-                'e.record_type',
                 'e.description',
                 'e.canceled',
                 'e.speakers',
@@ -83,30 +91,8 @@ class EntryRepository extends Repository
                 'v.uid as event_uid',
                 'v.description as event_description',
                 'v.language as event_language',
-                'v.status as event_status',
                 'v.owner as event_owner',
                 'loc.name as location_name',
-            )
-            ->addSelectLiteral(
-                '(SELECT COALESCE(l10n.title, cat.title) FROM sys_category cat'
-                . ' JOIN sys_category_record_mm mm ON mm.uid_local = cat.uid'
-                . ' LEFT JOIN sys_category l10n ON l10n.l10n_parent = cat.uid'
-                . ' AND l10n.sys_language_uid = ' . $languageId
-                . ' AND l10n.deleted = 0 AND l10n.hidden = 0'
-                . ' WHERE mm.uid_foreign = v.uid'
-                . ' AND mm.tablenames = ' . $queryBuilder->quote('tx_ximatypo3calendar_domain_model_event')
-                . ' AND mm.fieldname = ' . $queryBuilder->quote('categories')
-                . ' AND cat.deleted = 0'
-                . ' ORDER BY mm.sorting LIMIT 1) as event_category_title'
-            )
-            ->addSelectLiteral(
-                '(SELECT cat.uid FROM sys_category cat'
-                . ' JOIN sys_category_record_mm mm ON mm.uid_local = cat.uid'
-                . ' WHERE mm.uid_foreign = v.uid'
-                . ' AND mm.tablenames = ' . $queryBuilder->quote('tx_ximatypo3calendar_domain_model_event')
-                . ' AND mm.fieldname = ' . $queryBuilder->quote('categories')
-                . ' AND cat.deleted = 0'
-                . ' ORDER BY mm.sorting LIMIT 1) as event_category_id'
             )
             ->from(self::TABLE, 'e')
             ->leftJoin('e', 'tx_ximatypo3calendar_domain_model_calendar', 'c', 'e.calendar = c.uid')
@@ -120,9 +106,30 @@ class EntryRepository extends Repository
 
         if ($calendarUids !== []) {
             $queryBuilder->andWhere(
-                $queryBuilder->expr()->in('e.calendar', $calendarUids)
+                $queryBuilder->expr()->in(
+                    'e.calendar',
+                    $queryBuilder->createNamedParameter($calendarUids, Connection::PARAM_INT_ARRAY),
+                )
             );
         }
+
+        $buildEvent = new BuildCalendarEntriesQueryEvent(
+            queryBuilder: $queryBuilder,
+            languageId: $languageId,
+        );
+
+        $this->eventDispatcher->dispatch($buildEvent);
+
+        $queryBuilder = $buildEvent->getQueryBuilder();
+
+        $event = new ApplyCalendarFilterEvent(
+            queryBuilder: $queryBuilder,
+            filters: $filters,
+        );
+
+        $this->eventDispatcher->dispatch($event);
+
+        $queryBuilder = $event->getQueryBuilder();
 
         return $queryBuilder->executeQuery()->fetchAllAssociative();
     }

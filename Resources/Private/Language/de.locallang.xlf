@@ -218,6 +218,18 @@
 				<source>Add to Outlook 365</source>
 				<target>Zu Outlook 365 hinzufügen</target>
 			</trans-unit>
+			<trans-unit id="filter.categories.title" resname="filter.categories">
+				<source />
+				<target>Kategorien</target>
+			</trans-unit>
+			<trans-unit id="filter.status.title" resname="filter.status">
+				<source />
+				<target>Status</target>
+			</trans-unit>
+		   	<trans-unit id="filter.type.title" resname="filter.type">
+				<source />
+				<target>Typ</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

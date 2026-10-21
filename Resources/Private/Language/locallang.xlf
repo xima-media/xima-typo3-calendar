@@ -164,6 +164,15 @@
 			<trans-unit id="export.outlook.business">
 				<source>Add to Outlook 365</source>
 			</trans-unit>
+			<trans-unit id="filter.categories.title" resname="filter.categories">
+				<source>Categories</source>
+			</trans-unit>
+			<trans-unit id="filter.status.title" resname="filter.status">
+				<source>Status</source>
+			</trans-unit>
+			<trans-unit id="filter.type.title" resname="filter.type">
+				<source>Type</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

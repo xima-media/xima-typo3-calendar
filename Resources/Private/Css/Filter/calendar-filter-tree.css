@@ -1,0 +1,172 @@
+.xima-calendar-filter__tree {
+    --xima-tree-toggle-size: 1.5rem;
+    --xima-tree-checkbox-size: 1rem;
+    --xima-tree-gap: 0.25rem;
+    --xima-tree-control-center-offset: calc(
+        (var(--xima-tree-toggle-size) - var(--xima-tree-checkbox-size)) / 2
+    );
+    --xima-tree-item-color: var(--typo3-component-color);
+
+    margin-top: 0.5rem;
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-item {
+    display: block;
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-node {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--xima-tree-gap);
+    min-height: 1.75rem;
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-node > .form-check {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-actions {
+    position: relative;
+    flex: 0 0 auto;
+    margin-inline-start: auto;
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-actions-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: var(--typo3-component-border-radius);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    gap: 0.125rem;
+    transition: background-color 120ms ease-in-out;
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-actions-toggle span {
+    width: 0.2rem;
+    height: 0.2rem;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-actions-toggle:hover {
+    background: color-mix(
+        in srgb,
+        var(--typo3-component-color) 10%,
+        transparent
+    );
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-actions-toggle:focus-visible {
+    outline: 2px solid var(--typo3-component-color);
+    outline-offset: 1px;
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-actions-menu {
+    position: absolute;
+    z-index: 10;
+    inset-block-start: calc(100% + 0.25rem);
+    inset-inline-end: 0;
+    display: flex;
+    flex-direction: column;
+    min-width: max-content;
+    padding: 0.25rem;
+    border: 1px solid var(--typo3-component-border-color);
+    border-radius: var(--typo3-component-border-radius);
+    background: var(--typo3-component-bg);
+    box-shadow: var(--typo3-component-box-shadow);
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-actions-menu button {
+    padding: 0.35rem 0.5rem;
+    border: 0;
+    border-radius: var(--typo3-component-border-radius);
+    background: transparent;
+    color: inherit;
+    text-align: start;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-actions-menu button:hover,
+.xima-calendar-filter__tree .xima-calendar-filter__tree-actions-menu button:focus-visible {
+    background: color-mix(
+        in srgb,
+        var(--typo3-component-color) 10%,
+        transparent
+    );
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-toggle {
+    display: inline-flex;
+    flex: 0 0 var(--xima-tree-toggle-size);
+    align-items: center;
+    justify-content: center;
+    width: var(--xima-tree-toggle-size);
+    height: var(--xima-tree-toggle-size);
+    padding: 0;
+    border: 0;
+    border-radius: var(--typo3-component-border-radius);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-toggle:hover {
+    background: color-mix(
+        in srgb,
+        var(--typo3-component-color) 10%,
+        transparent
+    );
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-toggle:focus-visible {
+    outline: 2px solid var(--typo3-component-color);
+    outline-offset: 1px;
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-toggle--empty {
+    visibility: hidden;
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-toggle typo3-backend-icon {
+    display: inline-flex;
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-children {
+    margin-inline-start: calc(
+        var(--xima-tree-toggle-size) + var(--xima-tree-gap) -
+        var(--xima-tree-control-center-offset)
+    );
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-checkbox {
+    -webkit-appearance: none;
+    appearance: none;
+    width: var(--xima-tree-checkbox-size);
+    height: var(--xima-tree-checkbox-size);
+    flex: 0 0 var(--xima-tree-checkbox-size);
+    margin: 0;
+    border: 2px solid var(--xima-tree-item-color);
+    border-radius: 50%;
+    background: var(--typo3-component-bg);
+    background-image: none !important;
+    cursor: pointer;
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-checkbox:checked {
+    background: var(--xima-tree-item-color);
+    box-shadow: inset 0 0 0 2px var(--typo3-component-bg);
+}
+
+.xima-calendar-filter__tree .xima-calendar-filter__tree-checkbox:focus-visible {
+    outline: 2px solid var(--typo3-component-color);
+    outline-offset: 1px;
+}

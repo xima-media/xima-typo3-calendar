@@ -16,3 +16,80 @@ TCEMAIN.preview {
     }
   }
 }
+
+mod.tx_ximatypo3calendar {
+    # --------------------------------------------------------------------------
+    # Filter and tooltip order
+    # --------------------------------------------------------------------------
+    # Comma-separated filter identifiers in the order shown in the filter panel.
+    # Allowed values: any registered filter identifier, for example:
+    # recordTypes, categories, statuses
+    filterOrder = recordTypes, categories, statuses
+
+    # Comma-separated property identifiers in the order shown in event tooltips.
+    # Allowed values: any available tooltip property, for example:
+    # recordTypes, categories, statuses, location
+    tooltipOrder = recordTypes, categories, statuses, location
+
+
+    # --------------------------------------------------------------------------
+    # Week view grid
+    # --------------------------------------------------------------------------
+    weekViewGrid {
+        # Minutes per time slot. Allowed values: 15, 30 or 60.
+        timeSlotMinutes = 15
+
+        # Initial scroll position. Allowed formats: HH:MM or HH:MM:SS.
+        scrollStartTime = 07:00
+    }
+
+
+    # --------------------------------------------------------------------------
+    # Event appearance
+    # --------------------------------------------------------------------------
+    # Defines which registered filters provide the event appearance data.
+    eventAppearance {
+        # Filter providing the event icon.
+        iconSource = recordTypes
+
+        # Filter providing the event appearance class, for example hatched or dashed.
+        appearanceSource = statuses
+
+        # Tree filter providing the event color.
+        colorSource = categories
+    }
+
+    # Optional colors for filter items.
+    # The outer key is a filter identifier; the inner key is the numeric item value.
+    # Colors must be six-digit hexadecimal values in the format #RRGGBB.
+    filterColors {
+        categories {
+            # 1 = #1976D2
+        }
+    }
+
+
+    # --------------------------------------------------------------------------
+    # New event creation
+    # --------------------------------------------------------------------------
+    newEvent {
+        # Allowed values: 0 (disabled) or 1 (enabled).
+        interaction {
+            enableDrag = 1
+            enableClick = 1
+        }
+
+        defaults {
+            # Time format: HH:MM.
+            startTime = 10:00
+            endTime = 15:30
+
+            # Allowed values: 0 (timed event) or 1 (all-day event).
+            allDay = 0
+
+            # Record type preselected in the modal when creating a new event.
+            # Accepts a record-type identifier as a string or number.
+            recordType = event
+        }
+    }
+}

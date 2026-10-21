@@ -13,5 +13,6 @@ config/system
 .tscache
 package-lock.json
 Resources/Public/JavaScript/*.js.map
+Resources/Public/Css/*.css.map
 coverage/
 coverage.*.xml

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\Serializer;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Xima\XimaTypo3Calendar\Event\CalendarEntrySerializationEvent;
 use Xima\XimaTypo3Calendar\Utility\AppointmentDateUtility;
 
 /**
@@ -25,26 +27,27 @@ class VkurkoCalendarSerializer
      */
     private static array $siteCache = [];
 
-    public static function serializeBackendEntries(array $backendEntries, int $languageId = 0): array
-    {
+    public static function serializeBackendEntries(
+        array $backendEntries,
+        int $languageId = 0,
+        ?EventDispatcherInterface $eventDispatcher = null,
+    ): array {
         // The event contract carries no offset, so the consumer reads the string as local
         // time. '@<timestamp>' yields a UTC DateTime, which would shift every time by the
         // installation's offset — convert before formatting.
         $timeZone = new \DateTimeZone(date_default_timezone_get());
 
-        $events = array_map(function (array $row) use ($timeZone, $languageId): array {
-            $start = ($row['start_date'] && $row['start_date'] > 0)
-                ? (new \DateTime('@' . $row['start_date']))->setTimezone($timeZone)->format('Y-m-d\TH:i:s')
-                : null;
-            $end = ($row['end_date'] && $row['end_date'] > 0)
-                ? (new \DateTime('@' . $row['end_date']))->setTimezone($timeZone)->format('Y-m-d\TH:i:s')
-                : null;
+        $events = array_map(function (array $row) use ($timeZone, $languageId, $eventDispatcher): array {
+            $startDate = AppointmentDateUtility::getStartFromRow($row);
+            $endDate = AppointmentDateUtility::getEndFromRow($row);
+            $start = $startDate?->setTimezone($timeZone)->format('Y-m-d\TH:i:s');
+            $end = $endDate?->setTimezone($timeZone)->format('Y-m-d\TH:i:s');
 
-            // If end date is missing, assume the default duration, even if it's an all day event (vkurko/calendar needs it!)
+            // Event Calendar needs an end date for timed events without one.
             if ($end === null && $start) {
-                $end = new \DateTime($start);
-                $end->modify('+' . AppointmentDateUtility::DEFAULT_DURATION_MINUTES . ' minutes');
-                $end = $end->format('Y-m-d\TH:i:s');
+                $endDate = new \DateTime($start);
+                $endDate->modify('+' . AppointmentDateUtility::DEFAULT_DURATION_MINUTES . ' minutes');
+                $end = $endDate->format('Y-m-d\TH:i:s');
             }
 
             $title = $row['title'] ?? null;
@@ -54,7 +57,7 @@ class VkurkoCalendarSerializer
                 $title = $row['event_title'];
             }
 
-            return [
+            $eventData = [
                 'id' => 'entry-' . $row['uid'],
                 'title' => $title,
                 'start' => $start,
@@ -64,13 +67,16 @@ class VkurkoCalendarSerializer
                     'url' => self::buildEventSingleUrl($row, $languageId),
                     'calendarUid' => (int)$row['calendar'],
                     'calendarTitle' => $row['calendar_title'] ?? '',
-                    'recordType' => $row['record_type'] ?? '',
+                    'recordType' => is_string($row['record_type'] ?? null) ? $row['record_type'] : '',
+                    'eventCategoryId' => self::toNullableInt($row['event_category_id'] ?? null),
+                    'eventCategoryTitle' => $row['event_category_title'] ?? null,
+                    'eventStatus' => self::toNullableInt($row['event_status'] ?? null),
+                    'filterValues' => [
+                        'categories' => self::toNullableInt($row['event_category_id'] ?? null),
+                    ],
                     'eventUid' => $row['event_uid'] ?? null,
                     'eventTitle' => $row['event_title'] ?? null,
                     'eventDescription' => $row['event_description'] ?? null,
-                    'eventCategoryTitle' => $row['event_category_title'] ?? null,
-                    'eventCategoryId' => isset($row['event_category_id']) ? (int)$row['event_category_id'] : null,
-                    'eventStatus' => isset($row['event_status']) ? (int)$row['event_status'] : null,
                     'eventLanguage' => $row['event_language'] ?? null,
                     'eventOwner' => $row['event_owner'] ?? null,
                     'appointmentDescription' => $row['description'] ?? null,
@@ -79,9 +85,23 @@ class VkurkoCalendarSerializer
                     'appointmentSpeakers' => $row['speakers'] ?? null,
                 ],
             ];
+
+            $serializationEvent = new CalendarEntrySerializationEvent(
+                $eventData,
+                $row,
+            );
+
+            $eventDispatcher?->dispatch($serializationEvent);
+
+            return $serializationEvent->getEventData();
         }, $backendEntries);
 
         return $events;
+    }
+
+    private static function toNullableInt(mixed $value): ?int
+    {
+        return is_int($value) || is_numeric($value) ? (int)$value : null;
     }
 
     /**

@@ -1,0 +1,105 @@
+@import "./calendar-filter-tree.css";
+@import "./calendar-filter-checkbox-list.css";
+@import "./calendar-filter-mini-calendar.css";
+
+xima-calendar-filter-element {
+display: flex;
+flex-direction: column;
+height: 100%;
+min-height: 0;
+}
+
+.xima-calendar-filter {
+display: flex;
+flex-direction: column;
+height: 100%;
+min-height: 0;
+}
+
+.xima-calendar-filter__body {
+flex: 1 1 auto;
+min-height: 0;
+overflow-y: auto;
+padding: 0.75rem;
+}
+.xima-calendar-filter__section {
+--xima-filter-section-indent: 1.4rem;
+padding: 0.75rem 0;
+border-bottom: 1px solid var(--typo3-component-border-color);
+}
+
+.xima-calendar-filter__section summary {
+display: flex;
+width: 100%;
+align-items: center;
+gap: 0.4rem;
+cursor: pointer;
+list-style: none;
+}
+
+.xima-calendar-filter__section summary::-webkit-details-marker,
+.xima-calendar-filter__section summary::marker {
+display: none;
+}
+
+.xima-calendar-filter__section-toggle {
+position: relative;
+display: inline-block;
+width: 1rem;
+height: 1rem;
+flex: 0 0 1rem;
+}
+
+.xima-calendar-filter__section-toggle::before,
+.xima-calendar-filter__section-toggle::after {
+position: absolute;
+inset: 50% auto auto 50%;
+width: 0.75rem;
+height: 1px;
+background: currentColor;
+content: '';
+transition: transform 140ms ease-in-out;
+}
+
+.xima-calendar-filter__section-toggle::before {
+transform: translate(-50%, -50%);
+}
+
+.xima-calendar-filter__section-toggle::after {
+transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.xima-calendar-filter__section details[open] .xima-calendar-filter__section-toggle::after {
+transform: translate(-50%, -50%) rotate(0deg);
+}
+
+.xima-calendar-filter__section summary:focus-visible {
+outline: 2px solid var(--typo3-component-color);
+outline-offset: 2px;
+}
+
+.xima-calendar-filter__section h3 {
+flex: 1 1 auto;
+margin: 0 !important;
+line-height: 1.2;
+font-size: 0.9rem;
+font-weight: 600;
+}
+
+.xima-calendar-filter__section details > xima-calendar-filter-tree,
+.xima-calendar-filter__section details > xima-calendar-filter-checkbox-list {
+display: block;
+box-sizing: border-box;
+padding-inline-start: var(--xima-filter-section-indent);
+}
+
+.xima-calendar-filter__type-list {
+display: flex;
+flex-direction: column;
+gap: 0.25rem;
+margin-top: 0.5rem;
+}
+
+.xima-calendar-filter .form-check {
+margin: 0;
+}

@@ -1,0 +1,123 @@
+#xima-calendar-mount {
+    .ec-event {
+        --xima-event-color: var(--ec-event-bg-color);
+        --xima-event-text-color: var(--ec-event-text-color);
+        font-size: .8rem;
+    }
+
+    .ec-list .ec-event-title {
+        font-size: .9rem;
+    }
+
+    .ec-day-grid .ec-event:not(.ec-preview):not(.ec-pointer):not(.xima-calendar-list__multi-day-event),
+    .ec-time-grid .ec-event:not(.ec-preview):not(.ec-pointer):not(.xima-calendar-list__multi-day-event) {
+        cursor: pointer;
+        transform-origin: center;
+        clip-path: inset(0);
+        transition: scale 120ms ease, box-shadow 120ms ease, clip-path 120ms ease;
+    }
+
+    .ec-day-grid .ec-event:not(.ec-preview):not(.ec-pointer):not(.xima-calendar-list__multi-day-event):hover,
+    .ec-day-grid .ec-event:not(.ec-preview):not(.ec-pointer):not(.xima-calendar-list__multi-day-event):focus-visible,
+    .ec-time-grid .ec-event:not(.ec-preview):not(.ec-pointer):not(.xima-calendar-list__multi-day-event):hover,
+    .ec-time-grid .ec-event:not(.ec-preview):not(.ec-pointer):not(.xima-calendar-list__multi-day-event):focus-visible {
+        z-index: 2;
+        scale: 1 .95;
+        inline-size: calc(100% - var(--ec-event-col-gap) - 6px);
+        margin-inline: calc(var(--ec-event-col-gap) / 2 + 3px) !important;
+    }
+
+    .ec-time-grid .ec-event:not(.ec-preview):not(.ec-pointer):not(.xima-calendar-list__multi-day-event):hover,
+    .ec-time-grid .ec-event:not(.ec-preview):not(.ec-pointer):not(.xima-calendar-list__multi-day-event):focus-visible {
+        scale: 1;
+        inline-size: calc(100% - var(--ec-event-col-gap));
+        margin-inline-start: 0 !important;
+        margin-inline-end: var(--ec-event-col-gap) !important;
+    }
+
+    .ec-time-grid .ec-body .ec-event:not(.ec-preview):not(.ec-pointer):not(.xima-calendar-list__multi-day-event):hover,
+    .ec-time-grid .ec-body .ec-event:not(.ec-preview):not(.ec-pointer):not(.xima-calendar-list__multi-day-event):focus-visible {
+        clip-path: inset(3px 0);
+    }
+
+    .ec-event-body .xima-calendar-event__icon {
+        flex: 0 0 auto;
+        align-self: center;
+        inline-size: 1em;
+        block-size: 1em;
+        filter: drop-shadow(0 1px 1px rgb(0 0 0 / 35%));
+    }
+
+    .ec-time-grid .ec-event-body .xima-calendar-event__icon {
+        align-self: flex-start;
+    }
+
+    .ec-event.xima-calendar-event--hatched {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ec-event.xima-calendar-event--hatched::after {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        content: '';
+    }
+
+    .ec-event.xima-calendar-event--hatched::after {
+        background-image:
+            repeating-linear-gradient(
+                135deg,
+                transparent 0,
+                transparent 7px,
+                rgba(255, 255, 255, 0.2) 7px,
+                rgba(255, 255, 255, 0.2) 8px
+            ),
+            repeating-linear-gradient(
+                45deg,
+                transparent 0,
+                transparent 7px,
+                rgba(255, 255, 255, 0.2) 7px,
+                rgba(255, 255, 255, 0.2) 8px
+            );
+    }
+
+    .ec-event.xima-calendar-event--color-coded {
+        background-color: var(--xima-event-color) !important;
+        color: var(--xima-event-text-color) !important;
+    }
+
+    .ec-event.xima-calendar-event--hatched {
+        opacity: 0.8;
+        border: 2px solid transparent;
+        background-color: color-mix(in srgb, var(--xima-event-color) 80%, transparent) !important;
+        color: var(--typo3-component-color) !important;
+    }
+
+    .ec-event.xima-calendar-event--default {
+        border: 2px solid var(--xima-event-color, currentColor);
+    }
+
+    .ec-event.xima-calendar-event--dashed {
+        background-color: color-mix(in srgb, var(--xima-event-color) 40%, transparent) !important;
+        color: var(--typo3-component-color) !important;
+        border: 2px dashed light-dark(
+            color-mix(in srgb, var(--xima-event-color, currentColor) 70%, #000 30%),
+            color-mix(in srgb, var(--xima-event-color, currentColor) 70%, #fff 30%)
+        );
+    }
+
+    .ec-event.xima-calendar-event--outlined {
+        background-color: color-mix(in srgb, var(--xima-event-color) 30%, transparent) !important;
+        border: 2px solid light-dark(
+            color-mix(in srgb, var(--xima-event-color, currentColor) 70%, #000 30%),
+            color-mix(in srgb, var(--xima-event-color, currentColor) 70%, #fff 30%)
+        );
+    }
+
+    .ec-event.xima-calendar-event--canceled {
+        opacity: 0.3;
+    }
+}

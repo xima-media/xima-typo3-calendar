@@ -1,0 +1,158 @@
+@import '@event-calendar/core/index.css';
+@import '../../Public/Css/calendar-base.css';
+@import './calendar-event-appointment.css';
+@import './calendar-event-tooltip.css';
+@import './calendar-list.css';
+
+#xima-calendar-mount {
+    .ec-time-grid {
+        --ec-event-col-gap: 1px;
+    }
+
+    .ec-day-grid {
+        .ec-events {
+            transform: translateY(4px);
+        }
+    }
+
+    .ec-day-grid,
+    .ec-time-grid {
+        .ec-event {
+            margin-inline: calc(var(--ec-event-col-gap) / 2);
+            inline-size: calc(100% - var(--ec-event-col-gap));
+            box-sizing: border-box;
+            box-shadow: none !important;
+        }
+
+        .ec-event-body {
+            position: relative;
+            z-index: 1;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: start;
+            gap: 0.35rem;
+            min-width: 0;
+        }
+
+        .ec-event-time,
+        .ec-event-title {
+            font-family: inherit;
+            font-size: inherit;
+            line-height: inherit;
+        }
+
+        .ec-event-time {
+            flex: 0 0 auto;
+            margin: 0;
+        }
+
+        .ec-event-title {
+            min-width: 0;
+        }
+
+        .ec-event-title {
+            position: static;
+            inset-inline-start: auto;
+            text-align: start;
+        }
+    }
+
+}
+
+#xima-calendar-mount .ec-time-grid .ec-event {
+    margin-inline-start: 0;
+    margin-inline-end: var(--ec-event-col-gap);
+}
+
+#xima-calendar-mount .ec-time-grid .ec-all-day .ec-event {
+    margin-inline: calc(var(--ec-event-col-gap) / 2);
+}
+
+#xima-calendar-mount .ec-popup .ec-event {
+    margin-inline-start: 0;
+    inline-size: 100%;
+}
+
+#xima-calendar-mount .ec-time-grid .ec-event-time {
+    display: none;
+}
+
+#xima-calendar-mount .ec-time-grid .ec-event-body {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    align-self: flex-start;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+    padding: 0.15rem 0.35rem;
+}
+
+#xima-calendar-mount .ec-time-grid .ec-event-title {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#xima-calendar-mount .ec-time-grid .ec-all-day .ec-event-body {
+    justify-content: flex-start;
+}
+
+#xima-calendar-mount .ec-time-grid .ec-all-day .ec-event-title {
+    position: static;
+    inset-inline-start: auto;
+}
+
+#xima-calendar-mount .ec-time-grid .ec-all-day .ec-events {
+    padding-block-start: 3px;
+}
+
+#xima-calendar-mount .ec-day-grid .ec-day-foot a {
+    display: block;
+    inline-size: 100%;
+    box-sizing: border-box;
+    padding: 0.15rem 0.4rem;
+    border-radius: var(--typo3-component-border-radius, 0.25rem);
+    outline: 1px solid transparent;
+    outline-offset: -1px;
+    text-align: start;
+    transform: translateY(6px);
+    transition: background-color 120ms ease, outline-color 120ms ease;
+}
+
+#xima-calendar-mount .ec-day-grid .ec-day-foot a:hover,
+#xima-calendar-mount .ec-day-grid .ec-day-foot a:focus-visible {
+    outline-color: var(--typo3-component-hover-border-color, currentColor);
+    background-color: color-mix(
+        in srgb,
+        var(--typo3-component-bg, transparent),
+        var(--typo3-component-color, currentColor) 10%
+    );
+}
+
+#xima-calendar-mount .ec-day-grid .ec-event-body,
+#xima-calendar-mount .ec-time-grid .ec-event-body {
+    justify-content: flex-start !important;
+    text-align: left !important;
+}
+
+#xima-calendar-mount .ec-day-grid .ec-event-title,
+#xima-calendar-mount .ec-time-grid .ec-event-title {
+    position: static !important;
+    inset-inline-start: auto !important;
+    text-align: left !important;
+}
+
+@container calendar-content (max-height: 800px) {
+    #xima-calendar-mount {
+        .ec-day-grid .ec-event .ec-event-body,
+        .ec-time-grid .ec-event {
+            font-size: .6rem;
+        }
+
+        .ec-day-grid .ec-event-time {
+            display: none;
+        }
+    }
+}
