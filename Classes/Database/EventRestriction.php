@@ -20,6 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
+use Xima\XimaTypo3Calendar\Service\CalendarVisibilityService;
 
 /**
  * Enforced query restriction for the event table.
@@ -33,8 +34,10 @@ use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
  *   - while DataHandler processes a write: everything (see DataHandlerWriteScope);
  *   - frontend, anonymous: status LIVE only;
  *   - frontend, logged-in user: additionally the events they own;
- *   - frontend, logged-in backend user: like the backend rules below, so an editor
- *     previewing a draft event on the website is not answered with a 404;
+ *   - frontend API collections: status LIVE only, unless the site explicitly marks
+ *     the API resource as internal;
+ *   - frontend API items and regular frontend pages: backend users may preview their
+ *     permitted non-live events;
  *   - backend with the view_all_events permission (or admin): everything;
  *   - backend without it: LIVE events plus the events they own via owner_be_user.
  *
@@ -54,6 +57,7 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
         protected ConnectionPool $connectionPool,
         protected ExtensionConfiguration $extensionConfiguration,
         protected CalendarPermissionService $permissionService,
+        protected CalendarVisibilityService $visibilityService,
         protected DataHandlerWriteScope $writeScope,
     ) {
     }
@@ -88,7 +92,12 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
 
         if ($applicationType->isFrontend()) {
             $backendUser = $this->getBackendUserAuthentication($request);
-            if ($backendUser instanceof BackendUserAuthentication
+            if ($this->visibilityService->isInternalApiRequest($request)) {
+                return $expressionBuilder->and();
+            }
+            $allowsPreview = $this->visibilityService->allowsPreview($request);
+            if ($allowsPreview
+                && $backendUser instanceof BackendUserAuthentication
                 && $this->permissionService->canViewAllEvents($backendUser)
             ) {
                 return $expressionBuilder->and();
@@ -101,15 +110,15 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             $orConditions = [
                 $expressionBuilder->eq($eventAlias . '.status', $qb->quote(EventStatus::LIVE->value)),
             ];
-            if ($user && $user->getUserId()) {
+            if ($allowsPreview && $user && $user->getUserId()) {
                 $orConditions[] = $expressionBuilder->eq($eventAlias . '.owner', $user->getUserId());
             }
-            if ($backendUser instanceof BackendUserAuthentication) {
+            if ($allowsPreview && $backendUser instanceof BackendUserAuthentication) {
                 $orConditions[] = $expressionBuilder->eq($eventAlias . '.owner_be_user', (int)$backendUser->getUserId());
             }
 
             $unrestrictedRecordTypes = $this->getUnrestrictedRecordTypes();
-            if ($unrestrictedRecordTypes !== []) {
+            if (!$this->visibilityService->isPublicApiCollection($request) && $unrestrictedRecordTypes !== []) {
                 $orConditions[] = $expressionBuilder->in(
                     $eventAlias . '.record_type',
                     array_map(static fn (string $type): string => $qb->quote($type), $unrestrictedRecordTypes)

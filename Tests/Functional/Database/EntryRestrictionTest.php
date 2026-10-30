@@ -18,6 +18,7 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use Xima\XimaTypo3Calendar\Database\DataHandlerWriteScope;
 use Xima\XimaTypo3Calendar\Database\EntryRestriction;
 use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
+use Xima\XimaTypo3Calendar\Service\CalendarVisibilityService;
 use Xima\XimaTypo3Calendar\Tests\Functional\AbstractCalendarFunctionalTestCase;
 
 /**
@@ -51,6 +52,7 @@ final class EntryRestrictionTest extends AbstractCalendarFunctionalTestCase
             $connectionPool,
             $this->get(ExtensionConfiguration::class),
             new CalendarPermissionService(),
+            new CalendarVisibilityService(),
             new DataHandlerWriteScope(),
         );
         $this->expressionBuilder = $connectionPool
@@ -105,6 +107,7 @@ final class EntryRestrictionTest extends AbstractCalendarFunctionalTestCase
             $this->get(ConnectionPool::class),
             $this->get(ExtensionConfiguration::class),
             new CalendarPermissionService(),
+            new CalendarVisibilityService(),
             $writeScope,
         );
 
@@ -298,6 +301,34 @@ final class EntryRestrictionTest extends AbstractCalendarFunctionalTestCase
     }
 
     #[Test]
+    public function aPublicApiCollectionNeverExposesAppointmentsOfNonLiveEventsThroughBackendOwnership(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
+            ->update(self::TABLE_EVENT, ['owner_be_user' => 16], ['uid' => 2]);
+        $this->givenFrontendRequest(null, $this->backendUser(16, canViewAllEvents: false));
+        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute(
+            CalendarVisibilityService::REQUEST_ATTRIBUTE,
+            ['scope' => CalendarVisibilityService::SCOPE_PUBLIC, 'resource' => 'public-appointments', 'item' => false],
+        );
+
+        self::assertSame([1], $this->fetchVisibleEntryUids());
+    }
+
+    #[Test]
+    public function anInternalApiCollectionExposesAppointmentsOfRejectedEvents(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
+            ->update(self::TABLE_EVENT, ['status' => 3], ['uid' => 2]);
+        $this->givenFrontendRequest();
+        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute(
+            CalendarVisibilityService::REQUEST_ATTRIBUTE,
+            ['scope' => CalendarVisibilityService::SCOPE_INTERNAL, 'resource' => 'appointments', 'item' => false],
+        );
+
+        self::assertSame([1, 2], $this->fetchVisibleEntryUids());
+    }
+
+    #[Test]
     public function aBackendUserWithoutThatPermissionSeesEntriesOfTheirOwnEventsInTheFrontend(): void
     {
         $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
@@ -458,6 +489,7 @@ final class EntryRestrictionTest extends AbstractCalendarFunctionalTestCase
             $this->get(ConnectionPool::class),
             $extensionConfiguration,
             new CalendarPermissionService(),
+            new CalendarVisibilityService(),
             new DataHandlerWriteScope(),
         );
     }

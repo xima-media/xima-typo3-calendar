@@ -11,3 +11,10 @@ settings:
     category: XimaTypo3Calendar
     type: page
     default: 0
+
+  xima_typo3_calendar.internalApiResources:
+    label: 'Internal calendar API resources'
+    description: 'Comma-separated API resources that may expose all calendar event statuses in the frontend.'
+    category: XimaTypo3Calendar
+    type: string
+    default: ''

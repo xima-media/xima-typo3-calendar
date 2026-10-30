@@ -57,13 +57,31 @@ appended to **every** query against
 | CLI | Everything — never restricted. |
 | Frontend, anonymous | Events with status `LIVE`, and their appointments. |
 | Frontend, logged-in FE user | Additionally the events they **own**, and those appointments. |
-| Frontend, logged-in backend user | The backend rules below — an editor previewing a draft event on the website gets the page, not a 404. |
+| Frontend, regular page or API item | Backend users may preview permitted non-live events. |
+| Frontend, public API collection | Events with status `LIVE` only; backend ownership does not widen the collection. |
+| Frontend, configured internal API resource | Events and appointments of all event statuses. |
 | Backend, with `view_all_events` (or admin) | Everything. |
 | Backend, without `view_all_events` | `LIVE` events plus the events they own via `owner_be_user`. |
-| Any context | Plus every record whose type is [exempted](#exempting-record-types). |
+| Any context except public API collections | Plus every record whose type is [exempted](#exempting-record-types). |
 
 The backend is *not* unrestricted. A backend user without `view_all_events` is filtered by the
 same restriction class that filters the frontend.
+
+### Frontend API visibility
+
+Frontend API collections are live-only by default, including when a backend session is present.
+A site that has a deliberately internal calendar API can list its resource names in the site
+setting `xima_typo3_calendar.internalApiResources`:
+
+```yaml
+xima_typo3_calendar:
+  internalApiResources: 'appointments'
+```
+
+This is a server-side site configuration. It is not controlled by a query parameter. The
+configured resources bypass the event-status restriction for their frontend API requests, while
+public resources keep the normal `LIVE` restriction. API item requests and regular event detail
+pages retain the backend preview behaviour.
 
 ### Exempting record types
 
