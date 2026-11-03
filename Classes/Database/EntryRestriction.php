@@ -110,7 +110,11 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
             $qb = $this->connectionPool->getQueryBuilderForTable('tx_ximatypo3calendar_domain_model_entry');
             $user = $this->getFrontendUserAuthentication();
 
-            $unrestrictedRecordTypes = $this->getUnrestrictedRecordTypes();
+            // Public API collections don't apply the record type exemption, neither the
+            // appointment's own nor its parent event's
+            $unrestrictedRecordTypes = $this->visibilityService->isPublicApiCollection($request)
+                ? []
+                : $this->getUnrestrictedRecordTypes();
             $quotedRecordTypes = array_map(static fn (string $type): string => $qb->quote($type), $unrestrictedRecordTypes);
 
             $ownerClauses = ['e.status = ' . $qb->quote((string)EventStatus::LIVE->value)];
@@ -124,7 +128,7 @@ class EntryRestriction implements QueryRestrictionInterface, EnforceableQueryRes
                 ? '(' . implode(' OR ', $ownerClauses) . ')'
                 : $ownerClauses[0];
             // The parent event is exempt from the restriction when its record type is unrestricted
-            if (!$this->visibilityService->isPublicApiCollection($request) && $quotedRecordTypes !== []) {
+            if ($quotedRecordTypes !== []) {
                 $eventClause = '(' . $eventClause . ' OR e.record_type IN (' . implode(', ', $quotedRecordTypes) . '))';
             }
 

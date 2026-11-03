@@ -315,6 +315,21 @@ final class EntryRestrictionTest extends AbstractCalendarFunctionalTestCase
     }
 
     #[Test]
+    public function aPublicApiCollectionIgnoresTheAppointmentRecordTypeExemption(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_ENTRY)
+            ->update(self::TABLE_ENTRY, ['record_type' => 'private-appointment'], ['uid' => 2]);
+        $this->givenUnrestrictedRecordTypes('private-appointment');
+        $this->givenFrontendRequest();
+        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute(
+            CalendarVisibilityService::REQUEST_ATTRIBUTE,
+            ['scope' => CalendarVisibilityService::SCOPE_PUBLIC, 'resource' => 'public-appointments', 'item' => false],
+        );
+
+        self::assertSame([1], $this->fetchVisibleEntryUids());
+    }
+
+    #[Test]
     public function anInternalApiCollectionNeverExposesAppointmentsOfNonLiveEventsToAnonymousRequests(): void
     {
         $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
