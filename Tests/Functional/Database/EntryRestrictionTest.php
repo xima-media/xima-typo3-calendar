@@ -315,11 +315,25 @@ final class EntryRestrictionTest extends AbstractCalendarFunctionalTestCase
     }
 
     #[Test]
-    public function anInternalApiCollectionExposesAppointmentsOfRejectedEvents(): void
+    public function anInternalApiCollectionNeverExposesAppointmentsOfNonLiveEventsToAnonymousRequests(): void
     {
         $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
             ->update(self::TABLE_EVENT, ['status' => 3], ['uid' => 2]);
         $this->givenFrontendRequest();
+        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute(
+            CalendarVisibilityService::REQUEST_ATTRIBUTE,
+            ['scope' => CalendarVisibilityService::SCOPE_INTERNAL, 'resource' => 'appointments', 'item' => false],
+        );
+
+        self::assertSame([1], $this->fetchVisibleEntryUids());
+    }
+
+    #[Test]
+    public function anInternalApiCollectionExposesAppointmentsOfRejectedEventsToABackendUserWhoMayViewAllEvents(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
+            ->update(self::TABLE_EVENT, ['status' => 3], ['uid' => 2]);
+        $this->givenFrontendRequest(null, $this->backendUser(16, canViewAllEvents: true));
         $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute(
             CalendarVisibilityService::REQUEST_ATTRIBUTE,
             ['scope' => CalendarVisibilityService::SCOPE_INTERNAL, 'resource' => 'appointments', 'item' => false],

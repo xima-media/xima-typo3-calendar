@@ -34,8 +34,8 @@ use Xima\XimaTypo3Calendar\Service\CalendarVisibilityService;
  *   - while DataHandler processes a write: everything (see DataHandlerWriteScope);
  *   - frontend, anonymous: status LIVE only;
  *   - frontend, logged-in user: additionally the events they own;
- *   - frontend API collections: status LIVE only, unless the site explicitly marks
- *     the API resource as internal;
+ *   - frontend API collections: status LIVE only; a collection the site marks as
+ *     internal keeps the backend preview rules below;
  *   - frontend API items and regular frontend pages: backend users may preview their
  *     permitted non-live events;
  *   - backend with the view_all_events permission (or admin): everything;
@@ -92,9 +92,6 @@ class EventRestriction implements QueryRestrictionInterface, EnforceableQueryRes
 
         if ($applicationType->isFrontend()) {
             $backendUser = $this->getBackendUserAuthentication($request);
-            if ($this->visibilityService->isInternalApiRequest($request)) {
-                return $expressionBuilder->and();
-            }
             $allowsPreview = $this->visibilityService->allowsPreview($request);
             if ($allowsPreview
                 && $backendUser instanceof BackendUserAuthentication

@@ -353,11 +353,25 @@ final class EventRestrictionTest extends AbstractCalendarFunctionalTestCase
     }
 
     #[Test]
-    public function anInternalApiCollectionExposesLiveReviewDraftAndRejectedEvents(): void
+    public function anInternalApiCollectionNeverExposesDraftReviewOrRejectedEventsToAnonymousRequests(): void
     {
         $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
             ->update(self::TABLE_EVENT, ['status' => 3], ['uid' => 3]);
         $this->givenFrontendRequest();
+        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute(
+            CalendarVisibilityService::REQUEST_ATTRIBUTE,
+            ['scope' => CalendarVisibilityService::SCOPE_INTERNAL, 'resource' => 'events', 'item' => false],
+        );
+
+        self::assertSame([1], $this->fetchVisibleEventUids());
+    }
+
+    #[Test]
+    public function anInternalApiCollectionExposesAllStatusesToABackendUserWhoMayViewAllEvents(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)
+            ->update(self::TABLE_EVENT, ['status' => 3], ['uid' => 3]);
+        $this->givenFrontendRequest(null, $this->backendUser(5, customOptions: CalendarPermissionService::PERMISSION_GROUP . ':' . CalendarPermissionService::PERMISSION_VIEW_ALL_EVENTS));
         $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute(
             CalendarVisibilityService::REQUEST_ATTRIBUTE,
             ['scope' => CalendarVisibilityService::SCOPE_INTERNAL, 'resource' => 'events', 'item' => false],

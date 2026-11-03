@@ -36,6 +36,7 @@
 		"typo3/testing-framework": "^9.5"
 	},
 	"suggest": {
+		"maikschneider/tca-api": "REST API for TCA records; the calendar scopes event visibility of its API collections.",
 		"tpwd/ke_search": "Indexes running and upcoming events into the ke_search index."
 	},
 	"autoload": {

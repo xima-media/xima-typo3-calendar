@@ -14,7 +14,7 @@ settings:
 
   xima_typo3_calendar.internalApiResources:
     label: 'Internal calendar API resources'
-    description: 'Comma-separated API resources that may expose all calendar event statuses in the frontend.'
+    description: 'Comma-separated API resources whose collections keep the backend preview rules. Anonymous requests still only get live events.'
     category: XimaTypo3Calendar
     type: string
     default: ''

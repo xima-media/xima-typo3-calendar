@@ -27,6 +27,15 @@ All notable changes to this extension are documented here. The format follows
 
 ### Changed
 
+- **Frontend API collections are live-only.** On a site with `tca_api.apiPrefix`, API
+  collection requests now return `LIVE` events (and their appointments) only, even with a
+  backend session, and no longer include
+  [exempted record types](Documentation/AccessControl.md#exempting-record-types). Single API
+  items and regular pages keep the backend preview. Resources listed in the new site setting
+  `xima_typo3_calendar.internalApiResources` keep the preview rules for their collections too;
+  anonymous requests never see draft, review or rejected events. See
+  [Access Control](Documentation/AccessControl.md#frontend-api-visibility).
+
 - The event `status` column is nullable and defaults to `NULL`, so a custom record type that
   does not show the status field stores no status. New events of a record type that shows it
   still start as *Draft*. Existing rows keep their value; set it to `NULL` in the consuming

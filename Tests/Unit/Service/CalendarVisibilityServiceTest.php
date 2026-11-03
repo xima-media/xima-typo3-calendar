@@ -23,7 +23,7 @@ final class CalendarVisibilityServiceTest extends \PHPUnit\Framework\TestCase
         $request = new ServerRequest('https://example.com/');
 
         self::assertTrue($this->subject->allowsPreview($request));
-        self::assertFalse($this->subject->isInternalApiRequest($request));
+        self::assertFalse($this->subject->isPublicApiCollection($request));
     }
 
     #[Test]
@@ -53,7 +53,7 @@ final class CalendarVisibilityServiceTest extends \PHPUnit\Framework\TestCase
     }
 
     #[Test]
-    public function internalApiResourcesAllowAllEventStatuses(): void
+    public function internalApiCollectionsKeepPreviewSupport(): void
     {
         $request = $this->requestWithContext(
             CalendarVisibilityService::SCOPE_INTERNAL,
@@ -61,7 +61,7 @@ final class CalendarVisibilityServiceTest extends \PHPUnit\Framework\TestCase
             false,
         );
 
-        self::assertTrue($this->subject->isInternalApiRequest($request));
+        self::assertTrue($this->subject->allowsPreview($request));
         self::assertFalse($this->subject->isPublicApiCollection($request));
     }
 

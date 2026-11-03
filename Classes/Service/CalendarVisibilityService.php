@@ -31,13 +31,6 @@ final class CalendarVisibilityService
         ];
     }
 
-    public function isInternalApiRequest(ServerRequestInterface $request): bool
-    {
-        $context = $this->getApiContext($request);
-
-        return $context !== null && $context['scope'] === self::SCOPE_INTERNAL;
-    }
-
     public function isPublicApiCollection(ServerRequestInterface $request): bool
     {
         $context = $this->getApiContext($request);
@@ -47,10 +40,15 @@ final class CalendarVisibilityService
             && !$context['item'];
     }
 
+    /**
+     * Whether a logged-in user's preview rights (owned or, with view_all_events, all non-live
+     * events) apply. An internal resource only keeps those rights for its collections; it never
+     * widens what an anonymous request sees.
+     */
     public function allowsPreview(ServerRequestInterface $request): bool
     {
         $context = $this->getApiContext($request);
 
-        return $context === null || $context['item'];
+        return $context === null || $context['item'] || $context['scope'] === self::SCOPE_INTERNAL;
     }
 }

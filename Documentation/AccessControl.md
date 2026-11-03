@@ -59,7 +59,7 @@ appended to **every** query against
 | Frontend, logged-in FE user | Additionally the events they **own**, and those appointments. |
 | Frontend, regular page or API item | Backend users may preview permitted non-live events. |
 | Frontend, public API collection | Events with status `LIVE` only; backend ownership does not widen the collection. |
-| Frontend, configured internal API resource | Events and appointments of all event statuses. |
+| Frontend, configured internal API collection | Like a regular page: anonymous requests get `LIVE` only, backend users keep their preview rights. |
 | Backend, with `view_all_events` (or admin) | Everything. |
 | Backend, without `view_all_events` | `LIVE` events plus the events they own via `owner_be_user`. |
 | Any context except public API collections | Plus every record whose type is [exempted](#exempting-record-types). |
@@ -69,19 +69,25 @@ same restriction class that filters the frontend.
 
 ### Frontend API visibility
 
-Frontend API collections are live-only by default, including when a backend session is present.
-A site that has a deliberately internal calendar API can list its resource names in the site
-setting `xima_typo3_calendar.internalApiResources`:
+This applies when the site uses an API under the site setting `tca_api.apiPrefix`
+(for example [maikschneider/tca-api](https://github.com/maikschneider/tca-api)). The first path
+segment after the prefix is the resource name.
+
+Frontend API collections are live-only by default, including when a backend session is present,
+and they don't include [exempted record types](#exempting-record-types). A site with a calendar
+API meant for editors can list its resource names in the site setting
+`xima_typo3_calendar.internalApiResources`:
 
 ```yaml
 xima_typo3_calendar:
   internalApiResources: 'appointments'
 ```
 
-This is a server-side site configuration. It is not controlled by a query parameter. The
-configured resources bypass the event-status restriction for their frontend API requests, while
-public resources keep the normal `LIVE` restriction. API item requests and regular event detail
-pages retain the backend preview behaviour.
+Collections of these resources follow the regular frontend rules instead: anonymous requests
+still get `LIVE` events only, and a request with a backend session sees what that user may
+preview (all statuses with `view_all_events`, otherwise their own events). The setting never
+makes non-live events public. API item requests and regular event detail pages keep the backend
+preview behaviour.
 
 ### Exempting record types
 
