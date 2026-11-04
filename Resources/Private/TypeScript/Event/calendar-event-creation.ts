@@ -13,6 +13,7 @@ import {
     type CalendarDateClick,
     type CalendarSelection,
 } from '../Interaction/calendar-selection';
+import {getCalendarLanguageLabel} from '../Services/calendar-language';
 type NewRecordResponse = { success: boolean; url?: string };
 
 export function createCalendarCreationController(
@@ -39,8 +40,8 @@ export function createCalendarCreationController(
 
     const showCreationError = (): void => {
         Notification.error(
-            'Error',
-            'The event could not be created. Please try again.',
+            getCalendarLanguageLabel('creation.error.title'),
+            getCalendarLanguageLabel('creation.error.message'),
         );
     };
 

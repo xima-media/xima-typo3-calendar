@@ -17,6 +17,7 @@ import type {CalendarEventData} from './Rendering/calendar-event-data';
 import {createCalendarEventRenderer} from './Rendering/calendar-event-renderer';
 import {createCalendarEventTooltip} from './Rendering/calendar-event-tooltip';
 import {isMultiDayCalendarEvent} from './Rendering/calendar-list-layout';
+import {getCalendarLanguageLabel} from './Services/calendar-language';
 
 type EventCalendarTheme = Record<string, string | string[]>;
 type EventCalendarButtonText = Record<string, string>;
@@ -38,8 +39,8 @@ DocumentService.ready().then(async () => {
     const calendarConfig = readCalendarConfig(container);
     if (!calendarConfig) {
         Notification.error(
-            'Configuration error',
-            'The calendar configuration is invalid.',
+            getCalendarLanguageLabel('calendar.configurationError.title'),
+            getCalendarLanguageLabel('calendar.configurationError.message'),
         );
         return;
     }
@@ -112,9 +113,7 @@ DocumentService.ready().then(async () => {
         [DayGrid, TimeGrid, List, Interaction],
         {
             locale: calendarConfig.locale,
-            noEventsContent: calendarConfig.locale.startsWith('de')
-                ? 'Noch keine Events für diesen Monat'
-                : 'No events for this month yet',
+            noEventsContent: getCalendarLanguageLabel('calendar.noEvents'),
             eventGap: 3,
             height: '100%',
             nowIndicator: true,
@@ -123,7 +122,9 @@ DocumentService.ready().then(async () => {
             eventStartEditable: false,
             eventDurationEditable: false,
             dayMaxEvents: true,
-            moreLinkContent: ({num}: {num: number}) => `+${num} ${calendarConfig.locale.startsWith('de') ? 'weitere' : 'more'}`,
+            moreLinkContent: ({num}: {num: number}) => (
+                `+${num} ${getCalendarLanguageLabel('calendar.more')}`
+            ),
             view: calendarConfig.initialView,
             firstDay: 1,
             views: {
@@ -145,10 +146,10 @@ DocumentService.ready().then(async () => {
             }),
             buttonText: (buttonText: EventCalendarButtonText) => ({
                 ...buttonText,
-                dayGridMonth: calendarConfig.locale.startsWith('de') ? 'Monat' : 'Month',
-                timeGridWeek: calendarConfig.locale.startsWith('de') ? 'Woche' : 'Week',
-                listMonth: calendarConfig.locale.startsWith('de') ? 'Liste' : 'List',
-                today: calendarConfig.locale.startsWith('de') ? 'Heute' : 'Today',
+                dayGridMonth: getCalendarLanguageLabel('calendar.month') || buttonText.dayGridMonth,
+                timeGridWeek: getCalendarLanguageLabel('calendar.week') || buttonText.timeGridWeek,
+                listMonth: getCalendarLanguageLabel('calendar.list') || buttonText.listMonth,
+                today: getCalendarLanguageLabel('calendar.today') || buttonText.today,
             }),
             headerToolbar: {
                 start: 'prev next today',

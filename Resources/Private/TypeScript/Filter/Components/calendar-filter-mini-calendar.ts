@@ -4,6 +4,7 @@ import {
   miniCalendarEvents,
   type MainCalendarDateDetail,
 } from '../Services/calendar-mini-calendar-events';
+import {getCalendarLanguageLabel} from '../../Services/calendar-language';
 
 type Typo3TopWindow = Window & {
   TYPO3?: {
@@ -118,7 +119,7 @@ export class CalendarFilterMiniCalendar extends LitElement {
         <button
           type="button"
           class="xima-calendar-filter__mini-calendar-navigation"
-          aria-label=${locale.startsWith('de') ? 'Vorheriger Monat' : 'Previous month'}
+          aria-label=${getCalendarLanguageLabel('miniCalendar.previousMonth')}
           @click=${() => this.changeMonth(-1)}
         >‹</button>
         <div class="xima-calendar-filter__mini-calendar-title">
@@ -127,7 +128,7 @@ export class CalendarFilterMiniCalendar extends LitElement {
             <select
               class="xima-calendar-filter__mini-calendar-year"
               name="calendar-year"
-              aria-label=${locale.startsWith('de') ? 'Jahr auswählen' : 'Select year'}
+              aria-label=${getCalendarLanguageLabel('miniCalendar.selectYear')}
               value=${String(this.displayedMonth.getFullYear())}
               @change=${(event: Event) => this.changeYear(event)}
             >
@@ -143,7 +144,7 @@ export class CalendarFilterMiniCalendar extends LitElement {
         <button
           type="button"
           class="xima-calendar-filter__mini-calendar-navigation"
-          aria-label=${locale.startsWith('de') ? 'Nächster Monat' : 'Next month'}
+          aria-label=${getCalendarLanguageLabel('miniCalendar.nextMonth')}
           @click=${() => this.changeMonth(1)}
         >›</button>
       </div>

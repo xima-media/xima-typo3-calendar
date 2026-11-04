@@ -63,7 +63,6 @@ export const createCalendarListScrollController = (
                     container,
                     currentEvents,
                     currentViewStart,
-                    document.documentElement.lang || 'en',
                     eventRenderer,
                     onEventClick,
                     onEventTooltip,

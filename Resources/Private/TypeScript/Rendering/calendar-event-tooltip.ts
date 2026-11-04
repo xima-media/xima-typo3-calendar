@@ -1,5 +1,6 @@
 import {contentToText, type CalendarEventData} from './calendar-event-data';
 import type {CalendarFilterConfiguration} from '../Filter/calendar-filter-state';
+import {getCalendarLanguageLabel} from '../Services/calendar-language';
 
 type CalendarEventTooltip = {
     attach(event: CalendarEventData, element: HTMLElement): void;
@@ -132,8 +133,8 @@ const getDateRange = (
         hour: '2-digit',
         minute: '2-digit',
     });
-    const allDayLabel = locale.startsWith('de') ? 'Ganztägig' : 'All-day';
-    const rangeLabel = locale.startsWith('de') ? 'bis' : 'to';
+    const allDayLabel = getCalendarLanguageLabel('tooltip.allDay');
+    const rangeLabel = getCalendarLanguageLabel('tooltip.to');
 
     if (!end || event.allDay) {
         const lastDay = end ? new Date(end) : start;
@@ -265,7 +266,7 @@ export const createCalendarEventTooltip = (
         ) {
             appendRow(
                 tooltip,
-                configuration.locale.startsWith('de') ? 'Ort:' : 'Location:',
+                getCalendarLanguageLabel('tooltip.location'),
                 location,
             );
         }

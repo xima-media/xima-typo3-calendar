@@ -1,15 +1,5 @@
 import {html, LitElement} from 'lit';
-
-type Typo3TopWindow = Window & {
-  TYPO3?: {
-    lang?: Record<string, string>;
-    settings?: {
-      ximaCalendar?: {
-        locale?: string;
-      };
-    };
-  };
-};
+import {getCalendarLanguageLabel} from '../../Services/calendar-language';
 
 export class CalendarFilterToolbar extends LitElement {
   public createRenderRoot(): HTMLElement {
@@ -17,13 +7,7 @@ export class CalendarFilterToolbar extends LitElement {
   }
 
   public render() {
-    const typo3Top = window.top as unknown as Typo3TopWindow;
-    const locale = typo3Top.TYPO3?.settings?.ximaCalendar?.locale
-      ?? document.documentElement.lang
-      ?? navigator.language;
-    const searchLabel = locale?.startsWith('de')
-      ? 'Suchbegriff eingeben'
-      : typo3Top.TYPO3?.lang?.['filter.search'] ?? 'Enter search term';
+    const searchLabel = getCalendarLanguageLabel('filter.search');
 
     return html`
       <div class="tree-toolbar">

@@ -20,6 +20,31 @@
 			<trans-unit id="filter.search" resname="filter.search">
 				<source>Enter search term</source>
 			</trans-unit>
+			<trans-unit id="calendar.configurationError.title" resname="calendar.configurationError.title">
+				<source>Configuration error</source>
+			</trans-unit>
+			<trans-unit id="calendar.configurationError.message" resname="calendar.configurationError.message">
+				<source>The calendar configuration is invalid.</source>
+			</trans-unit>
+			<trans-unit id="calendar.noEvents" resname="calendar.noEvents">
+				<source>No events for this month yet</source>
+			</trans-unit>
+			<trans-unit id="calendar.more" resname="calendar.more"><source>more</source></trans-unit>
+			<trans-unit id="calendar.month" resname="calendar.month"><source>Month</source></trans-unit>
+			<trans-unit id="calendar.week" resname="calendar.week"><source>Week</source></trans-unit>
+			<trans-unit id="calendar.list" resname="calendar.list"><source>List</source></trans-unit>
+			<trans-unit id="calendar.today" resname="calendar.today"><source>Today</source></trans-unit>
+			<trans-unit id="tooltip.allDay" resname="tooltip.allDay"><source>All-day</source></trans-unit>
+			<trans-unit id="tooltip.to" resname="tooltip.to"><source>to</source></trans-unit>
+			<trans-unit id="tooltip.location" resname="tooltip.location"><source>Location:</source></trans-unit>
+			<trans-unit id="list.multiDay" resname="list.multiDay"><source>Multi-day events</source></trans-unit>
+			<trans-unit id="miniCalendar.previousMonth" resname="miniCalendar.previousMonth"><source>Previous month</source></trans-unit>
+			<trans-unit id="miniCalendar.selectYear" resname="miniCalendar.selectYear"><source>Select year</source></trans-unit>
+			<trans-unit id="miniCalendar.nextMonth" resname="miniCalendar.nextMonth"><source>Next month</source></trans-unit>
+			<trans-unit id="creation.error.title" resname="creation.error.title"><source>Error</source></trans-unit>
+			<trans-unit id="creation.error.message" resname="creation.error.message">
+				<source>The event could not be created. Please try again.</source>
+			</trans-unit>
 			<trans-unit id="filter.type" resname="filter.type"><source>Type</source></trans-unit>
 			<trans-unit id="filter.categories" resname="filter.categories"><source>Categories</source></trans-unit>
 			<trans-unit id="filter.status" resname="filter.status"><source>Status</source></trans-unit>

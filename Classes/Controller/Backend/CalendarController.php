@@ -111,7 +111,30 @@ class CalendarController extends ActionController
         );
         $this->pageRenderer->addInlineLanguageLabelFile(
             'EXT:xima_typo3_calendar/Resources/Private/Language/locallang_mod_calendar.xlf',
-            'filter',
+        );
+        $this->pageRenderer->addInlineSetting(
+            'ximaCalendar',
+            'languageLabels',
+            [
+                'filter.search' => $this->getLanguageLabel('filter.search', ''),
+                'calendar.configurationError.title' => $this->getLanguageLabel('calendar.configurationError.title', ''),
+                'calendar.configurationError.message' => $this->getLanguageLabel('calendar.configurationError.message', ''),
+                'calendar.noEvents' => $this->getLanguageLabel('calendar.noEvents', ''),
+                'calendar.more' => $this->getLanguageLabel('calendar.more', ''),
+                'calendar.month' => $this->getLanguageLabel('calendar.month', ''),
+                'calendar.week' => $this->getLanguageLabel('calendar.week', ''),
+                'calendar.list' => $this->getLanguageLabel('calendar.list', ''),
+                'calendar.today' => $this->getLanguageLabel('calendar.today', ''),
+                'tooltip.allDay' => $this->getLanguageLabel('tooltip.allDay', ''),
+                'tooltip.to' => $this->getLanguageLabel('tooltip.to', ''),
+                'tooltip.location' => $this->getLanguageLabel('tooltip.location', ''),
+                'list.multiDay' => $this->getLanguageLabel('list.multiDay', ''),
+                'miniCalendar.previousMonth' => $this->getLanguageLabel('miniCalendar.previousMonth', ''),
+                'miniCalendar.selectYear' => $this->getLanguageLabel('miniCalendar.selectYear', ''),
+                'miniCalendar.nextMonth' => $this->getLanguageLabel('miniCalendar.nextMonth', ''),
+                'creation.error.title' => $this->getLanguageLabel('creation.error.title', ''),
+                'creation.error.message' => $this->getLanguageLabel('creation.error.message', ''),
+            ],
         );
 
         $newEventConfiguration = $this->pageConfigurationService->getNewEventConfiguration($request);

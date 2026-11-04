@@ -26,6 +26,35 @@
 				<source />
 				<target>Suchbegriff eingeben</target>
 			</trans-unit>
+			<trans-unit id="calendar.configurationError.title" resname="calendar.configurationError.title">
+				<source />
+				<target>Konfigurationsfehler</target>
+			</trans-unit>
+			<trans-unit id="calendar.configurationError.message" resname="calendar.configurationError.message">
+				<source />
+				<target>Die Kalenderkonfiguration ist ungültig.</target>
+			</trans-unit>
+			<trans-unit id="calendar.noEvents" resname="calendar.noEvents">
+				<source />
+				<target>Noch keine Events für diesen Monat</target>
+			</trans-unit>
+			<trans-unit id="calendar.more" resname="calendar.more"><source /><target>weitere</target></trans-unit>
+			<trans-unit id="calendar.month" resname="calendar.month"><source /><target>Monat</target></trans-unit>
+			<trans-unit id="calendar.week" resname="calendar.week"><source /><target>Woche</target></trans-unit>
+			<trans-unit id="calendar.list" resname="calendar.list"><source /><target>Liste</target></trans-unit>
+			<trans-unit id="calendar.today" resname="calendar.today"><source /><target>Heute</target></trans-unit>
+			<trans-unit id="tooltip.allDay" resname="tooltip.allDay"><source /><target>Ganztägig</target></trans-unit>
+			<trans-unit id="tooltip.to" resname="tooltip.to"><source /><target>bis</target></trans-unit>
+			<trans-unit id="tooltip.location" resname="tooltip.location"><source /><target>Ort:</target></trans-unit>
+			<trans-unit id="list.multiDay" resname="list.multiDay"><source /><target>Mehrtägige Termine</target></trans-unit>
+			<trans-unit id="miniCalendar.previousMonth" resname="miniCalendar.previousMonth"><source /><target>Vorheriger Monat</target></trans-unit>
+			<trans-unit id="miniCalendar.selectYear" resname="miniCalendar.selectYear"><source /><target>Jahr auswählen</target></trans-unit>
+			<trans-unit id="miniCalendar.nextMonth" resname="miniCalendar.nextMonth"><source /><target>Nächster Monat</target></trans-unit>
+			<trans-unit id="creation.error.title" resname="creation.error.title"><source /><target>Fehler</target></trans-unit>
+			<trans-unit id="creation.error.message" resname="creation.error.message">
+				<source />
+				<target>Das Event konnte nicht erstellt werden. Bitte versuchen Sie es erneut.</target>
+			</trans-unit>
 			<trans-unit id="filter.type" resname="filter.type"><source /><target>Typ</target></trans-unit>
 			<trans-unit id="filter.categories" resname="filter.categories"><source /><target>Kategorien</target></trans-unit>
 			<trans-unit id="filter.status" resname="filter.status"><source /><target>Status</target></trans-unit>
