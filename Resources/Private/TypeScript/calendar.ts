@@ -17,6 +17,7 @@ import type {CalendarEventData} from './Rendering/calendar-event-data';
 import {createCalendarEventRenderer} from './Rendering/calendar-event-renderer';
 import {createCalendarEventTooltip} from './Rendering/calendar-event-tooltip';
 import {isMultiDayCalendarEvent} from './Rendering/calendar-list-layout';
+import {getFirstDayIndex} from './Services/calendar-week-utils';
 
 type EventCalendarTheme = Record<string, string | string[]>;
 type EventCalendarButtonText = Record<string, string>;
@@ -125,7 +126,7 @@ DocumentService.ready().then(async () => {
             dayMaxEvents: true,
             moreLinkContent: ({num}: {num: number}) => `+${num} ${calendarConfig.locale.startsWith('de') ? 'weitere' : 'more'}`,
             view: calendarConfig.initialView,
-            firstDay: 1,
+            firstDay: getFirstDayIndex(calendarConfig.firstDay),
             views: {
                 timeGridWeek: {
             scrollTime: calendarConfig.scrollStartTime,
@@ -198,7 +199,9 @@ DocumentService.ready().then(async () => {
     );
 
     refetchEvents = () => ec.refetchEvents();
-    const miniCalendarSync = createCalendarMiniCalendarSync(ec, filterWindow);
+    const miniCalendarSync = createCalendarMiniCalendarSync(ec, filterWindow, {
+        scrollListToDate: listScrollController.scrollToDate,
+    });
     filterSync.start();
 
     const interactionController = createCalendarInteractionController(container, ec, creationController, {

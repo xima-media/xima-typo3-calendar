@@ -5,6 +5,7 @@ type CalendarListScrollConfiguration = {
     container: HTMLElement;
     viewStart: Date;
     events: CalendarEventData[];
+    targetDate?: Date;
     today?: Date;
 };
 
@@ -44,12 +45,12 @@ const toDateAttribute = (date: Date): string => {
 
 export const scrollCalendarListToRelevantDate = (
     configuration: CalendarListScrollConfiguration,
-): void => {
+): boolean => {
     const list = configuration.container.querySelector<HTMLElement>('.ec-list');
     const scrollContainer = configuration.container.querySelector<HTMLElement>('.ec-main');
 
     if (!list || !scrollContainer) {
-        return;
+        return false;
     }
 
     const monthStart = startOfDay(configuration.viewStart);
@@ -59,20 +60,37 @@ export const scrollCalendarListToRelevantDate = (
         .map(event => ({event, start: getEventStart(event)}))
         .filter(({start}) => start !== null && isSameMonth(start, monthStart))
         .sort((first, second) => first.start!.getTime() - second.start!.getTime());
+    const requestedDate = configuration.targetDate
+        ? startOfDay(configuration.targetDate)
+        : null;
 
     const todayEvent = monthEvents.find(({start}) => isSameDay(start!, today));
     const nextEvent = monthEvents.find(({start}) => start! >= today);
-    const targetDate = todayEvent?.start ?? nextEvent?.start ?? monthStart;
+    const selectedDayEvent = requestedDate !== null
+        ? monthEvents.find(({start}) => isSameDay(start!, requestedDate))
+        : undefined;
+    const previousEvent = requestedDate !== null
+        ? [...monthEvents]
+            .reverse()
+            .find(({start}) => start! < requestedDate)
+        : undefined;
+    const scrollDate = selectedDayEvent?.start
+        ?? previousEvent?.start
+        ?? todayEvent?.start
+        ?? nextEvent?.start
+        ?? monthStart;
     const target = list.querySelector<HTMLElement>(
-        `time[datetime="${toDateAttribute(targetDate!)}"]`,
+        `time[datetime="${toDateAttribute(scrollDate)}"]`,
     )?.closest<HTMLElement>('.ec-day');
 
     if (!target) {
-        return;
+        return false;
     }
 
     scrollContainer.scrollTo({
         top: Math.max(0, target.offsetTop - 8),
         behavior: 'auto',
     });
+
+    return true;
 };

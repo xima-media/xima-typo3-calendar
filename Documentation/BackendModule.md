@@ -75,6 +75,8 @@ mod.tx_ximatypo3calendar {
     filterOrder = recordTypes, categories, statuses
     tooltipOrder = recordTypes, categories, statuses, location
 
+    calendar.firstDay = sunday
+
     weekViewGrid {
         timeSlotMinutes = 15
         scrollStartTime = 07:00
@@ -106,6 +108,7 @@ mod.tx_ximatypo3calendar {
 |--------|--------|--------------------------------|
 | `filterOrder` | Comma-separated filter identifiers. Only listed filters are shown in the sidebar, in this order. | none: a filter that isn't listed (or referenced by `eventAppearance`) is not shown |
 | `tooltipOrder` | Comma-separated filter identifiers, plus `location`. Only listed entries are shown in the tooltip, in this order. | none |
+| `calendar.firstDay` | English weekday name: `sunday`, `monday`, `tuesday`, `wednesday`, `thursday`, `friday` or `saturday` | `monday` |
 | `weekViewGrid.timeSlotMinutes` | `15`, `30` or `60` | `15` |
 | `weekViewGrid.scrollStartTime` | Initial scroll position of the week view, `HH:MM` or `HH:MM:SS` | `08:00` |
 | `eventAppearance.iconSource` | Filter identifier whose item icon is shown on the appointment | `recordTypes` |

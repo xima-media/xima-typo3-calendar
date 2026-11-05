@@ -21,6 +21,8 @@ mod.tx_ximatypo3calendar {
     filterOrder = recordTypes, categories, statuses
     tooltipOrder = recordTypes, categories, statuses, location
 
+    calendar.firstDay = monday
+
     weekViewGrid {
         timeSlotMinutes = 15
         scrollStartTime = 07:00

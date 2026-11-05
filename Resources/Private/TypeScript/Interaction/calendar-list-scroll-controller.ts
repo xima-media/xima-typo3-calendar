@@ -14,6 +14,7 @@ type CalendarListView = {
 export type CalendarListScrollController = {
     viewChanged(view: CalendarListView): void;
     eventsLoaded(events: CalendarEventData[]): void;
+    scrollToDate(date: Date): void;
     destroy(): void;
 };
 
@@ -26,6 +27,7 @@ export const createCalendarListScrollController = (
     let currentEvents: CalendarEventData[] = [];
     let currentViewStart = new Date();
     let currentViewType = '';
+    let requestedDate: Date | null = null;
     let scrollFrame: number | null = null;
     let resizeObserver: ResizeObserver | null = null;
 
@@ -68,11 +70,15 @@ export const createCalendarListScrollController = (
                     onEventClick,
                     onEventTooltip,
                 );
-                scrollCalendarListToRelevantDate({
+                const didScroll = scrollCalendarListToRelevantDate({
                     container,
                     viewStart: currentViewStart,
                     events: currentEvents,
+                    targetDate: requestedDate ?? undefined,
                 });
+                if (didScroll) {
+                    requestedDate = null;
+                }
             });
         });
     };
@@ -86,6 +92,7 @@ export const createCalendarListScrollController = (
                 observeListSize();
                 scheduleScroll();
             } else {
+                requestedDate = null;
                 resizeObserver?.disconnect();
                 resizeObserver = null;
                 if (scrollFrame !== null) {
@@ -99,6 +106,13 @@ export const createCalendarListScrollController = (
         eventsLoaded(events): void {
             currentEvents = events;
             scheduleScroll();
+        },
+
+        scrollToDate(date): void {
+            requestedDate = new Date(date);
+            if (currentViewType.startsWith('list')) {
+                scheduleScroll();
+            }
         },
 
         destroy(): void {

@@ -39,6 +39,7 @@ type Typo3TopWindow = Window & {
         filterStateUrl?: string;
         filterColors?: ColorOverrides;
         locale?: string;
+        firstDay?: string;
       };
     };
   };
@@ -51,6 +52,8 @@ export class CalendarFilterElement extends LitElement {
   private filterConfiguration: CalendarFilterConfiguration | null = null;
 
   private filterColors: ColorOverrides = {};
+
+  private firstDay = 'monday';
 
   private filterState: CalendarFilterState | null = null;
 
@@ -94,7 +97,7 @@ export class CalendarFilterElement extends LitElement {
           class="xima-calendar-filter__mini-calendar"
           aria-label="Mini calendar"
         >
-          <xima-calendar-filter-mini-calendar></xima-calendar-filter-mini-calendar>
+          <xima-calendar-filter-mini-calendar .firstDay=${this.firstDay}></xima-calendar-filter-mini-calendar>
         </section>
       </div>
     `;
@@ -206,6 +209,7 @@ export class CalendarFilterElement extends LitElement {
 
       this.filterConfiguration = data.filters;
       this.filterColors = data.filterColors;
+      this.firstDay = data.firstDay;
       this.filterState = data.state;
       this.filterLabels = data.labels;
       this.publishFilterConfiguration();

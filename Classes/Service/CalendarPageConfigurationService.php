@@ -16,16 +16,27 @@ final class CalendarPageConfigurationService
     private const DEFAULT_ENABLE_CLICK = true;
     private const DEFAULT_TIME_SLOT_MINUTES = 15;
     private const DEFAULT_SCROLL_TIME = '08:00:00';
+    private const DEFAULT_FIRST_DAY = 'monday';
+    private const VALID_FIRST_DAYS = [
+        'sunday',
+        'monday',
+        'tuesday',
+        'wednesday',
+        'thursday',
+        'friday',
+        'saturday',
+    ];
 
     public function __construct(
         private readonly CalendarPageConfigurationReader $configurationReader,
     ) {
     }
 
-    /** @return array{enableDragNewEvent: bool, enableClickNewEvent: bool, defaultStartTime: string, defaultEndTime: string, defaultAllDay: bool, defaultRecordType: ?string, timeSlotMinutes: int, scrollStartTime: string} */
-    public function getNewEventConfiguration(RequestInterface $request): array
+    /** @return array{enableDragNewEvent: bool, enableClickNewEvent: bool, defaultStartTime: string, defaultEndTime: string, defaultAllDay: bool, defaultRecordType: ?string, timeSlotMinutes: int, scrollStartTime: string, firstDay: string} */
+    public function getNewEventConfiguration(RequestInterface|ServerRequestInterface $request): array
     {
         $config = $this->configurationReader->read($request);
+        $calendar = $this->asArray($config['calendar.'] ?? $config['calendar'] ?? []);
         $weekViewGrid = $this->asArray($config['weekViewGrid.'] ?? $config['weekViewGrid'] ?? []);
         $newEvent = $this->asArray($config['newEvent.'] ?? $config['newEvent'] ?? []);
         $interaction = $this->asArray($newEvent['interaction.'] ?? $newEvent['interaction'] ?? []);
@@ -64,6 +75,7 @@ final class CalendarPageConfigurationService
                     ?? null,
                 self::DEFAULT_SCROLL_TIME,
             ),
+            'firstDay' => $this->getValidFirstDay($calendar['firstDay'] ?? null),
         ];
     }
 
@@ -218,6 +230,18 @@ final class CalendarPageConfigurationService
         }
 
         return self::DEFAULT_TIME_SLOT_MINUTES;
+    }
+
+    private function getValidFirstDay(mixed $value): string
+    {
+        if (!is_string($value)) {
+            return self::DEFAULT_FIRST_DAY;
+        }
+
+        $firstDay = strtolower(trim($value));
+        return in_array($firstDay, self::VALID_FIRST_DAYS, true)
+            ? $firstDay
+            : self::DEFAULT_FIRST_DAY;
     }
 
     private function isEnabled(mixed $value, bool $default): bool

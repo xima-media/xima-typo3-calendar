@@ -115,6 +115,11 @@ class CalendarController extends ActionController
         );
 
         $newEventConfiguration = $this->pageConfigurationService->getNewEventConfiguration($request);
+        $this->pageRenderer->addInlineSetting(
+            'ximaCalendar',
+            'firstDay',
+            $newEventConfiguration['firstDay'],
+        );
         $calendarConfig = json_encode([
             'ajaxUrl' => $ajaxUrl,
             'newRecordUrl' => $newRecordUrl,
