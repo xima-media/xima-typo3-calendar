@@ -105,6 +105,14 @@ final class VkurkoCalendarSerializerTest extends TestCase
         self::assertSame('entry-17', $result[0]['id']);
     }
 
+    #[Test]
+    public function exposesTheAppointmentUidInExtendedProperties(): void
+    {
+        $result = VkurkoCalendarSerializer::serializeBackendEntries([$this->row(['uid' => 17])]);
+
+        self::assertSame(17, $result[0]['extendedProps']['appointmentUid']);
+    }
+
     /**
      * @param array<string, mixed> $overrides
      */

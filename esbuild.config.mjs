@@ -13,6 +13,7 @@ const javascriptConfig = {
     entryPoints: [
         './Resources/Private/TypeScript/calendar.ts',
         './Resources/Private/TypeScript/Filter/calendar-filter.ts',
+        './Resources/Private/TypeScript/Event/calendar-appointment-tab-focus.ts',
     ],
     outdir: 'Resources/Public/JavaScript/',
 };

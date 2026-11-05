@@ -20,18 +20,24 @@ export function createCalendarDetailsController(
 ): CalendarDetailsController {
     const openEventEditor = (info: EventCalendarEventClickInfo): void => {
         const eventUid = info.event.extendedProps.eventUid;
-        if (typeof eventUid !== 'number' && typeof eventUid !== 'string') {
+        const appointmentUid = info.event.extendedProps.appointmentUid;
+        if (
+            (typeof eventUid !== 'number' && typeof eventUid !== 'string')
+            || (typeof appointmentUid !== 'number' && typeof appointmentUid !== 'string')
+        ) {
             return;
         }
 
         const table = 'tx_ximatypo3calendar_domain_model_event';
-        const returnUrl = document.location.pathname + document.location.search;
+        const returnUrl = new URL(document.location.href);
+        returnUrl.searchParams.delete('appointmentUid');
 
         Viewport.ContentContainer.setUrl(
             typo3Top.TYPO3.settings.FormEngine.moduleUrl
             + '&edit[' + table + '][' + eventUid + ']=edit'
+            + '&appointmentUid=' + encodeURIComponent(String(appointmentUid))
             + '&module=' + encodeURIComponent(typo3Top.TYPO3.ModuleMenu.App.getCurrentModule())
-            + '&returnUrl=' + returnUrl,
+            + '&returnUrl=' + encodeURIComponent(returnUrl.pathname + returnUrl.search),
         );
     };
 
