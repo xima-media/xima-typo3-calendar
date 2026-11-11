@@ -28,8 +28,6 @@ export const applyEventColorsToEvents = (
 
   return {
     ...event,
-    backgroundColor: eventColor,
-    textColor: eventTextColor,
     styles: [
       ...styles,
       `--xima-event-color:${eventColor}`,

@@ -50,14 +50,14 @@ export const renderCalendarListMultiDayEvents = (
     const panel = document.createElement('aside');
     panel.className = 'xima-calendar-list__multi-day';
     const columnCount = Math.max(1, layout.columnCount);
-    if (columnCount >= 4) {
-        panel.classList.add('xima-calendar-list__multi-day--columns-4');
+    if (columnCount >= 3) {
+        panel.classList.add('xima-calendar-list__multi-day--columns-3');
     }
     if (columnCount >= 5) {
         panel.classList.add('xima-calendar-list__multi-day--columns-5');
     }
     panel.style.insetBlockStart = `${scrollContainer.offsetTop}px`;
-    panel.style.blockSize = `${scrollContainer.clientHeight}px`;
+    panel.style.blockSize = `${scrollContainer.offsetHeight}px`;
     panel.style.setProperty('--xima-list-column-count', String(columnCount));
     panel.style.setProperty('--xima-list-day-count', String(layout.dayCount));
 
@@ -108,13 +108,6 @@ export const renderCalendarListMultiDayEvents = (
         eventElement.style.cssText += Array.isArray(eventStyles)
             ? eventStyles.join(';')
             : eventStyles;
-
-        if (lane.event.backgroundColor) {
-            eventElement.style.backgroundColor = lane.event.backgroundColor;
-        }
-        if (lane.event.textColor) {
-            eventElement.style.color = lane.event.textColor;
-        }
 
         const eventBody = document.createElement('div');
         eventBody.className = 'ec-event-body';

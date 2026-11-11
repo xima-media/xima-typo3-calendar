@@ -8,6 +8,7 @@ type CalendarEventTooltip = {
 
 type CalendarEventTooltipConfiguration = {
     locale: string;
+    allDayLabel: string;
     getFilterConfiguration: () => CalendarFilterConfiguration;
     tooltipOrder: string[];
 };
@@ -115,6 +116,7 @@ const isSameDay = (first: Date, second: Date): boolean => (
 const getDateRange = (
     event: CalendarEventData,
     locale: string,
+    allDayLabel: string,
 ): string | null => {
     const start = getDate(event.start);
     const end = getDate(event.end);
@@ -132,7 +134,6 @@ const getDateRange = (
         hour: '2-digit',
         minute: '2-digit',
     });
-    const allDayLabel = locale.startsWith('de') ? 'Ganztägig' : 'All-day';
     const rangeLabel = locale.startsWith('de') ? 'bis' : 'to';
 
     if (!end || event.allDay) {
@@ -221,7 +222,11 @@ export const createCalendarEventTooltip = (
         activeElement = element;
 
         const eventTitle = contentToText(event.title).trim();
-        const dateRange = getDateRange(event, configuration.locale);
+        const dateRange = getDateRange(
+            event,
+            configuration.locale,
+            configuration.allDayLabel,
+        );
         if (!eventTitle && !dateRange) {
             return;
         }

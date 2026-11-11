@@ -37,7 +37,7 @@ const isCanceledEvent = (event: CalendarEventData): boolean => {
 };
 
 const eventTime = (
-  value: string | Date | undefined,
+    value: string | Date | undefined,
 ): number | null => {
     if (!value) {
         return null;
@@ -50,20 +50,21 @@ const eventTime = (
     return Number.isFinite(timestamp) ? timestamp : null;
 };
 
-const hasConcurrentEvent = (
-  event: CalendarEventData,
-  events: CalendarEventData[],
-): boolean => {
+const getConcurrentEventCount = (
+    event: CalendarEventData,
+    events: CalendarEventData[],
+): number => {
     const start = eventTime(event.start);
     const end = eventTime(event.end);
 
-    if (start === null || end === null) {
-        return false;
+    if (event.allDay || start === null || end === null) {
+        return 0;
     }
 
-  return events.some((other) => {
+    return events.filter((other) => {
         if (
             other === event
+            || other.allDay
             || (
                 other.id !== undefined
                 && event.id !== undefined
@@ -80,11 +81,11 @@ const hasConcurrentEvent = (
             && otherEnd !== null
             && start < otherEnd
             && end > otherStart;
-  });
+    }).length;
 };
 
 const getCanceledMarker = (locale: string): string => (
-  locale.startsWith('de') ? '[A]' : '[C]'
+    locale.startsWith('de') ? '[A]' : '[C]'
 );
 
 export const createCalendarEventRenderer = (
@@ -140,7 +141,11 @@ export const createCalendarEventRenderer = (
             return;
         }
 
-        if (isCanceledEvent(event) && hasConcurrentEvent(event, events)) {
+        const concurrentEventCount = getConcurrentEventCount(event, events);
+        if (concurrentEventCount >= 1) {
+            element.classList.add('xima-calendar-event--overlap-2');
+        }
+        if (isCanceledEvent(event) && concurrentEventCount >= 1) {
             const titleElement = eventBody.querySelector<HTMLElement>(
                 '.ec-event-title',
             );

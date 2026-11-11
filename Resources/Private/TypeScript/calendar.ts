@@ -76,6 +76,7 @@ DocumentService.ready().then(async () => {
     });
     const eventTooltip = createCalendarEventTooltip({
         locale: calendarConfig.locale,
+        allDayLabel: calendarConfig.labels.allDay,
         getFilterConfiguration: filterSync.getFilterConfiguration,
         tooltipOrder: calendarConfig.tooltipOrder,
     });
@@ -112,6 +113,7 @@ DocumentService.ready().then(async () => {
         [DayGrid, TimeGrid, List, Interaction],
         {
             locale: calendarConfig.locale,
+            allDayContent: calendarConfig.labels.allDay,
             noEventsContent: calendarConfig.locale.startsWith('de')
                 ? 'Noch keine Events für diesen Monat'
                 : 'No events for this month yet',

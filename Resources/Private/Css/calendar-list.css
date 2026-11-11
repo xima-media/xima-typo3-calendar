@@ -9,13 +9,13 @@
         flex: 1 1 auto;
         min-block-size: 0;
 
-        .ec-event:not(.ec-preview):not(.ec-pointer) {
+        .ec-event:not(.ec-preview):not(.ec-pointer) .ec-event-body {
             transform-origin: center;
             transition: inline-size 120ms ease, margin-inline 120ms ease, scale 120ms ease;
         }
 
-        .ec-event:not(.ec-preview):not(.ec-pointer):hover,
-        .ec-event:not(.ec-preview):not(.ec-pointer):focus-visible {
+        .ec-event:not(.ec-preview):not(.ec-pointer):hover .ec-event-body,
+        .ec-event:not(.ec-preview):not(.ec-pointer):focus-visible .ec-event-body {
             inline-size: calc(100% - 6px);
             margin-inline: 3px;
             scale: 1 .9;
@@ -37,16 +37,25 @@
     .ec-event {
         align-items: center;
         min-block-size: 3rem;
-        padding: 0.65rem 1rem;
+        padding: 0 !important;
         border-block-end: 1px solid var(--typo3-component-border-color);
         border-radius: 0;
     }
 
     .ec-event-body {
+        padding: 0.65rem 1rem;
         flex-direction: row;
         align-items: center;
+        align-self: stretch;
+        margin-inline: 0;
         gap: 0.5rem;
         min-width: 0;
+    }
+
+    .ec-event-body > .ec-event-time,
+    .ec-event-body > .ec-event-title,
+    .ec-event-body > .xima-calendar-event__icon {
+        align-self: center;
     }
 
     .ec-event-time {
@@ -66,13 +75,15 @@
 #xima-calendar-mount .ec-list.xima-calendar-list-main--has-sidebar {
     position: relative;
     --xima-calendar-list-sidebar-gap: 1rem;
+    --xima-calendar-list-sidebar-width: 33.333%;
+    --xima-calendar-list-main-width: 66.667%;
 
     .ec-main {
         box-sizing: border-box;
-        inline-size: calc(66.667% - var(--xima-calendar-list-sidebar-gap));
-        max-inline-size: calc(66.667% - var(--xima-calendar-list-sidebar-gap));
+        inline-size: calc(var(--xima-calendar-list-main-width) - var(--xima-calendar-list-sidebar-gap));
+        max-inline-size: calc(var(--xima-calendar-list-main-width) - var(--xima-calendar-list-sidebar-gap));
         min-inline-size: 0;
-        margin-inline-start: calc(33.333% + var(--xima-calendar-list-sidebar-gap));
+        margin-inline-start: calc(var(--xima-calendar-list-sidebar-width) + var(--xima-calendar-list-sidebar-gap));
         grid-auto-rows: max-content;
         align-content: start;
         row-gap: 0.75rem;
@@ -109,7 +120,7 @@
         position: absolute;
         box-sizing: border-box;
         inset-inline-start: 0;
-        inline-size: 33.333%;
+        inline-size: var(--xima-calendar-list-sidebar-width);
         min-block-size: 0;
         max-block-size: 100%;
         block-size: 100%;
@@ -139,7 +150,6 @@
             repeat(var(--xima-list-column-count), minmax(0, 1fr));
         grid-template-rows: repeat(var(--xima-list-day-count), minmax(0, 1fr));
         min-block-size: 0;
-        padding-block-end: 0.25rem;
     }
 
     .xima-calendar-list__multi-day-grid-row {
@@ -162,7 +172,7 @@
         max-inline-size: 100%;
         min-block-size: 0 !important;
         margin: 0.2rem !important;
-        padding: 0.35rem 0.5rem !important;
+        padding: 0 !important;
         border-radius: var(--typo3-component-border-radius, 0.25rem);
         overflow: hidden;
     }
@@ -170,6 +180,7 @@
     .xima-calendar-list__multi-day-event .ec-event-body {
         inline-size: 100%;
         min-inline-size: 0;
+        padding: 0.35rem 0.5rem;
         align-items: flex-start;
         overflow: hidden;
     }
@@ -185,28 +196,37 @@
     }
 
     .xima-calendar-list__multi-day-event .xima-calendar-event__icon {
+        display: block;
+        flex: 0 0 auto;
+        align-self: flex-start;
+        inline-size: 1em;
+        block-size: 1em;
+        margin: 0;
+        padding: 0;
+    }
+
+    .xima-calendar-list__multi-day--columns-5
+    .xima-calendar-list__multi-day-event .ec-event-body {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .xima-calendar-list__multi-day--columns-5
+    .xima-calendar-list__multi-day-event .ec-event-title {
+        order: 1;
+        flex: 0 1 auto;
+        inline-size: 100%;
+    }
+
+    .xima-calendar-list__multi-day--columns-5
+    .xima-calendar-list__multi-day-event .xima-calendar-event__icon {
+        order: 2;
         align-self: flex-start;
     }
 
     .xima-calendar-list__multi-day--columns-5
     .xima-calendar-list__multi-day-event .ec-event-title {
-        display: none;
-    }
-
-    .ec-main .ec-event.xima-calendar-event--dashed,
-    .xima-calendar-list__multi-day-event.xima-calendar-event--dashed {
-        border-block-end: 2px dashed light-dark(
-            color-mix(in srgb, var(--xima-event-color, currentColor) 70%, #000 30%),
-            color-mix(in srgb, var(--xima-event-color, currentColor) 70%, #fff 30%)
-        ) !important;
-    }
-
-    .ec-main .ec-event.xima-calendar-event--outlined,
-    .xima-calendar-list__multi-day-event.xima-calendar-event--outlined {
-        border-block-end: 2px solid light-dark(
-            color-mix(in srgb, var(--xima-event-color, currentColor) 70%, #000 30%),
-            color-mix(in srgb, var(--xima-event-color, currentColor) 70%, #fff 30%)
-        ) !important;
+        font-size: 0.6rem;
     }
 
     .xima-calendar-list__multi-day-day {
@@ -233,20 +253,51 @@
         }
 
         .ec-list.xima-calendar-list-main--has-sidebar
-        .xima-calendar-list__multi-day-grid-row:last-child
-        .xima-calendar-list__multi-day-day {
-            display: none;
-        }
-
-        .ec-list.xima-calendar-list-main--has-sidebar
         .xima-calendar-list__multi-day-day {
             font-size: 0.65rem;
         }
 
         .ec-list.xima-calendar-list-main--has-sidebar
-        .xima-calendar-list__multi-day--columns-4
         .xima-calendar-list__multi-day-event .ec-event-title {
-            display: none;
+            font-size: 0.7rem;
+        }
+
+        .ec-list.xima-calendar-list-main--has-sidebar
+        .xima-calendar-list__multi-day--columns-3
+        .xima-calendar-list__multi-day-event .ec-event-body {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .ec-list.xima-calendar-list-main--has-sidebar
+        .xima-calendar-list__multi-day--columns-3
+        .xima-calendar-list__multi-day-event .ec-event-title {
+            order: 1;
+            flex: 0 1 auto;
+            inline-size: 100%;
+        }
+
+        .ec-list.xima-calendar-list-main--has-sidebar
+        .xima-calendar-list__multi-day--columns-3
+        .xima-calendar-list__multi-day-event .xima-calendar-event__icon {
+            order: 2;
+            align-self: flex-start;
+        }
+    }
+}
+
+@container calendar-content (max-width: 900px) {
+    #xima-calendar-mount {
+        .ec-list.xima-calendar-list-main--has-sidebar {
+            --xima-calendar-list-sidebar-gap: 0.5rem;
+            --xima-calendar-list-sidebar-width: 40%;
+            --xima-calendar-list-main-width: 60%;
+
+            .ec-main {
+                inline-size: calc(var(--xima-calendar-list-main-width) - var(--xima-calendar-list-sidebar-gap));
+                max-inline-size: calc(var(--xima-calendar-list-main-width) - var(--xima-calendar-list-sidebar-gap));
+                margin-inline-start: calc(var(--xima-calendar-list-sidebar-width) + var(--xima-calendar-list-sidebar-gap));
+            }
         }
     }
 }
