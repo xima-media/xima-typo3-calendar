@@ -1,5 +1,31 @@
 export type ColorOverrides = Record<string, Record<string, string>>;
 
+const COLOR_PALETTE_SIZE = 200;
+const GOLDEN_ANGLE = 137.508;
+const COLOR_VARIANTS = [
+    {saturation: 76, lightness: 44},
+    {saturation: 88, lightness: 50},
+    {saturation: 72, lightness: 38},
+    {saturation: 92, lightness: 56},
+    {saturation: 78, lightness: 62},
+] as const;
+
+const hashColorKey = (key: string): number => {
+    let hash = 2166136261;
+
+    for (const character of key) {
+        hash ^= character.charCodeAt(0);
+        hash = Math.imul(hash, 16777619);
+    }
+
+    hash ^= hash >>> 16;
+    hash = Math.imul(hash, 2246822507);
+    hash ^= hash >>> 13;
+    hash = Math.imul(hash, 3266489909);
+
+    return (hash ^ (hash >>> 16)) >>> 0;
+};
+
 export const getColor = (
     identifier: string,
     value: string | number,
@@ -10,12 +36,12 @@ export const getColor = (
         return override;
     }
 
-    const seed = [...`${identifier}:${value}`].reduce(
-        (hash, character) => ((hash * 31) + character.charCodeAt(0)) >>> 0,
-        0,
-    );
-    const hue = Math.round((seed * 137.508) % 360);
-    return `hsl(${hue} 68% 46%)`;
+    const seed = hashColorKey(`${identifier}:${value}`);
+    const paletteIndex = seed % COLOR_PALETTE_SIZE;
+    const variant = COLOR_VARIANTS[Math.floor(paletteIndex / (COLOR_PALETTE_SIZE / COLOR_VARIANTS.length))];
+    const hue = Math.round((paletteIndex * GOLDEN_ANGLE) % 360);
+
+    return `hsl(${hue} ${variant.saturation}% ${variant.lightness}%)`;
 };
 
 export const getTextColor = (

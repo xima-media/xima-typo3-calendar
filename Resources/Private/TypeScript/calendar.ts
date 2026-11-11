@@ -8,6 +8,7 @@ import {createCalendarInteractionController} from './Interaction/calendar-intera
 import {createCalendarListScrollController} from './Interaction/calendar-list-scroll-controller';
 import {readCalendarConfig, type Typo3TopWindow} from './Configuration/calendar-runtime-config';
 import type {CalendarFilterConfiguration, CalendarFilterSelection} from './Filter/calendar-filter-state';
+import {treeEventValuesUpdatedEvent, type TreeEventValues} from './Filter/calendar-filter-events';
 import {createCalendarFilterSync} from './Filter/calendar-filter-sync';
 import {createCalendarMiniCalendarSync} from './Filter/Services/calendar-mini-calendar-sync';
 import {miniCalendarEvents} from './Filter/Services/calendar-mini-calendar-events';
@@ -65,6 +66,42 @@ DocumentService.ready().then(async () => {
         initialConfiguration: initialFilterConfiguration,
         refetchEvents: () => refetchEvents(),
     });
+
+    const publishTreeEventValues = (events: CalendarEventData[]): void => {
+        const treeEventValues: TreeEventValues = {};
+
+        events.forEach((event) => {
+            const filterValues = event.extendedProps?.filterValues;
+            if (!filterValues || typeof filterValues !== 'object') {
+                return;
+            }
+
+            Object.entries(filterValues as Record<string, unknown>).forEach(([identifier, value]) => {
+                const values = Array.isArray(value) ? value : [value];
+                const knownValues = treeEventValues[identifier] ?? [];
+
+                values.forEach((itemValue) => {
+                    if (
+                        (typeof itemValue === 'string' || typeof itemValue === 'number')
+                        && !knownValues.includes(String(itemValue))
+                    ) {
+                        knownValues.push(String(itemValue));
+                    }
+                });
+
+                if (knownValues.length > 0) {
+                    treeEventValues[identifier] = knownValues;
+                }
+            });
+        });
+
+        filterWindow.dispatchEvent(new CustomEvent(treeEventValuesUpdatedEvent, {
+            detail: treeEventValues,
+        }));
+    };
+
+    const publishCurrentTreeEventValues = (): void => publishTreeEventValues(currentEvents);
+    filterWindow.addEventListener('xima-calendar-filter-configuration-loaded', publishCurrentTreeEventValues);
 
     const eventRenderer = createCalendarEventRenderer({
         locale: calendarConfig.locale,
@@ -174,6 +211,11 @@ DocumentService.ready().then(async () => {
                 renderer: eventRenderer,
                 onEventsLoaded: (events) => {
                     currentEvents = events;
+                    const hasActiveFilters = Object.values(filterSync.getActiveFilters().filters)
+                        .some((values) => values.length > 0);
+                    if (!hasActiveFilters) {
+                        publishTreeEventValues(events);
+                    }
                     listScrollController.eventsLoaded(events);
                 },
             })],
@@ -225,6 +267,10 @@ DocumentService.ready().then(async () => {
 
         destroyed = true;
         document.removeEventListener('click', openCreationFromButton);
+        filterWindow.removeEventListener(
+            'xima-calendar-filter-configuration-loaded',
+            publishCurrentTreeEventValues,
+        );
         miniCalendarSync.destroy();
         filterSync.destroy();
         interactionController.destroy();
