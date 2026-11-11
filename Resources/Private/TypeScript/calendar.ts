@@ -67,7 +67,6 @@ DocumentService.ready().then(async () => {
     });
 
     const eventRenderer = createCalendarEventRenderer({
-        locale: calendarConfig.locale,
         filterColors: calendarConfig.filterColors,
         appearanceSource: calendarConfig.eventAppearance.appearanceSource,
         colorSource: calendarConfig.eventAppearance.colorSource,

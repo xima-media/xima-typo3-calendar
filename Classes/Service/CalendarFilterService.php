@@ -19,6 +19,7 @@ final class CalendarFilterService
     public function __construct(
         private readonly EventDispatcher $eventDispatcher,
         private readonly CalendarPageConfigurationReader $configurationReader,
+        private readonly CalendarFilterMarkerResolver $markerResolver,
     ) {
     }
 
@@ -36,7 +37,7 @@ final class CalendarFilterService
         $this->eventDispatcher->dispatch($event);
 
         foreach ($event->getFilters() as $filter) {
-            $serializedFilter = $filter->jsonSerialize();
+            $serializedFilter = $this->markerResolver->resolve($filter->jsonSerialize());
 
             $filters[$filter->getIdentifier()] = $serializedFilter;
         }

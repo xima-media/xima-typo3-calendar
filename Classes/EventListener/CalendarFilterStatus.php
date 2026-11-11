@@ -66,10 +66,6 @@ final readonly class CalendarFilterStatus implements CalendarFilterListenerInter
                     'xima_typo3_calendar',
                 ) ?? 'Canceled',
                 value: 'canceled',
-                marker: LocalizationUtility::translate(
-                    'LLL:EXT:xima_typo3_calendar/Resources/Private/Language/locallang_mod_calendar.xlf:filter.canceled.marker',
-                    'xima_typo3_calendar',
-                ) ?? '[C]',
             ),
         );
 
