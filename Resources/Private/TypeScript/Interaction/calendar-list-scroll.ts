@@ -42,6 +42,8 @@ const toDateAttribute = (date: Date): string => {
     return `${year}-${month}-${day}`;
 };
 
+const listScrollTopOffset = 40;
+
 export const scrollCalendarListToRelevantDate = (
     configuration: CalendarListScrollConfiguration,
 ): void => {
@@ -71,8 +73,16 @@ export const scrollCalendarListToRelevantDate = (
         return;
     }
 
+    const firstAppointment = target.querySelector<HTMLElement>(
+        '.ec-event:not(.xima-calendar-list__multi-day-source)',
+    );
+    const scrollTarget = firstAppointment ?? target;
+    const targetTop = scrollTarget.getBoundingClientRect().top
+        - scrollContainer.getBoundingClientRect().top
+        + scrollContainer.scrollTop;
+
     scrollContainer.scrollTo({
-        top: Math.max(0, target.offsetTop - 8),
+        top: Math.max(0, targetTop - listScrollTopOffset),
         behavior: 'auto',
     });
 };

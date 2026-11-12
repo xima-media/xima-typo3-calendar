@@ -6,6 +6,7 @@ import {createCalendarCreationController} from './Event/calendar-event-creation'
 import {createCalendarDetailsController} from './Event/calendar-details';
 import {createCalendarInteractionController} from './Interaction/calendar-interaction';
 import {createCalendarListScrollController} from './Interaction/calendar-list-scroll-controller';
+import {createCalendarListNavigation, type CalendarListNavigation} from './Interaction/calendar-list-navigation';
 import {readCalendarConfig, type Typo3TopWindow} from './Configuration/calendar-runtime-config';
 import type {CalendarFilterConfiguration, CalendarFilterSelection} from './Filter/calendar-filter-state';
 import {createCalendarFilterSync} from './Filter/calendar-filter-sync';
@@ -94,6 +95,7 @@ DocumentService.ready().then(async () => {
     );
 
     const creationController = createCalendarCreationController(container, calendarConfig);
+    let listNavigation: CalendarListNavigation | null = null;
     let currentView = calendarConfig.initialView;
     const persistCalendarView = (view: string): void => {
         if (view === currentView) {
@@ -159,6 +161,7 @@ DocumentService.ready().then(async () => {
                 detailsController.datesSet();
                 persistCalendarView(view.type);
                 listScrollController.viewChanged(view);
+                listNavigation?.viewChanged(view.type, view.currentStart);
                 filterWindow.dispatchEvent(new CustomEvent(miniCalendarEvents.mainDateChange, {
                     detail: {
                         date: view.currentStart.toISOString(),
@@ -197,6 +200,17 @@ DocumentService.ready().then(async () => {
         },
     );
 
+    listNavigation = createCalendarListNavigation(
+        container,
+        calendarConfig.locale.startsWith('de')
+            ? {previous: 'Vorheriger Monat', next: 'Nächster Monat'}
+            : {previous: 'Previous month', next: 'Next month'},
+        calendarConfig.locale,
+        () => ec.prev(),
+        () => ec.next(),
+    );
+    listNavigation.viewChanged(ec.getView().type, ec.getView().currentStart);
+
     refetchEvents = () => ec.refetchEvents();
     const miniCalendarSync = createCalendarMiniCalendarSync(ec, filterWindow);
     filterSync.start();
@@ -230,6 +244,8 @@ DocumentService.ready().then(async () => {
         interactionController.destroy();
         eventTooltip.destroy();
         listScrollController.destroy();
+        listNavigation?.destroy();
+        listNavigation = null;
         calendarCleanups.delete(container);
         await destroyCalendar(ec);
     };

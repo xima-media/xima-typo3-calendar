@@ -8,6 +8,10 @@ const startOfDay = (date: Date): Date => {
     return result;
 };
 
+const getDateKey = (date: Date): string => (
+    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+);
+
 const getMonthEnd = (monthStart: Date): Date => (
     new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 1)
 );
@@ -82,6 +86,7 @@ export const renderCalendarListMultiDayEvents = (
         label.className = 'xima-calendar-list__multi-day-day';
         const date = new Date(monthStart);
         date.setDate(date.getDate() + day);
+        row.dataset.ximaCalendarDate = getDateKey(date);
         if (date.getTime() === today.getTime()) {
             row.classList.add('xima-calendar-list__multi-day-grid-row--today');
         }
