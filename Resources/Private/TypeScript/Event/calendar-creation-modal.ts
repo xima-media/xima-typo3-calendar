@@ -5,6 +5,12 @@ import type {
     CalendarOption,
     CalendarRecordTypeOption,
 } from '../Configuration/calendar-runtime-config';
+import {
+    initEventSearchField,
+    renderEventSearchField,
+    type EventSearchField,
+    type EventSearchLabels,
+} from './calendar-event-search-field';
 
 export type CalendarCreationType = 'event' | 'event-appointment';
 
@@ -15,6 +21,7 @@ export type CalendarCreationValues = {
     allDay: boolean;
     calendarUid: number | null;
     recordType: string | null;
+    eventUid: number | null;
 };
 
 const formatDateTimeLocal = (date: Date): string => {
@@ -45,6 +52,8 @@ export type CalendarCreationModalOptions = {
     initialEnd: Date;
     initialAllDay: boolean;
     defaultRecordType: string | null;
+    eventSearchUrl: string;
+    locale: string;
 };
 
 export function chooseCalendarCreationType({
@@ -57,6 +66,8 @@ export function chooseCalendarCreationType({
     initialEnd,
     initialAllDay,
     defaultRecordType,
+    eventSearchUrl,
+    locale,
 }: CalendarCreationModalOptions): Promise<CalendarCreationValues | null> {
     return new Promise((resolve) => {
         // With a single calendar there is nothing to choose, so the select is not rendered.
@@ -75,12 +86,21 @@ export function chooseCalendarCreationType({
         const renderRecordTypeField = (): unknown => html`
                 <div
                     class="form-group xima-calendar-creation-form__record-type"
+                    style="grid-area:1/1"
                     data-record-type-field
                 >
                     <label class="form-label" for="xima-calendar-creation-record-type">${labels.recordType}</label>
                     <select id="xima-calendar-creation-record-type" class="form-select"></select>
                 </div>
             `;
+        const eventSearchLabels: EventSearchLabels = {
+            label: labels.eventSearch,
+            placeholder: labels.eventSearchPlaceholder,
+            appointments: labels.eventSearchAppointments,
+            noResults: labels.eventSearchNoResults,
+            clear: labels.eventSearchClear,
+        };
+        let eventSearchField: EventSearchField | null = null;
         const modal = Modal.advanced({
             title: labels.title,
             content: html`
@@ -95,7 +115,11 @@ export function chooseCalendarCreationType({
                             `)}
                         </select>
                     </div>
-                    ${renderRecordTypeField()}
+                    <!-- The record type belongs to events, the event to appointments: both share one slot. -->
+                    <div style="display:grid">
+                        ${renderRecordTypeField()}
+                        ${eventSearchUrl === '' ? '' : html`<div style="grid-area:1/1">${renderEventSearchField(eventSearchLabels)}</div>`}
+                    </div>
                     ${calendars.length > 1 ? html`
                         <div class="form-group">
                             <label class="form-label" for="xima-calendar-creation-calendar">${labels.calendar}</label>
@@ -150,6 +174,10 @@ export function chooseCalendarCreationType({
             const endInput = form.querySelector<HTMLInputElement>('#xima-calendar-creation-end');
             const typeInput = form.querySelector<HTMLSelectElement>('#xima-calendar-creation-type');
             const recordTypeField = form.querySelector<HTMLElement>('[data-record-type-field]');
+            const eventField = form.querySelector<HTMLElement>('[data-event-field]');
+            eventSearchField = eventSearchUrl === ''
+                ? null
+                : initEventSearchField(form, {url: eventSearchUrl, locale, labels: eventSearchLabels});
             const recordTypeInput = form.querySelector<HTMLSelectElement>('#xima-calendar-creation-record-type');
             const calendarInput = form.querySelector<HTMLSelectElement>('#xima-calendar-creation-calendar');
             const currentCalendarUid = (): number | null => (calendarInput ? Number(calendarInput.value) || null : selectedCalendarUid);
@@ -173,6 +201,10 @@ export function chooseCalendarCreationType({
                 }
                 if (recordTypeInput) {
                     recordTypeInput.tabIndex = visible ? 0 : -1;
+                }
+                if (eventField) {
+                    eventField.style.visibility = isEvent ? 'hidden' : 'visible';
+                    eventField.setAttribute('aria-hidden', String(isEvent));
                 }
             };
             const updateDateFields = (): void => {
@@ -201,7 +233,11 @@ export function chooseCalendarCreationType({
             calendarInput?.addEventListener('change', updateRecordTypeField);
             updateDateFields();
             updateRecordTypeField();
-            (form.elements.namedItem('xima-calendar-creation-type') as HTMLSelectElement | null)?.focus();
+            if (eventSearchField && typeInput?.value === 'event-appointment') {
+                eventSearchField.focus();
+            } else {
+                typeInput?.focus();
+            }
         });
 
         modal.addEventListener('button.clicked', (event: Event) => {
@@ -229,7 +265,9 @@ export function chooseCalendarCreationType({
                 return;
             }
 
-            resolve({type, start, end, allDay, calendarUid, recordType});
+            const eventUid = type === 'event-appointment' ? eventSearchField?.getEventUid() ?? null : null;
+
+            resolve({type, start, end, allDay, calendarUid, recordType, eventUid});
             modal.hideModal();
         });
         modal.addEventListener('typo3-modal-hidden', () => {

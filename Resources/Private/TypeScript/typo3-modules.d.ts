@@ -5,6 +5,8 @@ declare module '@typo3/core/ajax/ajax-request.js' {
 
     export default class AjaxRequest {
         constructor(url: string | URL);
+        withQueryArguments(data: string | Record<string, string>): AjaxRequest;
+        abort(): void;
         get(init?: RequestInit): Promise<AjaxResponse>;
         post(payload?: unknown, init?: RequestInit): Promise<AjaxResponse>;
     }
