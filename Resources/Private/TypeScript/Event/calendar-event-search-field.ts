@@ -160,7 +160,14 @@ export function initEventSearchField(
         status.textContent = text;
     };
 
+    // While a search is pending, the visible results still belong to the previous term.
+    const setOutdated = (outdated: boolean): void => {
+        list.style.opacity = outdated ? '0.5' : '';
+        list.setAttribute('aria-busy', String(outdated));
+    };
+
     const closeList = (): void => {
+        setOutdated(false);
         results = [];
         activeIndex = -1;
         list.hidden = true;
@@ -169,6 +176,7 @@ export function initEventSearchField(
     };
 
     const showResults = (found: EventSearchResult[]): void => {
+        setOutdated(false);
         results = found;
         activeIndex = found.length > 0 ? 0 : -1;
         list.hidden = found.length === 0;
@@ -208,6 +216,9 @@ export function initEventSearchField(
     };
 
     const choose = (result: EventSearchResult): void => {
+        if (isSearchPending()) {
+            return;
+        }
         cancelSearch();
         closeList();
         setStatus('');
@@ -243,6 +254,7 @@ export function initEventSearchField(
             setStatus('');
             return;
         }
+        setOutdated(true);
         debounceTimer = window.setTimeout(() => {
             debounceTimer = undefined;
             void runSearch(term);
@@ -261,8 +273,7 @@ export function initEventSearchField(
                 break;
             case 'Enter':
                 event.preventDefault();
-                // The visible results belong to the previous term until the search answers.
-                if (isOpen && activeIndex >= 0 && !isSearchPending()) {
+                if (isOpen && activeIndex >= 0) {
                     choose(results[activeIndex]);
                 }
                 break;
