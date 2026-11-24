@@ -60,7 +60,7 @@ const createDateFormat = (locale: string): Intl.DateTimeFormat => {
 
 export function renderEventSearchField(labels: EventSearchLabels): TemplateResult {
     return html`
-        <div class="form-group xima-calendar-creation-form__event" data-event-field>
+        <div class="form-group xima-calendar-creation-form__event">
             <label class="form-label" for=${FIELD_ID}>${labels.label}</label>
             <div data-event-search>
                 <input
@@ -179,9 +179,12 @@ export function initEventSearchField(
 
     const cancelSearch = (): void => {
         window.clearTimeout(debounceTimer);
+        debounceTimer = undefined;
         pendingRequest?.abort();
         pendingRequest = null;
     };
+
+    const isSearchPending = (): boolean => debounceTimer !== undefined || pendingRequest !== null;
 
     const runSearch = async (term: string): Promise<void> => {
         pendingRequest?.abort();
@@ -240,7 +243,10 @@ export function initEventSearchField(
             setStatus('');
             return;
         }
-        debounceTimer = window.setTimeout(() => void runSearch(term), DEBOUNCE_MS);
+        debounceTimer = window.setTimeout(() => {
+            debounceTimer = undefined;
+            void runSearch(term);
+        }, DEBOUNCE_MS);
     });
 
     input.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -255,7 +261,8 @@ export function initEventSearchField(
                 break;
             case 'Enter':
                 event.preventDefault();
-                if (isOpen && activeIndex >= 0) {
+                // The visible results belong to the previous term until the search answers.
+                if (isOpen && activeIndex >= 0 && !isSearchPending()) {
                     choose(results[activeIndex]);
                 }
                 break;
@@ -274,6 +281,7 @@ export function initEventSearchField(
     });
 
     input.addEventListener('blur', () => {
+        cancelSearch();
         if (!list.hidden) {
             closeList();
         }

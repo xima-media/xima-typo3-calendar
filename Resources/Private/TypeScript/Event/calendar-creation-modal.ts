@@ -118,7 +118,7 @@ export function chooseCalendarCreationType({
                     <!-- The record type belongs to events, the event to appointments: both share one slot. -->
                     <div style="display:grid">
                         ${renderRecordTypeField()}
-                        ${eventSearchUrl === '' ? '' : html`<div style="grid-area:1/1">${renderEventSearchField(eventSearchLabels)}</div>`}
+                        ${eventSearchUrl === '' ? '' : html`<div style="grid-area:1/1" data-event-field>${renderEventSearchField(eventSearchLabels)}</div>`}
                     </div>
                     ${calendars.length > 1 ? html`
                         <div class="form-group">
