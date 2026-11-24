@@ -74,8 +74,16 @@ export function renderEventSearchField(labels: EventSearchLabels): TemplateResul
                     aria-controls=${LIST_ID}
                     placeholder=${labels.placeholder}
                 >
-                <div id=${LIST_ID} class="list-group mt-1" role="listbox" aria-label=${labels.label} hidden></div>
-                <p class="form-text mb-0" data-event-search-status aria-live="polite"></p>
+                <!-- A popover lies in the top layer: the results neither resize nor scroll the modal. -->
+                <div
+                    id=${LIST_ID}
+                    class="list-group shadow"
+                    role="listbox"
+                    aria-label=${labels.label}
+                    popover="manual"
+                    style="position:fixed;inset:auto;margin:0;padding:0;border:0;overflow-y:auto"
+                ></div>
+                <p class="visually-hidden" data-event-search-status aria-live="polite"></p>
             </div>
             <!-- hidden sits on a wrapper: d-flex would override it. -->
             <div data-event-selection hidden>
@@ -117,6 +125,7 @@ export function initEventSearchField(
     let selected: EventSearchResult | null = null;
     let debounceTimer: number | undefined;
     let pendingRequest: AjaxRequest | null = null;
+    let showNoResults = false;
 
     const describe = (result: EventSearchResult): string => {
         const parts: string[] = [];
@@ -131,7 +140,7 @@ export function initEventSearchField(
     const optionId = (index: number): string => `${LIST_ID}-${index}`;
 
     const renderOptions = (): void => {
-        render(html`${results.map((result, index) => {
+        render(html`${showNoResults ? html`<div class="list-group-item text-body-secondary">${labels.noResults}</div>` : nothing}${results.map((result, index) => {
             const description = describe(result);
             return html`
                 <div
@@ -160,6 +169,35 @@ export function initEventSearchField(
         status.textContent = text;
     };
 
+    const isListOpen = (): boolean => list.matches(':popover-open');
+
+    const positionList = (): void => {
+        const rect = input.getBoundingClientRect();
+        const gap = 4;
+        list.style.top = `${rect.bottom + gap}px`;
+        list.style.left = `${rect.left}px`;
+        list.style.width = `${rect.width}px`;
+        list.style.maxHeight = `${Math.max(160, Math.min(384, window.innerHeight - rect.bottom - 2 * gap))}px`;
+    };
+
+    const openList = (): void => {
+        positionList();
+        if (!isListOpen()) {
+            list.showPopover();
+            // Capture phase: the modal body scrolls, not the window.
+            window.addEventListener('scroll', positionList, true);
+            window.addEventListener('resize', positionList);
+        }
+    };
+
+    const hideList = (): void => {
+        if (isListOpen()) {
+            list.hidePopover();
+        }
+        window.removeEventListener('scroll', positionList, true);
+        window.removeEventListener('resize', positionList);
+    };
+
     // While a search is pending, the visible results still belong to the previous term.
     const setOutdated = (outdated: boolean): void => {
         list.style.opacity = outdated ? '0.5' : '';
@@ -170,7 +208,8 @@ export function initEventSearchField(
         setOutdated(false);
         results = [];
         activeIndex = -1;
-        list.hidden = true;
+        showNoResults = false;
+        hideList();
         input.setAttribute('aria-expanded', 'false');
         renderOptions();
     };
@@ -179,7 +218,8 @@ export function initEventSearchField(
         setOutdated(false);
         results = found;
         activeIndex = found.length > 0 ? 0 : -1;
-        list.hidden = found.length === 0;
+        showNoResults = found.length === 0;
+        openList();
         input.setAttribute('aria-expanded', String(found.length > 0));
         setStatus(found.length === 0 ? labels.noResults : '');
         renderOptions();
@@ -262,7 +302,7 @@ export function initEventSearchField(
     });
 
     input.addEventListener('keydown', (event: KeyboardEvent) => {
-        const isOpen = !list.hidden;
+        const isOpen = isListOpen();
         switch (event.key) {
             case 'ArrowDown':
             case 'ArrowUp':
@@ -293,7 +333,7 @@ export function initEventSearchField(
 
     input.addEventListener('blur', () => {
         cancelSearch();
-        if (!list.hidden) {
+        if (isListOpen()) {
             closeList();
         }
     });
