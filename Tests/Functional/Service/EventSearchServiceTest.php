@@ -46,8 +46,8 @@ final class EventSearchServiceTest extends AbstractCalendarFunctionalTestCase
     public static function searchResultsDataProvider(): iterable
     {
         // Upcoming by next appointment, then past by last appointment, then without appointments by title.
-        yield 'admin sees every event, hidden ones included' => [self::ADMIN, [3, 2, 1, 7, 4, 5, 9]];
-        yield 'editor sees neither foreign drafts nor events on unreadable pages' => [self::EDITOR, [3, 2, 1, 7, 5]];
+        yield 'admin sees every event, hidden ones included' => [self::ADMIN, [3, 2, 11, 10, 1, 7, 4, 5, 9]];
+        yield 'editor sees neither foreign drafts nor events on unreadable pages' => [self::EDITOR, [3, 2, 11, 10, 1, 7, 5]];
         yield 'editor without table access gets nothing' => [self::EDITOR_WITHOUT_TABLES, []];
     }
 
@@ -78,6 +78,8 @@ final class EventSearchServiceTest extends AbstractCalendarFunctionalTestCase
             $byUid[3],
         );
         self::assertSame(1700003600, $byUid[1]['lastEnd'], 'A deleted appointment must not extend the range.');
+        self::assertSame(1850000000, $byUid[10]['lastEnd'], 'An appointment without end date ends at its start.');
+        self::assertSame([1650000000, 1820000000], [$byUid[11]['firstStart'], $byUid[11]['lastEnd']]);
         self::assertNull($byUid[7]['firstStart']);
         self::assertNull($byUid[7]['lastEnd']);
     }

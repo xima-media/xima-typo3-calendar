@@ -126,14 +126,17 @@ final class EventSearchService
             Connection::PARAM_INT,
         );
 
+        // The end date is optional; an appointment without one ends at its start.
+        $appointmentEnd = 'COALESCE(NULLIF(appointment.end_date, 0), appointment.start_date)';
+
         $queryBuilder
             ->select('event.uid', 'event.title')
             ->addSelectLiteral(
                 'MIN(appointment.start_date) AS first_start',
                 // 0 instead of NULL: databases disagree on where NULL sorts.
-                'COALESCE(MAX(appointment.end_date), 0) AS last_end',
-                'MAX(CASE WHEN appointment.end_date >= ' . $now . ' THEN 1 ELSE 0 END) AS has_upcoming',
-                'MIN(CASE WHEN appointment.end_date >= ' . $now . ' THEN appointment.start_date END) AS next_start',
+                'COALESCE(MAX(' . $appointmentEnd . '), 0) AS last_end',
+                'MAX(CASE WHEN ' . $appointmentEnd . ' >= ' . $now . ' THEN 1 ELSE 0 END) AS has_upcoming',
+                'MIN(CASE WHEN ' . $appointmentEnd . ' >= ' . $now . ' THEN appointment.start_date END) AS next_start',
             )
             ->from(self::EVENT_TABLE, 'event')
             // The permission clause names the table "pages", so the alias must match.

@@ -15,6 +15,8 @@
 ,7,2,1767000000,"event","Summer 100% sale",2,0,0,0,0,0
 ,8,2,1767000000,"event","Room 101 tour",2,0,0,0,0,0
 ,9,20,1767000000,"event","Summer secret",2,0,0,0,0,0
+,10,2,1767000000,"event","Summer gala",2,0,0,0,0,0
+,11,2,1767000000,"event","Summer market",2,0,0,0,0,0
 "tx_ximatypo3calendar_domain_model_entry",,,,,,,,,,,,
 ,"uid","pid","tstamp","record_type","event","calendar","title","start_date","end_date","location","canceled","hidden","deleted"
 ,1,2,1767000000,"event-appointment",1,1,"",1700000000,1700003600,0,0,0,0
@@ -23,3 +25,6 @@
 ,4,2,1767000000,"event-appointment",3,1,"",1600000000,1600003600,0,0,0,0
 ,5,2,1767000000,"event-appointment",3,1,"",1900000000,1900003600,0,0,0,0
 ,6,2,1767000000,"event-appointment",1,1,"",1750000000,1750003600,0,0,0,1
+,7,2,1767000000,"event-appointment",10,1,"",1850000000,0,0,0,0,0
+,8,2,1767000000,"event-appointment",11,1,"",1650000000,1650003600,0,0,0,0
+,9,2,1767000000,"event-appointment",11,1,"",1820000000,0,0,0,0,0
