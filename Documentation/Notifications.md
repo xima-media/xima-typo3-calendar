@@ -9,6 +9,7 @@ Status transitions and edits to live events send e-mail notifications.
 |-------|------|
 | `Hooks\DataHandlerEventDispatcherHook` | Dispatches `EventChangedEvent` with the field diff. |
 | `EventListener\EventWorkflowNotification` | Maps the diff to a template and a recipient set. |
+| `EventListener\LiveAppointmentNotification` | Collects appointment changes of live events and sends one live-edit mail per event and save. |
 | `Service\NotificationRecipientResolver` | Resolves owners and opted-in backend users. |
 | `Service\NotificationMailService` | Renders the template and sends the mail. |
 | `Service\StatusChangeContext` | Request-scoped bridge carrying the acting backend user and the *notify owner* toggle from the status modal into the DataHandler flow. |
@@ -27,6 +28,15 @@ Everything runs **synchronously inside the DataHandler run**, which is what make
 | Status → **Live** | `EventPublishedNotification` | The event's owners |
 | Status → **Rejected** | `EventRejectedNotification` | The event's owners |
 | A **live event is edited** (status unchanged, or already live) | `EventLiveNotification` | Backend users subscribed to live-edit notifications |
+| An **appointment of a live event** is created, edited, hidden or deleted | `EventLiveNotification` | Backend users subscribed to live-edit notifications |
+
+Editors without the publish permission may manage the appointments of live events (see
+[Access Control](AccessControl.md#appointments)), so subscribers learn about changes to published
+dates without a publisher being involved. `EventListener\LiveAppointmentNotification` collects
+the changes per event and sends **one** mail when the DataHandler run ends, however many
+appointments a save touched. It stays quiet when the event itself was created or published in
+the same run (its own notification covers that) and when the event was deleted: deleting an
+event deletes its appointments first.
 
 The owner mail on a move into review fires only when the change came *from the backend*.
 An owner submitting their own event for review from the frontend never populates the

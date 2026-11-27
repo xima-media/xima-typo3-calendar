@@ -11,22 +11,27 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use Xima\XimaTypo3Calendar\Controller\Backend\EventsController;
+use Xima\XimaTypo3Calendar\Database\RawRecordReader;
 use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
-use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
+use Xima\XimaTypo3Calendar\Service\EventWorkflowPolicy;
 use Xima\XimaTypo3Calendar\Service\StatusChangeContext;
 use Xima\XimaTypo3Calendar\Tests\Functional\AbstractCalendarFunctionalTestCase;
 
 /**
- * Covers the status modal endpoint. It is the only write surface of the backend
- * module and carries the publish permission check, so it is exercised end to end
- * through the real DataHandler.
+ * Covers the status modal endpoint end to end through the real DataHandler. The
+ * transition tests run as the editor and publisher of Fixtures/workflow-permissions.csv:
+ * events 11–14 are the editor's own (live, draft, review, rejected), 15 and 16 a
+ * colleague's draft and review (hidden from the editor), 17 a colleague's live event.
  *
  * The controller is instantiated directly rather than pulled from the container:
- * updateStatus() only uses the three constructor dependencies, none of the
+ * updateStatus() only uses the constructor dependencies, none of the
  * setter-injected ones AbstractBackendController declares for rendering.
  */
 final class EventsControllerTest extends AbstractCalendarFunctionalTestCase
 {
+    private const EDITOR = 2;
+    private const PUBLISHER = 3;
+
     private StatusChangeContext $statusChangeContext;
 
     /** @var array<string, mixed>|null */
@@ -39,6 +44,7 @@ final class EventsControllerTest extends AbstractCalendarFunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/pages.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/be_users.csv');
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/calendar.csv');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/workflow-permissions.csv');
 
         $this->statusChangeContext = new StatusChangeContext();
         $this->extensionConfigurationBackup = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'] ?? null;
@@ -124,17 +130,102 @@ final class EventsControllerTest extends AbstractCalendarFunctionalTestCase
     }
 
     /**
-     * The permission gate is scoped to publishing: every other transition stays
-     * open to a user without it.
+     * @return array<string, array{0: int, 1: EventStatus}>
      */
-    #[Test]
-    public function allowsANonPublishingTransitionWithoutThePublishPermission(): void
+    public static function editorTransitionProvider(): array
     {
-        $this->setUpBackendUser(1);
+        return [
+            'own draft to review' => [12, EventStatus::REVIEW],
+            'own review back to draft' => [13, EventStatus::DRAFT],
+            'own rejected to draft' => [14, EventStatus::DRAFT],
+            'own rejected to review' => [14, EventStatus::REVIEW],
+        ];
+    }
 
-        $response = $this->updateStatus(['uid' => 2, 'status' => EventStatus::REVIEW->value]);
+    #[Test]
+    #[DataProvider('editorTransitionProvider')]
+    public function anEditorMayMoveTheirOwnEventBetweenDraftAndReview(int $uid, EventStatus $target): void
+    {
+        $this->setUpBackendUser(self::EDITOR);
+
+        $response = $this->updateStatus(['uid' => $uid, 'status' => $target->value]);
 
         self::assertSame(200, $response->getStatusCode());
+        self::assertSame($target->value, $this->currentStatus($uid));
+    }
+
+    /**
+     * @return array<string, array{0: int, 1: EventStatus}>
+     */
+    public static function refusedEditorTransitionProvider(): array
+    {
+        return [
+            'own live to draft' => [11, EventStatus::DRAFT],
+            'own live to review' => [11, EventStatus::REVIEW],
+            'own live to rejected' => [11, EventStatus::REJECTED],
+            'own draft to live' => [12, EventStatus::LIVE],
+            'own review to rejected' => [13, EventStatus::REJECTED],
+            'foreign hidden draft to review' => [15, EventStatus::REVIEW],
+            'foreign hidden review to draft' => [16, EventStatus::DRAFT],
+            'foreign hidden review to rejected' => [16, EventStatus::REJECTED],
+            'foreign live to draft' => [17, EventStatus::DRAFT],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('refusedEditorTransitionProvider')]
+    public function refusesAnEditorTheTransitionsReservedForPublishers(int $uid, EventStatus $target): void
+    {
+        $this->setUpBackendUser(self::EDITOR);
+        $statusBefore = $this->currentStatus($uid);
+
+        $response = $this->updateStatus(['uid' => $uid, 'status' => $target->value]);
+
+        self::assertSame(403, $response->getStatusCode());
+        self::assertSame(['success' => false], $this->decode($response));
+        self::assertSame($statusBefore, $this->currentStatus($uid));
+    }
+
+    /**
+     * Answers like a refused transition, so the endpoint does not reveal whether a uid exists.
+     */
+    #[Test]
+    public function answersForbiddenForAnEventThatDoesNotExist(): void
+    {
+        $this->setUpBackendUser(self::EDITOR);
+
+        self::assertSame(403, $this->updateStatus(['uid' => 999, 'status' => EventStatus::REVIEW->value])->getStatusCode());
+    }
+
+    #[Test]
+    public function aPublisherMayRejectAndUnpublishForeignEvents(): void
+    {
+        $this->setUpBackendUser(self::PUBLISHER);
+
+        self::assertSame(200, $this->updateStatus(['uid' => 16, 'status' => EventStatus::REJECTED->value])->getStatusCode());
+        self::assertSame(200, $this->updateStatus(['uid' => 17, 'status' => EventStatus::DRAFT->value])->getStatusCode());
+
+        self::assertSame(EventStatus::REJECTED->value, $this->currentStatus(16));
+        self::assertSame(EventStatus::DRAFT->value, $this->currentStatus(17));
+    }
+
+    #[Test]
+    public function aPublisherMayChangeTheStatusOfAHiddenEvent(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)->update(self::TABLE_EVENT, ['hidden' => 1], ['uid' => 17]);
+        $this->setUpBackendUser(self::PUBLISHER);
+
+        self::assertSame(200, $this->updateStatus(['uid' => 17, 'status' => EventStatus::DRAFT->value])->getStatusCode());
+        self::assertSame(EventStatus::DRAFT->value, $this->currentStatus(17));
+    }
+
+    #[Test]
+    public function answersForbiddenForADeletedEvent(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)->update(self::TABLE_EVENT, ['deleted' => 1], ['uid' => 16]);
+        $this->setUpBackendUser(self::PUBLISHER);
+
+        self::assertSame(403, $this->updateStatus(['uid' => 16, 'status' => EventStatus::DRAFT->value])->getStatusCode());
     }
 
     #[Test]
@@ -318,7 +409,8 @@ final class EventsControllerTest extends AbstractCalendarFunctionalTestCase
         return new EventsController(
             $this->get(ExtensionConfiguration::class),
             $this->statusChangeContext,
-            new CalendarPermissionService(),
+            $this->get(EventWorkflowPolicy::class),
+            $this->get(RawRecordReader::class),
         );
     }
 

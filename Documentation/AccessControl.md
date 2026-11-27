@@ -13,35 +13,102 @@ implicitly — `BackendUserAuthentication::check()` returns `true` for them.
 
 | Identifier            | Grants |
 |-----------------------|--------|
-| `publish_live_events` | Setting an event to **Live**, and editing live events and their appointments. |
-| `view_all_events`     | Seeing every draft/review/rejected event, not only the ones the user owns. |
+| `publish_live_events` | Every status transition (including **Live** and **Rejected**), editing, hiding and deleting live events, editing events of other users and assigning the backend owner. |
+| `view_all_events`     | Seeing every draft/review/rejected event, not only the ones the user owns. Seeing an event also allows editing it while it is not live. |
 
 Read them through `CalendarPermissionService::canPublishLiveEvents()` /
-`canViewAllEvents()` rather than checking `$GLOBALS['BE_USER']` directly.
+`canViewAllEvents()` rather than checking `$GLOBALS['BE_USER']` directly. What a user may do
+with a particular event is decided by `Service\EventWorkflowPolicy`, see below.
 
-### How publishing is gated
+## Event workflow
 
-Three layers, so the permission cannot be bypassed by driving a different surface:
+`Service\EventWorkflowPolicy` is the single decision point for status changes, event content
+and appointments. Every surface asks it:
 
-| Layer | Class | Effect |
-|-------|-------|--------|
-| TCA `itemsProcFunc` | `Backend\Tca\EventStatusItemsProcessor` | Removes **Live** from the status selector. An event that is *already* live keeps the option, so its status still renders and is not silently downgraded on save. |
-| Record-list modal | `ViewHelpers\Backend\CanPublishLiveEventsViewHelper` | Hides the Live option in the status modal. |
-| AJAX endpoint | `Controller\Backend\EventsController::updateStatus` | Refuses the transition server-side. |
+| Surface | Class | Effect |
+|---------|-------|--------|
+| DataHandler | `Hooks\EventWorkflowGuardHook` | Drops refused records and commands from the datamap/cmdmap and logs them to the DataHandler error log (*"refused by the event workflow permissions"*); the rest of the save goes through. Covers the record form, the list module, clipboard, import and every other DataHandler caller. |
+| Status modal endpoint | `Controller\Backend\EventsController::updateStatus` | Answers **403** for a refused transition, and for events that do not exist or the user cannot see, so the endpoint reveals nothing about hidden events. |
+| Status modal | `ViewHelpers\Backend\EventStatusItemsViewHelper` | Offers the current status plus the allowed targets. Without any allowed target the badge is read-only and opens no modal. |
+| Status select | `Backend\Tca\EventStatusItemsProcessor` | Same options as the modal. |
+| Edit form | `Backend\FormDataProvider\LiveEventReadOnlyForNonPublisher` | Renders what the policy refuses read-only, see [Editing live content](#editing-live-content). |
+
+Administrators and users with `publish_live_events` pass every check. Frontend APIs write as an
+administrator with their own access layer and are not affected. Regular TYPO3 permissions
+(tables, fields, pages) apply on top.
+
+### Status transitions
+
+| From → To | Without `publish_live_events` | With `publish_live_events` |
+|---|---|---|
+| Draft → Review | own events | ✓ |
+| Review → Draft | own events | ✓ |
+| Rejected → Draft / Review | own events | ✓ |
+| any → Live | ✗ | ✓ |
+| Live → any | ✗ | ✓ |
+| any → Rejected | ✗ | ✓ |
+
+"Own events" are those whose `owner_be_user` is the acting user. Events in review stay editable
+for their owner; there is no lock during review.
+
+- Only publishers take an event offline, so a published event cannot disappear from the website
+  without a publisher noticing. Editors ask a publisher to move it back to draft.
+- Rejecting is a review decision, so an editor cannot reject other people's submissions. A
+  rejected owner moves their event back to draft or review.
+- Editors change the status of their own events only, so nobody moves a colleague's work
+  through the workflow behind their back.
+
+### Event content
+
+| Action | Without `publish_live_events` | With `publish_live_events` |
+|---|---|---|
+| Edit a non-live event | if visible (own, or `view_all_events`) | ✓ |
+| Edit a live event | ✗, except its appointments | ✓ |
+| Hide / unhide, delete a live event | ✗ | ✓ |
+| Create an event with status *Live* or *Rejected* | ✗ | ✓ |
+| Set `owner_be_user` | ✗, always the creating user | ✓ |
+| Copy an event | the copy is a *Draft* of the copying user | same |
+| Write events the user cannot see | ✗ | ✓ |
+
+- Live content changes only through publishers, so a published event cannot be changed or taken
+  down unreviewed through any DataHandler path. Editors copy the event, edit the copy and submit
+  it for review, or ask a publisher.
+- Copies start as the copying user's draft, so copying a live event does not publish an
+  unreviewed duplicate under someone else's name.
+- Editors cannot assign or take over events, so ownership (and with it the transitions and the
+  event restriction) cannot be shifted by hand. Publishers reassign events when needed.
+- Records hidden by the [event restriction](#rules) cannot be written, so the restriction is a
+  real boundary and not just a filtered list.
+
+### Appointments
+
+Appointments are managed independently of the event's status:
+
+| Action | Without `publish_live_events` | With `publish_live_events` |
+|---|---|---|
+| Create / edit / delete appointments of a live event | ✓ | ✓ |
+| Create / edit / delete appointments of a visible non-live event | ✓ | ✓ |
+| Appointments of events the user cannot see | ✗ | ✓ |
+
+Dates of a running event change often, and editors keep them up to date without a publisher.
+Subscribers of live-edit notifications are mailed about these changes, see
+[Notifications](Notifications.md#transitions). Moving an appointment to another event, or pulling
+one into an event's inline list, needs access to both events.
 
 ### Editing live content
 
-A user without `publish_live_events` gets the whole edit form read-only on a live event, and on
-any appointment whose parent event is live (`Backend\FormDataProvider\LiveEventReadOnlyForNonPublisher`).
-Disabled fields are not submitted, so DataHandler writes nothing back either. Their own
-draft/review/rejected events stay fully editable; to change a published event they must move it
-back to review/draft, or hand it to someone who may publish.
+For a user without `publish_live_events` a live event's form is read-only except for its
+**appointments**: inline appointments can still be created, edited, sorted and deleted. The
+appointment form itself is never read-only because of the event's status, only when the user
+cannot see the event. Saving the form resubmits the stored values of the read-only fields; the
+DataHandler guard ignores them and refuses any value that differs from the stored one.
 
 ### Backend ownership
 
 Every event records the backend user that created it in `owner_be_user`, set automatically by
 `Hooks\EventOwnerBackendUserHook` and shown in the *Workflow* palette. An explicit assignment in
-the create datamap is respected. This is the field `view_all_events` scopes against.
+the create datamap is kept only for publishers and administrators. This is the field
+`view_all_events` scopes against.
 
 ### Creating records in the calendar module
 
@@ -159,8 +226,8 @@ under test, and fixtures look like they lost rows. The symptom is a test failing
 absent while a direct probe of the same expression looks correct — diff the generated SQL to
 spot the extra `AND`.
 
-Places that legitimately need a restriction-free read do a raw lookup and say so, for example
-`LiveEventReadOnlyForNonPublisher::parentEventIsLive()` reading the true parent status.
+Places that legitimately need a restriction-free read use `Database\RawRecordReader`, for
+example the workflow checks, which have to see the foreign drafts they refuse.
 
 ### The entry restriction joins, not filters
 

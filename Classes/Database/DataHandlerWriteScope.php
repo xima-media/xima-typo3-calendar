@@ -10,8 +10,9 @@ namespace Xima\XimaTypo3Calendar\Database;
  * The event and entry restrictions decide what a *reader* may see. DataHandler re-reads the
  * records it is writing (e.g. when sorting inline children before it links them to their
  * parent), and a freshly inserted appointment has no parent yet, so a frontend reader would
- * never be allowed to see it. Who may write is checked before DataHandler runs; inside the
- * write the restrictions therefore stand aside.
+ * never be allowed to see it. Inside the write the restrictions therefore stand aside; who
+ * may write is decided by DataHandler's own permission checks plus EventWorkflowGuardHook,
+ * which applies the same visibility rules to the records being written.
  *
  * A counter rather than a flag, because DataHandler instances nest (hooks and listeners
  * start their own).

@@ -88,6 +88,25 @@ final class FrontendWriteTest extends AbstractCalendarFunctionalTestCase
         self::assertSame($eventUid, (int)$this->fetchRawRecord(self::TABLE_ENTRY, $appointmentUid)['event']);
     }
 
+    /**
+     * The workflow guard treats the frontend write user like an administrator.
+     */
+    #[Test]
+    public function theWorkflowPermissionsDoNotRestrictFrontendWrites(): void
+    {
+        $eventId = StringUtility::getUniqueId('NEW');
+        $eventUid = $this->process([
+            self::TABLE_EVENT => [$eventId => ['pid' => 2, 'record_type' => 'event', 'title' => 'Published from the frontend', 'status' => 2]],
+        ])[$eventId];
+
+        $this->process([self::TABLE_EVENT => [$eventUid => ['title' => 'Edited while live']]]);
+        $this->process([self::TABLE_EVENT => [1 => ['status' => 0]]]);
+
+        self::assertSame(2, (int)$this->fetchRawRecord(self::TABLE_EVENT, $eventUid)['status']);
+        self::assertSame('Edited while live', $this->fetchRawRecord(self::TABLE_EVENT, $eventUid)['title']);
+        self::assertSame(0, (int)$this->fetchRawRecord(self::TABLE_EVENT, 1)['status']);
+    }
+
     #[Test]
     public function theRestrictionAppliesAgainOnceTheWriteIsDone(): void
     {

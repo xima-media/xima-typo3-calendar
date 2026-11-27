@@ -57,6 +57,15 @@ All notable changes to this extension are documented here. The format follows
 
 ### Changed
 
+- **Appointments of live events are managed independently of the event.** Editors without
+  `publish_live_events` can create, edit and delete the appointments of every event they can
+  see, including live ones (inline in the event form, in the appointment form and in the
+  calendar module), so the dates of running events stay current without a publisher. The rest
+  of the live event stays read-only. Subscribers of live-edit notifications receive
+  `EventLiveNotification` for these changes, one mail per event and save. See
+  [Access Control](Documentation/AccessControl.md#appointments) and
+  [Notifications](Documentation/Notifications.md#transitions).
+
 - **Frontend API collections are live-only.** On a site with `tca_api.apiPrefix`, API
   collection requests now return `LIVE` events (and their appointments) only, even with a
   backend session, and no longer include
@@ -89,11 +98,33 @@ All notable changes to this extension are documented here. The format follows
 
 ### Fixed
 
+- **Security: the event workflow permissions are enforced server-side** (#100). Until now only
+  the backend UI hid options; the status modal endpoint and any DataHandler write (record form,
+  list module, clipboard, import) let editors without `publish_live_events` publish, unpublish,
+  reject, edit, hide, delete, copy or take over events, including events hidden from them by the
+  event restriction. `Service\EventWorkflowPolicy` now decides for every surface, and
+  `Hooks\EventWorkflowGuardHook` drops refused DataHandler writes and logs them to the
+  DataHandler error log. Upgrade notes for editors without `publish_live_events`:
+  - They change the status of their own events only, between draft and review (and from
+    rejected back), so nobody moves a colleague's work through the workflow. Publishing,
+    unpublishing and rejecting are publisher decisions; editors ask a publisher instead.
+  - Live events are read-only for them through every path, so published content cannot change
+    unreviewed. They copy the event (the copy is their draft) or ask a publisher.
+  - They can no longer assign `owner_be_user` on create or change it later, so ownership cannot
+    be shifted by hand; publishers reassign events.
+  - Events and appointments hidden from them can no longer be written or deleted.
+  - Copies of events now always start as a *Draft* owned by the copying user, for publishers
+    too, so copying never publishes an unreviewed duplicate under someone else's name.
+  - The status modal and the status select only offer the allowed targets; the badge is
+    read-only when there is none. The status endpoint answers 403 for refused transitions and
+    for events the user cannot see.
+  See [Access Control](Documentation/AccessControl.md#event-workflow).
+
 - Appointments written through DataHandler in a **frontend** request (e.g. by an API creating
   events for website users) were stored with `event = 0` (#52). Sorting the inline children by
   `start_date` re-reads them through the enforced entry restriction, which hides an appointment
   that has no event yet. The event and entry restrictions now stand aside while DataHandler
-  processes a write; who may write is checked before DataHandler runs.
+  processes a write; who may write is checked by DataHandler and the event workflow guard.
 - Backend users viewing an event or appointment in the **frontend** were answered with a 404
   whenever the event was not `LIVE`. The frontend branch of the restrictions only ever knew about
   frontend users, so neither the `view_all_events` permission nor event ownership via
@@ -122,6 +153,11 @@ All notable changes to this extension are documented here. The format follows
   excluded from the change diff, resolved per table from TCA `ctrl`.
 
 ### Removed
+
+- `ViewHelpers\Backend\CanPublishLiveEventsViewHelper` (`xtc:backend.canPublishLiveEvents()`).
+  The publish permission alone no longer tells which statuses a user may set on an event; use
+  `xtc:backend.eventStatusItems(event: …)` instead, see
+  [Extending](Documentation/Extending.md#fluid-viewhelpers).
 
 - `EventRepository::findPublished()` and `findLatest()`, which matched a non-existent `type`
   field and had no callers, together with the unreachable `Event/Latest.html` template — no

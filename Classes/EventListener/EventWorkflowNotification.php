@@ -71,9 +71,11 @@ final readonly class EventWorkflowNotification
             }
         }
 
-        if ($this->isLiveEventUpdate($event->changedFields, $eventRecord)) {
+        // Appointment changes are reported once per event by LiveAppointmentNotification.
+        $changedFields = array_diff_key($event->changedFields, ['appointments' => true]);
+        if ($changedFields !== [] && $this->isLiveEventUpdate($changedFields, $eventRecord)) {
             $recipients = $this->recipientResolver->getSubscribedBackendRecipients($event->uid, NotificationRecipientResolver::PREFERENCE_LIVE);
-            $this->mailService->sendNotification('EventLiveNotification', $recipients, $eventRecord, array_keys($event->changedFields));
+            $this->mailService->sendNotification('EventLiveNotification', $recipients, $eventRecord, array_keys($changedFields));
         }
     }
 

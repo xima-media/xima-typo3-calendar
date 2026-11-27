@@ -21,6 +21,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['xima_typo3_calendar_write_scope']
     = \Xima\XimaTypo3Calendar\Hooks\DataHandlerWriteScopeHook::class;
 
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['xima_typo3_calendar_workflow_guard']
+    = \Xima\XimaTypo3Calendar\Hooks\EventWorkflowGuardHook::class;
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['xima_typo3_calendar_workflow_guard']
+    = \Xima\XimaTypo3Calendar\Hooks\EventWorkflowGuardHook::class;
+
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['xima_typo3_calendar']
     = \Xima\XimaTypo3Calendar\Hooks\DataHandlerHook::class;
 
@@ -55,6 +60,12 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['xima_typo3_calendar']
     = \Xima\XimaTypo3Calendar\Hooks\DataHandlerEventDispatcherHook::class;
+
+// Sends the collected appointment notifications once a DataHandler run is done.
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['xima_typo3_calendar_appointment_notification']
+    = \Xima\XimaTypo3Calendar\EventListener\LiveAppointmentNotification::class;
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['xima_typo3_calendar_appointment_notification']
+    = \Xima\XimaTypo3Calendar\EventListener\LiveAppointmentNotification::class;
 
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['features']['ximaTypo3Calendar.requirementsManagement'] ??= false;
 
