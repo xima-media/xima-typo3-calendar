@@ -26,6 +26,10 @@ All notable changes to this extension are documented here. The format follows
   (`iconSource`, `appearanceSource`, `colorSource`), `filterColors` and `newEvent`
   (`interaction.enableClick|enableDrag`, `defaults.startTime|endTime|allDay|recordType`). See
   [Calendar Module → Page TSconfig](Documentation/BackendModule.md#page-tsconfig).
+- **Choosing the event of a new appointment in the creation modal.** A search field finds events
+  by title and shows the date range of their appointments; the chosen event is prefilled in the
+  form. `ModifyEventSearchResultsEvent` lets other extensions add details to the results. See
+  [Calendar Module](Documentation/BackendModule.md#creating-events-and-appointments).
 - **PSR-14 events for calendar module filters:** `ConfigureCalendarFilterEvent`,
   `BuildCalendarEntriesQueryEvent`, `ApplyCalendarFilterEvent` and
   `CalendarEntrySerializationEvent`. The shipped filters are built on them, so other extensions

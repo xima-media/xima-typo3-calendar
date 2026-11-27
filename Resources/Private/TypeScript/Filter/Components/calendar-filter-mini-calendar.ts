@@ -28,6 +28,10 @@ const YEARS_BEFORE_CURRENT = 3;
 const YEARS_AFTER_CURRENT = 5;
 
 export class CalendarFilterMiniCalendar extends LitElement {
+  private get topWindow(): Window {
+    return window.top ?? window;
+  }
+
   private displayedMonth = this.startOfMonth(new Date());
 
   private mainViewType = '';
@@ -89,15 +93,15 @@ export class CalendarFilterMiniCalendar extends LitElement {
 
   public connectedCallback(): void {
     super.connectedCallback();
-    window.top.addEventListener(
+    this.topWindow.addEventListener(
       miniCalendarEvents.mainDateChange,
       this.handleMainCalendarDateChange,
     );
-    window.top.dispatchEvent(new CustomEvent(miniCalendarEvents.ready));
+    this.topWindow.dispatchEvent(new CustomEvent(miniCalendarEvents.ready));
   }
 
   public disconnectedCallback(): void {
-    window.top.removeEventListener(
+    this.topWindow.removeEventListener(
       miniCalendarEvents.mainDateChange,
       this.handleMainCalendarDateChange,
     );
@@ -263,7 +267,7 @@ export class CalendarFilterMiniCalendar extends LitElement {
     this.displayedMonth = this.startOfMonth(targetMonth);
     this.mainViewDate = this.startOfDay(targetMonth);
     this.requestUpdate();
-    window.top.dispatchEvent(new CustomEvent(miniCalendarEvents.navigate, {
+    this.topWindow.dispatchEvent(new CustomEvent(miniCalendarEvents.navigate, {
       detail: {
         direction: monthDelta < 0 ? 'prev' : 'next',
         date: targetMonth.toISOString(),
@@ -282,7 +286,7 @@ export class CalendarFilterMiniCalendar extends LitElement {
       composed: true,
       detail: {date: formatLocalCalendarDate(this.startOfDay(date))},
     }));
-    window.top.dispatchEvent(new CustomEvent(miniCalendarEvents.dateChange, {
+    this.topWindow.dispatchEvent(new CustomEvent(miniCalendarEvents.dateChange, {
       detail: {date: formatLocalCalendarDate(this.startOfDay(date))},
     }));
     this.requestUpdate();

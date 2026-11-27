@@ -25,7 +25,8 @@ class EventAppointment extends AbstractEntity
 
     protected bool $canceled = false;
 
-    protected ?EventAppointmentType $type = null;
+    /** @var string */
+    protected string $type = EventAppointmentType::IN_PERSON->value;
 
     protected string $onlineLink = '';
 
@@ -134,12 +135,12 @@ class EventAppointment extends AbstractEntity
 
     public function getType(): EventAppointmentType
     {
-        return $this->type;
+        return EventAppointmentType::tryFrom($this->type) ?? EventAppointmentType::IN_PERSON;
     }
 
     public function setType(EventAppointmentType $type): void
     {
-        $this->type = $type;
+        $this->type = $type->value;
     }
 
     public function getOnlineLink(): string

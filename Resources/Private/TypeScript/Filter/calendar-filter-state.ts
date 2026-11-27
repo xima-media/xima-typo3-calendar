@@ -50,6 +50,7 @@ export type CalendarFilterResponse = {
   success: boolean;
   filters: CalendarFilterConfiguration;
   filterColors: Record<string, Record<string, string>>;
+  colorSource: string;
   state: CalendarFilterState;
   labels: CalendarFilterActionLabels;
 };

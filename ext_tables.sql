@@ -3,6 +3,7 @@ create table tx_ximatypo3calendar_domain_model_event (
 );
 
 create table tx_ximatypo3calendar_domain_model_entry (
+	type varchar(255) default 'inPerson' not null,
 	modified_fields text,
 	modified_date bigint
 );

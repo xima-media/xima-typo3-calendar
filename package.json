@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"build": "node esbuild.config.mjs --build",
+		"typecheck": "tsc --noEmit",
 		"watch": "node esbuild.config.mjs --watch"
 	},
 	"dependencies": {
@@ -11,6 +12,7 @@
 	},
 	"devDependencies": {
 		"esbuild": "^0.25.0",
-		"typo3-typescript-sources": "^13.4.26"
+		"lit": "^3.3.0",
+		"typescript": "^5.8.3"
 	}
 }

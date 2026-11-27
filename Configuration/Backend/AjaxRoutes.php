@@ -25,4 +25,8 @@ return [
         'path' => '/xima/calendar/record/new',
         'target' => \Xima\XimaTypo3Calendar\Controller\Backend\CalendarEventCreationController::class . '::newRecordAction',
     ],
+    'xima_calendar_event_search' => [
+        'path' => '/xima/calendar/event/search',
+        'target' => \Xima\XimaTypo3Calendar\Controller\Backend\CalendarEventSearchController::class . '::searchAction',
+    ],
 ];

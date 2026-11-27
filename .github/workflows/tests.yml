@@ -13,6 +13,25 @@ permissions:
   contents: read
 
 jobs:
+  frontend-typecheck:
+    name: Frontend TypeScript
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Run TypeScript type-check
+        run: npm run typecheck
+
   unit-tests:
     name: Unit (PHP ${{ matrix.php-version }}, TYPO3 ${{ matrix.typo3-version }})
     runs-on: ubuntu-latest
@@ -117,3 +136,25 @@ jobs:
           files: ./coverage.functional.xml
           flags: functional
           fail_ci_if_error: true
+
+  frontend-build:
+    name: Frontend build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Verify committed frontend assets
+        run: git diff --exit-code -- Resources/Public
