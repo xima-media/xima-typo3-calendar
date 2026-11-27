@@ -23,10 +23,11 @@ use Xima\XimaTypo3Calendar\Service\NotificationRecipientResolver;
  * subscribers learn about changes to published dates without a publisher being involved.
  *
  * Changes are collected and sent once the save ends (this class is also registered as
- * DataHandler hook): after the datamap, or after the cmdmap when the save carries commands
- * too. Each changed live event gets one mail per save listing every changed field. Deleting
- * a live event, which deletes its appointments first, sends none. New events and status
- * changes (publishing included) are skipped, the workflow notifications cover them.
+ * DataHandler hook): after the outermost datamap, or after its cmdmap when the save carries
+ * commands too; DataHandler copies through nested instances. Each changed live event gets one
+ * mail per save listing every changed field. Deleting a live event, which deletes its
+ * appointments first, sends none. New events and status changes (publishing included) are
+ * skipped, the workflow notifications cover them.
  */
 #[Autoconfigure(public: true)]
 final class LiveEditNotification
@@ -84,14 +85,16 @@ final class LiveEditNotification
 
     public function processDatamap_afterAllOperations(DataHandler $dataHandler): void
     {
-        if ($dataHandler->cmdmap === []) {
+        if ($dataHandler->isOuterMostInstance() && $dataHandler->cmdmap === []) {
             $this->sendCollectedNotifications();
         }
     }
 
     public function processCmdmap_afterFinish(DataHandler $dataHandler): void
     {
-        $this->sendCollectedNotifications();
+        if ($dataHandler->isOuterMostInstance()) {
+            $this->sendCollectedNotifications();
+        }
     }
 
     private function sendCollectedNotifications(): void

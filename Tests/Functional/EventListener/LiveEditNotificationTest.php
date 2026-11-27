@@ -140,16 +140,7 @@ final class LiveEditNotificationTest extends AbstractCalendarFunctionalTestCase
     #[Test]
     public function notifiesOnceWhenOneSaveEditsAndDeletesAppointmentsOfALiveEvent(): void
     {
-        $this->getConnectionPool()->getConnectionForTable(self::TABLE_ENTRY)->insert(self::TABLE_ENTRY, [
-            'uid' => 15,
-            'pid' => 2,
-            'record_type' => 'event-appointment',
-            'event' => self::OWN_LIVE,
-            'calendar' => 1,
-            'title' => 'Second own live appointment',
-            'start_date' => 1767312000,
-            'end_date' => 1767315600,
-        ]);
+        $this->insertSecondOwnLiveAppointment();
         $this->setUpBackendUser(self::EDITOR);
 
         $this->process(
@@ -193,6 +184,35 @@ final class LiveEditNotificationTest extends AbstractCalendarFunctionalTestCase
         self::assertSame(['EventLiveNotification'], $this->templates());
     }
 
+    /**
+     * DataHandler copies each record through a nested instance, which must not send on its own.
+     */
+    #[Test]
+    public function notifiesOnceWhenOneCommandCopiesSeveralAppointmentsOfALiveEvent(): void
+    {
+        $this->insertSecondOwnLiveAppointment();
+        $this->setUpBackendUser(self::PUBLISHER);
+
+        $this->process([], [self::TABLE_ENTRY => [
+            self::OWN_LIVE_APPOINTMENT => ['copy' => 2],
+            15 => ['copy' => 2],
+        ]]);
+
+        self::assertSame(['EventLiveNotification'], $this->templates());
+    }
+
+    #[Test]
+    public function notifiesWhenOnlyTheAppointmentRelationOfALiveEventChanges(): void
+    {
+        $this->setUpBackendUser(self::PUBLISHER);
+
+        $this->process([self::TABLE_EVENT => [self::OWN_LIVE => [
+            'appointments' => self::OWN_LIVE_APPOINTMENT . ',' . self::OWN_DRAFT_APPOINTMENT,
+        ]]]);
+
+        self::assertContains('EventLiveNotification', $this->templates());
+    }
+
     #[Test]
     public function staysQuietForAppointmentsOfANonLiveEvent(): void
     {
@@ -228,6 +248,20 @@ final class LiveEditNotificationTest extends AbstractCalendarFunctionalTestCase
         $dataHandler->process_cmdmap();
 
         self::assertSame([], $dataHandler->errorLog);
+    }
+
+    private function insertSecondOwnLiveAppointment(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_ENTRY)->insert(self::TABLE_ENTRY, [
+            'uid' => 15,
+            'pid' => 2,
+            'record_type' => 'event-appointment',
+            'event' => self::OWN_LIVE,
+            'calendar' => 1,
+            'title' => 'Second own live appointment',
+            'start_date' => 1767312000,
+            'end_date' => 1767315600,
+        ]);
     }
 
     /**
