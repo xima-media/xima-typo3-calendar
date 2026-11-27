@@ -62,7 +62,8 @@ All notable changes to this extension are documented here. The format follows
   see, including live ones (inline in the event form, in the appointment form and in the
   calendar module), so the dates of running events stay current without a publisher. The rest
   of the live event stays read-only. Subscribers of live-edit notifications receive
-  `EventLiveNotification` for these changes, one mail per event and save. See
+  `EventLiveNotification` for these changes: one mail per event and save, listing every
+  changed field and appointment change together. See
   [Access Control](Documentation/AccessControl.md#appointments) and
   [Notifications](Documentation/Notifications.md#transitions).
 

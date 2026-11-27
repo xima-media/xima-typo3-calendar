@@ -61,11 +61,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['xima_typo3_calendar']
     = \Xima\XimaTypo3Calendar\Hooks\DataHandlerEventDispatcherHook::class;
 
-// Sends the collected appointment notifications once a DataHandler run is done.
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['xima_typo3_calendar_appointment_notification']
-    = \Xima\XimaTypo3Calendar\EventListener\LiveAppointmentNotification::class;
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['xima_typo3_calendar_appointment_notification']
-    = \Xima\XimaTypo3Calendar\EventListener\LiveAppointmentNotification::class;
+// Sends the collected live-edit notifications once a DataHandler run is done.
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['xima_typo3_calendar_live_edit_notification']
+    = \Xima\XimaTypo3Calendar\EventListener\LiveEditNotification::class;
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['xima_typo3_calendar_live_edit_notification']
+    = \Xima\XimaTypo3Calendar\EventListener\LiveEditNotification::class;
 
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['features']['ximaTypo3Calendar.requirementsManagement'] ??= false;
 

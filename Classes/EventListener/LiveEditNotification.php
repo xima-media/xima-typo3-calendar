@@ -17,21 +17,24 @@ use Xima\XimaTypo3Calendar\Service\NotificationMailService;
 use Xima\XimaTypo3Calendar\Service\NotificationRecipientResolver;
 
 /**
- * Sends the live-edit notification when appointments of a live event change.
+ * Sends the live-edit notification when the content or the appointments of a live event change.
  *
- * Editors without the publish permission manage these appointments, so subscribers learn
- * about changes to published content without a publisher being involved.
+ * Editors without the publish permission manage the appointments of live events, so
+ * subscribers learn about changes to published dates without a publisher being involved.
  *
- * Changes are collected per appointment and sent once the save ends (this class is also
- * registered as DataHandler hook): after the datamap, or after the cmdmap when the save
- * carries commands too. Saving several appointments sends one mail, and deleting a live
- * event, which deletes its appointments first, sends none. Events created or published in
- * the same run are skipped too, their own notification covers them.
+ * Changes are collected and sent once the save ends (this class is also registered as
+ * DataHandler hook): after the datamap, or after the cmdmap when the save carries commands
+ * too. Each changed live event gets one mail per save listing every changed field. Deleting
+ * a live event, which deletes its appointments first, sends none. New events and status
+ * changes (publishing included) are skipped, the workflow notifications cover them.
  */
 #[Autoconfigure(public: true)]
-final class LiveAppointmentNotification
+final class LiveEditNotification
 {
     private const ENTRY_TABLE = 'tx_ximatypo3calendar_domain_model_entry';
+
+    /** @var array<int, array<string, true>> changed field names per event uid */
+    private array $changedEventFields = [];
 
     /** @var array<int, true> */
     private array $changedAppointmentUids = [];
@@ -47,24 +50,35 @@ final class LiveAppointmentNotification
     ) {
     }
 
-    #[AsEventListener(identifier: 'xima-typo3-calendar/live-appointment-notification')]
+    #[AsEventListener(identifier: 'xima-typo3-calendar/live-edit-notification-appointment')]
     public function collectAppointmentChange(EntryChangedEvent $event): void
     {
-        if (in_array($event->changeType, [ChangeType::CREATED, ChangeType::UPDATED, ChangeType::DELETED, ChangeType::HIDDEN, ChangeType::REACTIVATED], true)) {
-            // The parent is resolved when sending: a new inline appointment gets it only once
-            // DataHandler remaps the event's relation, after this event was dispatched.
-            $this->changedAppointmentUids[$event->uid] = true;
+        if (!in_array($event->changeType, [ChangeType::CREATED, ChangeType::UPDATED, ChangeType::DELETED, ChangeType::HIDDEN, ChangeType::REACTIVATED], true)) {
+            return;
+        }
+
+        // The current parent is resolved when sending: a new inline appointment gets it only
+        // once DataHandler remaps the event's relation, after this event was dispatched.
+        $this->changedAppointmentUids[$event->uid] = true;
+
+        $previousEventUid = (int)($event->changedFields['event']['old'] ?? 0);
+        if ($previousEventUid > 0) {
+            $this->changedEventFields[$previousEventUid]['appointments'] = true;
         }
     }
 
-    #[AsEventListener(identifier: 'xima-typo3-calendar/live-appointment-notification-skip')]
-    public function skipCreatedOrPublishedEvent(EventChangedEvent $event): void
+    #[AsEventListener(identifier: 'xima-typo3-calendar/live-edit-notification-event')]
+    public function collectEventChange(EventChangedEvent $event): void
     {
-        $publishes = (int)($event->changedFields['status']['new'] ?? -1) === EventStatus::LIVE->value
-            && (int)($event->changedFields['status']['old'] ?? -1) !== EventStatus::LIVE->value;
-
-        if ($event->changeType === ChangeType::CREATED || $publishes) {
+        if ($event->changeType === ChangeType::CREATED || array_key_exists('status', $event->changedFields)) {
             $this->skippedEventUids[$event->uid] = true;
+            return;
+        }
+
+        if ($event->changeType === ChangeType::UPDATED) {
+            foreach (array_keys($event->changedFields) as $fieldName) {
+                $this->changedEventFields[$event->uid][$fieldName] = true;
+            }
         }
     }
 
@@ -82,17 +96,19 @@ final class LiveAppointmentNotification
 
     private function sendCollectedNotifications(): void
     {
-        $eventUids = [];
+        $changedEventFields = $this->changedEventFields;
         foreach (array_keys($this->changedAppointmentUids) as $appointmentUid) {
             $eventUid = (int)($this->recordReader->fetch(self::ENTRY_TABLE, $appointmentUid)['event'] ?? 0);
-            if ($eventUid > 0 && !isset($this->skippedEventUids[$eventUid])) {
-                $eventUids[$eventUid] = true;
+            if ($eventUid > 0) {
+                $changedEventFields[$eventUid]['appointments'] = true;
             }
         }
+        $changedEventFields = array_diff_key($changedEventFields, $this->skippedEventUids);
+        $this->changedEventFields = [];
         $this->changedAppointmentUids = [];
         $this->skippedEventUids = [];
 
-        foreach (array_keys($eventUids) as $eventUid) {
+        foreach ($changedEventFields as $eventUid => $fieldNames) {
             $eventRecord = $this->eventRepository->getEventRecordByUid($eventUid);
             if ($eventRecord === null
                 || (int)($eventRecord['deleted'] ?? 0) === 1
@@ -102,7 +118,7 @@ final class LiveAppointmentNotification
             }
 
             $recipients = $this->recipientResolver->getSubscribedBackendRecipients($eventUid, NotificationRecipientResolver::PREFERENCE_LIVE);
-            $this->mailService->sendNotification('EventLiveNotification', $recipients, $eventRecord, ['appointments']);
+            $this->mailService->sendNotification('EventLiveNotification', $recipients, $eventRecord, array_keys($fieldNames));
         }
     }
 }

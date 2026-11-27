@@ -16,16 +16,18 @@ use Xima\XimaTypo3Calendar\Tests\Functional\AbstractCalendarFunctionalTestCase;
 use Xima\XimaTypo3Calendar\Tests\Functional\Fixtures\RecordingMailListener;
 
 /**
- * Appointment changes on live events reach the live-edit subscribers, because editors without
- * the publish permission make them. Runs as the editor of Fixtures/workflow-permissions.csv,
- * whose `live-subscriber` subscribed to live changes.
+ * Content and appointment changes on live events reach the live-edit subscribers, one mail per
+ * event and save. Appointments are changed by editors without the publish permission too. Runs
+ * as the users of Fixtures/workflow-permissions.csv, whose `live-subscriber` subscribed to live
+ * changes.
  */
-final class LiveAppointmentNotificationTest extends AbstractCalendarFunctionalTestCase
+final class LiveEditNotificationTest extends AbstractCalendarFunctionalTestCase
 {
     private const EDITOR = 2;
     private const PUBLISHER = 3;
 
     private const OWN_LIVE = 11;
+    private const OWN_DRAFT = 12;
     private const FOREIGN_LIVE = 17;
     private const OWN_LIVE_APPOINTMENT = 11;
     private const FOREIGN_LIVE_APPOINTMENT = 12;
@@ -154,6 +156,39 @@ final class LiveAppointmentNotificationTest extends AbstractCalendarFunctionalTe
             [self::TABLE_ENTRY => [self::OWN_LIVE_APPOINTMENT => ['title' => 'Edited inline']]],
             [self::TABLE_ENTRY => [15 => ['delete' => 1]]],
         );
+
+        self::assertSame(['EventLiveNotification'], $this->templates());
+    }
+
+    #[Test]
+    public function notifiesTheLiveEventAnAppointmentIsMovedAwayFrom(): void
+    {
+        $this->setUpBackendUser(self::EDITOR);
+
+        $this->process([self::TABLE_ENTRY => [self::OWN_LIVE_APPOINTMENT => ['event' => self::OWN_DRAFT]]]);
+
+        self::assertSame(['EventLiveNotification'], $this->templates());
+    }
+
+    #[Test]
+    public function notifiesOnceWhenOneSaveChangesTheContentAndAnAppointmentOfALiveEvent(): void
+    {
+        $this->setUpBackendUser(self::PUBLISHER);
+
+        $this->process([
+            self::TABLE_EVENT => [self::OWN_LIVE => ['title' => 'Renamed live event']],
+            self::TABLE_ENTRY => [self::OWN_LIVE_APPOINTMENT => ['title' => 'Edited inline']],
+        ]);
+
+        self::assertSame(['EventLiveNotification'], $this->templates());
+    }
+
+    #[Test]
+    public function notifiesWhenAPublisherChangesTheContentOfALiveEvent(): void
+    {
+        $this->setUpBackendUser(self::PUBLISHER);
+
+        $this->process([self::TABLE_EVENT => [self::OWN_LIVE => ['title' => 'Renamed live event']]]);
 
         self::assertSame(['EventLiveNotification'], $this->templates());
     }

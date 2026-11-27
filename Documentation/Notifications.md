@@ -9,7 +9,7 @@ Status transitions and edits to live events send e-mail notifications.
 |-------|------|
 | `Hooks\DataHandlerEventDispatcherHook` | Dispatches `EventChangedEvent` with the field diff. |
 | `EventListener\EventWorkflowNotification` | Maps the diff to a template and a recipient set. |
-| `EventListener\LiveAppointmentNotification` | Collects appointment changes of live events and sends one live-edit mail per event and save. |
+| `EventListener\LiveEditNotification` | Collects content and appointment changes of live events and sends one live-edit mail per event and save. |
 | `Service\NotificationRecipientResolver` | Resolves owners and opted-in backend users. |
 | `Service\NotificationMailService` | Renders the template and sends the mail. |
 | `Service\StatusChangeContext` | Request-scoped bridge carrying the acting backend user and the *notify owner* toggle from the status modal into the DataHandler flow. |
@@ -32,9 +32,10 @@ Everything runs **synchronously inside the DataHandler run**, which is what make
 
 Editors without the publish permission may manage the appointments of live events (see
 [Access Control](AccessControl.md#appointments)), so subscribers learn about changes to published
-dates without a publisher being involved. `EventListener\LiveAppointmentNotification` collects
-the changes per event and sends **one** mail when the DataHandler run ends, however many
-appointments a save touched. It stays quiet when the event itself was created or published in
+dates without a publisher being involved. `EventListener\LiveEditNotification` collects content
+and appointment changes per event and sends **one** mail listing every changed field when the save
+ends, however many fields and appointments it touched. Moving an appointment to another event also
+notifies the live event it left. It stays quiet when the event itself was created or published in
 the same run (its own notification covers that) and when the event was deleted: deleting an
 event deletes its appointments first.
 
