@@ -22,10 +22,11 @@ use Xima\XimaTypo3Calendar\Service\NotificationRecipientResolver;
  * Editors without the publish permission manage these appointments, so subscribers learn
  * about changes to published content without a publisher being involved.
  *
- * Changes are collected per event and sent once the DataHandler run ends (this class is
- * also registered as DataHandler hook): saving several appointments sends one mail, and
- * deleting a live event, which deletes its appointments first, sends none. Events created
- * or published in the same run are skipped too, their own notification covers them.
+ * Changes are collected per appointment and sent once the save ends (this class is also
+ * registered as DataHandler hook): after the datamap, or after the cmdmap when the save
+ * carries commands too. Saving several appointments sends one mail, and deleting a live
+ * event, which deletes its appointments first, sends none. Events created or published in
+ * the same run are skipped too, their own notification covers them.
  */
 #[Autoconfigure(public: true)]
 final class LiveAppointmentNotification
@@ -33,7 +34,7 @@ final class LiveAppointmentNotification
     private const ENTRY_TABLE = 'tx_ximatypo3calendar_domain_model_entry';
 
     /** @var array<int, true> */
-    private array $changedEventUids = [];
+    private array $changedAppointmentUids = [];
 
     /** @var array<int, true> */
     private array $skippedEventUids = [];
@@ -49,13 +50,10 @@ final class LiveAppointmentNotification
     #[AsEventListener(identifier: 'xima-typo3-calendar/live-appointment-notification')]
     public function collectAppointmentChange(EntryChangedEvent $event): void
     {
-        if (!in_array($event->changeType, [ChangeType::CREATED, ChangeType::UPDATED, ChangeType::DELETED, ChangeType::HIDDEN, ChangeType::REACTIVATED], true)) {
-            return;
-        }
-
-        $eventUid = (int)($this->recordReader->fetch(self::ENTRY_TABLE, $event->uid)['event'] ?? 0);
-        if ($eventUid > 0) {
-            $this->changedEventUids[$eventUid] = true;
+        if (in_array($event->changeType, [ChangeType::CREATED, ChangeType::UPDATED, ChangeType::DELETED, ChangeType::HIDDEN, ChangeType::REACTIVATED], true)) {
+            // The parent is resolved when sending: a new inline appointment gets it only once
+            // DataHandler remaps the event's relation, after this event was dispatched.
+            $this->changedAppointmentUids[$event->uid] = true;
         }
     }
 
@@ -72,7 +70,9 @@ final class LiveAppointmentNotification
 
     public function processDatamap_afterAllOperations(DataHandler $dataHandler): void
     {
-        $this->sendCollectedNotifications();
+        if ($dataHandler->cmdmap === []) {
+            $this->sendCollectedNotifications();
+        }
     }
 
     public function processCmdmap_afterFinish(DataHandler $dataHandler): void
@@ -82,11 +82,17 @@ final class LiveAppointmentNotification
 
     private function sendCollectedNotifications(): void
     {
-        $eventUids = array_keys(array_diff_key($this->changedEventUids, $this->skippedEventUids));
-        $this->changedEventUids = [];
+        $eventUids = [];
+        foreach (array_keys($this->changedAppointmentUids) as $appointmentUid) {
+            $eventUid = (int)($this->recordReader->fetch(self::ENTRY_TABLE, $appointmentUid)['event'] ?? 0);
+            if ($eventUid > 0 && !isset($this->skippedEventUids[$eventUid])) {
+                $eventUids[$eventUid] = true;
+            }
+        }
+        $this->changedAppointmentUids = [];
         $this->skippedEventUids = [];
 
-        foreach ($eventUids as $eventUid) {
+        foreach (array_keys($eventUids) as $eventUid) {
             $eventRecord = $this->eventRepository->getEventRecordByUid($eventUid);
             if ($eventRecord === null
                 || (int)($eventRecord['deleted'] ?? 0) === 1

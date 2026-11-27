@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\Tests\Functional\EventListener;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -104,6 +105,55 @@ final class LiveAppointmentNotificationTest extends AbstractCalendarFunctionalTe
                 $appointmentId => ['pid' => 2, 'record_type' => 'event-appointment', 'calendar' => 1, 'start_date' => 1767225600],
             ],
         ]);
+
+        self::assertSame(['EventLiveNotification'], $this->templates());
+    }
+
+    /**
+     * The form sends a new inline appointment without `event`; DataHandler sets it only when
+     * it remaps the parent relation, after the appointment was created.
+     */
+    #[Test]
+    #[DataProvider('inlineAdditionOrders')]
+    public function notifiesWhenTheLiveEventFormOnlyAddsAnInlineAppointment(bool $parentFirst): void
+    {
+        $this->setUpBackendUser(self::EDITOR);
+        $appointmentId = StringUtility::getUniqueId('NEW');
+        $parent = [self::TABLE_EVENT => [self::OWN_LIVE => ['appointments' => self::OWN_LIVE_APPOINTMENT . ',' . $appointmentId]]];
+        $child = [self::TABLE_ENTRY => [$appointmentId => ['pid' => 2, 'record_type' => 'event-appointment', 'calendar' => 1, 'start_date' => 1767225600]]];
+
+        $this->process($parentFirst ? $parent + $child : $child + $parent);
+
+        self::assertSame(['EventLiveNotification'], $this->templates());
+    }
+
+    /**
+     * @return array<string, array{bool}>
+     */
+    public static function inlineAdditionOrders(): array
+    {
+        return ['parent first' => [true], 'appointment first' => [false]];
+    }
+
+    #[Test]
+    public function notifiesOnceWhenOneSaveEditsAndDeletesAppointmentsOfALiveEvent(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_ENTRY)->insert(self::TABLE_ENTRY, [
+            'uid' => 15,
+            'pid' => 2,
+            'record_type' => 'event-appointment',
+            'event' => self::OWN_LIVE,
+            'calendar' => 1,
+            'title' => 'Second own live appointment',
+            'start_date' => 1767312000,
+            'end_date' => 1767315600,
+        ]);
+        $this->setUpBackendUser(self::EDITOR);
+
+        $this->process(
+            [self::TABLE_ENTRY => [self::OWN_LIVE_APPOINTMENT => ['title' => 'Edited inline']]],
+            [self::TABLE_ENTRY => [15 => ['delete' => 1]]],
+        );
 
         self::assertSame(['EventLiveNotification'], $this->templates());
     }
