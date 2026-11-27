@@ -226,6 +226,19 @@ final class LiveEditNotificationTest extends AbstractCalendarFunctionalTestCase
     }
 
     #[Test]
+    public function notifiesTheLiveDestinationOfASameCountInlineReplacement(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_EVENT)->update(self::TABLE_EVENT, ['appointments' => 1], ['uid' => self::OWN_LIVE]);
+        $this->setUpBackendUser(self::EDITOR);
+
+        $this->process([self::TABLE_EVENT => [self::OWN_LIVE => [
+            'appointments' => (string)self::OWN_DRAFT_APPOINTMENT,
+        ]]]);
+
+        self::assertSame(['EventLiveNotification'], $this->templates());
+    }
+
+    #[Test]
     public function staysQuietForAppointmentsOfANonLiveEvent(): void
     {
         $this->setUpBackendUser(self::EDITOR);

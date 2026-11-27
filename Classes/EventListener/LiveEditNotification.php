@@ -106,6 +106,9 @@ final class LiveEditNotification
             $previousEventUid = (int)($this->recordReader->fetch(self::ENTRY_TABLE, (int)$appointmentId)['event'] ?? 0);
             if ($previousEventUid > 0 && (string)$previousEventUid !== (string)$id) {
                 $this->changedEventFields[$previousEventUid]['appointments'] = true;
+                if (is_numeric($id)) {
+                    $this->changedEventFields[(int)$id]['appointments'] = true;
+                }
             }
         }
     }
