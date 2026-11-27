@@ -267,7 +267,7 @@ export const createCalendarEventTooltip = (
         ) {
             appendRow(
                 tooltipElement,
-                getCalendarLanguageLabel('tooltip.location'),
+                `${getCalendarLanguageLabel('tooltip.location')}:`,
                 location,
             );
         }

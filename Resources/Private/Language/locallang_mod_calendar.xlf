@@ -36,8 +36,9 @@
 			<trans-unit id="calendar.today" resname="calendar.today"><source>Today</source></trans-unit>
 			<trans-unit id="tooltip.allDay" resname="tooltip.allDay"><source>All-day</source></trans-unit>
 			<trans-unit id="tooltip.to" resname="tooltip.to"><source>to</source></trans-unit>
-			<trans-unit id="tooltip.location" resname="tooltip.location"><source>Location:</source></trans-unit>
+			<trans-unit id="tooltip.location" resname="tooltip.location"><source>Location</source></trans-unit>
 			<trans-unit id="list.multiDay" resname="list.multiDay"><source>Multi-day events</source></trans-unit>
+			<trans-unit id="miniCalendar.title" resname="miniCalendar.title"><source>Mini calendar</source></trans-unit>
 			<trans-unit id="miniCalendar.previousMonth" resname="miniCalendar.previousMonth"><source>Previous month</source></trans-unit>
 			<trans-unit id="miniCalendar.selectYear" resname="miniCalendar.selectYear"><source>Select year</source></trans-unit>
 			<trans-unit id="miniCalendar.nextMonth" resname="miniCalendar.nextMonth"><source>Next month</source></trans-unit>

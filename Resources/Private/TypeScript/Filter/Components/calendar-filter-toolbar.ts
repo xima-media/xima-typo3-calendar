@@ -1,13 +1,19 @@
-import {html, LitElement} from 'lit';
-import {getCalendarLanguageLabel} from '../../Services/calendar-language';
+import {html, LitElement, nothing} from 'lit';
+import type {CalendarFilterLabels} from '../calendar-filter-state';
 
 export class CalendarFilterToolbar extends LitElement {
+  static properties = {
+    labels: {attribute: false},
+  };
+
+  public labels: CalendarFilterLabels | null = null;
+
   public createRenderRoot(): HTMLElement {
     return this;
   }
 
   public render() {
-    const searchLabel = getCalendarLanguageLabel('filter.search');
+    const searchLabel = this.labels?.search ?? nothing;
 
     return html`
       <div class="tree-toolbar">

@@ -145,10 +145,10 @@ DocumentService.ready().then(async () => {
             }),
             buttonText: (buttonText: EventCalendarButtonText) => ({
                 ...buttonText,
-                dayGridMonth: getCalendarLanguageLabel('calendar.month') || buttonText.dayGridMonth,
-                timeGridWeek: getCalendarLanguageLabel('calendar.week') || buttonText.timeGridWeek,
-                listMonth: getCalendarLanguageLabel('calendar.list') || buttonText.listMonth,
-                today: getCalendarLanguageLabel('calendar.today') || buttonText.today,
+                dayGridMonth: getCalendarLanguageLabel('calendar.month'),
+                timeGridWeek: getCalendarLanguageLabel('calendar.week'),
+                listMonth: getCalendarLanguageLabel('calendar.list'),
+                today: getCalendarLanguageLabel('calendar.today'),
             }),
             headerToolbar: {
                 start: 'prev next today',

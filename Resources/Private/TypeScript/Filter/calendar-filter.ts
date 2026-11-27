@@ -17,7 +17,7 @@ import {
 
 import type {
   CalendarFilter,
-  CalendarFilterActionLabels,
+  CalendarFilterLabels,
   CalendarFilterConfiguration,
   CalendarFilterSelection,
   CalendarFilterState,
@@ -56,7 +56,7 @@ export class CalendarFilterElement extends LitElement {
 
   private filterState: CalendarFilterState | null = null;
 
-  private filterLabels: CalendarFilterActionLabels | null = null;
+  private filterLabels: CalendarFilterLabels | null = null;
 
   private filterLoadError = false;
 
@@ -84,7 +84,7 @@ export class CalendarFilterElement extends LitElement {
       <link rel="stylesheet" href="${new URL('../../Css/calendar-filter.css', import.meta.url).href}">
 
       <div class="xima-calendar-filter">
-        <xima-calendar-filter-toolbar></xima-calendar-filter-toolbar>
+        <xima-calendar-filter-toolbar .labels=${this.filterLabels}></xima-calendar-filter-toolbar>
 
         <div class="xima-calendar-filter__body">
           ${this.filterConfiguration === null
@@ -94,9 +94,9 @@ export class CalendarFilterElement extends LitElement {
 
         <section
           class="xima-calendar-filter__mini-calendar"
-          aria-label="Mini calendar"
+          aria-label=${this.filterLabels?.miniCalendar ?? nothing}
         >
-          <xima-calendar-filter-mini-calendar></xima-calendar-filter-mini-calendar>
+          <xima-calendar-filter-mini-calendar .labels=${this.filterLabels}></xima-calendar-filter-mini-calendar>
         </section>
       </div>
     `;
