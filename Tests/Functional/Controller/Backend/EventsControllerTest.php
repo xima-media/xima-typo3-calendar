@@ -139,6 +139,7 @@ final class EventsControllerTest extends AbstractCalendarFunctionalTestCase
             'own review back to draft' => [13, EventStatus::DRAFT],
             'own rejected to draft' => [14, EventStatus::DRAFT],
             'own rejected to review' => [14, EventStatus::REVIEW],
+            'own rejected kept, e.g. to save a note' => [14, EventStatus::REJECTED],
         ];
     }
 
@@ -163,6 +164,7 @@ final class EventsControllerTest extends AbstractCalendarFunctionalTestCase
             'own live to draft' => [11, EventStatus::DRAFT],
             'own live to review' => [11, EventStatus::REVIEW],
             'own live to rejected' => [11, EventStatus::REJECTED],
+            'own live kept' => [11, EventStatus::LIVE],
             'own draft to live' => [12, EventStatus::LIVE],
             'own review to rejected' => [13, EventStatus::REJECTED],
             'foreign hidden draft to review' => [15, EventStatus::REVIEW],

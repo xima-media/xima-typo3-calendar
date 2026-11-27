@@ -44,6 +44,7 @@ administrator with their own access layer and are not affected. Regular TYPO3 pe
 | Draft → Review | own events | ✓ |
 | Review → Draft | own events | ✓ |
 | Rejected → Draft / Review | own events | ✓ |
+| Keep the current status (save a status message) | own events, except live | ✓ |
 | any → Live | ✗ | ✓ |
 | Live → any | ✗ | ✓ |
 | any → Rejected | ✗ | ✓ |
@@ -64,6 +65,7 @@ for their owner; there is no lock during review.
 |---|---|---|
 | Edit a non-live event | if visible (own, or `view_all_events`) | ✓ |
 | Edit a live event | ✗, except its appointments | ✓ |
+| Change, add or delete the file references (images, files) of a live event | ✗ | ✓ |
 | Hide / unhide, delete a live event | ✗ | ✓ |
 | Create an event with status *Live* or *Rejected* | ✗ | ✓ |
 | Set `owner_be_user` | ✗, always the creating user | ✓ |
@@ -79,6 +81,11 @@ for their owner; there is no lock during review.
   event restriction) cannot be shifted by hand. Publishers reassign events when needed.
 - Records hidden by the [event restriction](#rules) cannot be written, so the restriction is a
   real boundary and not just a filtered list.
+- File references of an event follow the event's edit rights, so a live event's images cannot be
+  swapped through the file reference records. Editors ask a publisher.
+- The guard decides on the value DataHandler stores: `status`, `owner_be_user` and an
+  appointment's `event` are reduced to a plain uid first (DataHandler url-decodes select values
+  and cuts them at `|`), so an encoded value cannot slip past a check.
 
 ### Appointments
 

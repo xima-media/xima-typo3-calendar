@@ -109,8 +109,9 @@ All notable changes to this extension are documented here. The format follows
   - They change the status of their own events only, between draft and review (and from
     rejected back), so nobody moves a colleague's work through the workflow. Publishing,
     unpublishing and rejecting are publisher decisions; editors ask a publisher instead.
-  - Live events are read-only for them through every path, so published content cannot change
-    unreviewed. They copy the event (the copy is their draft) or ask a publisher.
+  - Live events are read-only for them through every path, including their file references, so
+    published content cannot change unreviewed. They copy the event (the copy is their draft) or
+    ask a publisher.
   - They can no longer assign `owner_be_user` on create or change it later, so ownership cannot
     be shifted by hand; publishers reassign events.
   - Events and appointments hidden from them can no longer be written or deleted.

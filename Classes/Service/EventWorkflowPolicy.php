@@ -36,6 +36,8 @@ final class EventWorkflowPolicy
     }
 
     /**
+     * Keeping the current status (to save a status message) needs no more than owning the event.
+     *
      * @param array<string, mixed> $event
      */
     public function canTransition(BackendUserAuthentication $backendUser, array $event, EventStatus $from, EventStatus $to): bool
@@ -45,8 +47,7 @@ final class EventWorkflowPolicy
         }
 
         return $from !== EventStatus::LIVE
-            && $to !== EventStatus::LIVE
-            && $to !== EventStatus::REJECTED
+            && ($from === $to || ($to !== EventStatus::LIVE && $to !== EventStatus::REJECTED))
             && $this->isOwnEvent($backendUser, $event);
     }
 

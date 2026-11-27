@@ -15,7 +15,8 @@ use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 use Xima\XimaTypo3Calendar\Service\EventWorkflowPolicy;
 
 /**
- * Enforces the EventWorkflowPolicy on every DataHandler write to events and appointments.
+ * Enforces the EventWorkflowPolicy on every DataHandler write to events, their appointments
+ * and their file references.
  *
  * Refused records and commands are dropped and logged to the DataHandler error log, the rest
  * of the datamap or cmdmap is processed as usual. Copies of events start as a draft of the
@@ -27,6 +28,7 @@ class EventWorkflowGuardHook
 {
     private const EVENT_TABLE = 'tx_ximatypo3calendar_domain_model_event';
     private const ENTRY_TABLE = 'tx_ximatypo3calendar_domain_model_entry';
+    private const FILE_REFERENCE_TABLE = 'sys_file_reference';
 
     private int $copyDepth = 0;
 
@@ -51,6 +53,7 @@ class EventWorkflowGuardHook
         $allowed = match ($table) {
             self::EVENT_TABLE => $this->mayWriteEvent($incomingFieldArray, $id, $dataHandler),
             self::ENTRY_TABLE => $this->mayWriteAppointment($incomingFieldArray, $id, $dataHandler),
+            self::FILE_REFERENCE_TABLE => $this->mayWriteFileReference($incomingFieldArray, $id, $dataHandler),
             default => true,
         };
 
@@ -87,7 +90,7 @@ class EventWorkflowGuardHook
 
     public function processCmdmap_beforeStart(DataHandler $dataHandler): void
     {
-        foreach ([self::EVENT_TABLE, self::ENTRY_TABLE] as $table) {
+        foreach ([self::EVENT_TABLE, self::ENTRY_TABLE, self::FILE_REFERENCE_TABLE] as $table) {
             foreach ($dataHandler->cmdmap[$table] ?? [] as $id => $commands) {
                 foreach (array_keys($commands) as $command) {
                     if (!$this->mayRunCommand((string)$command, $table, (int)$id, $dataHandler)) {
@@ -119,6 +122,12 @@ class EventWorkflowGuardHook
     private function mayWriteEvent(array &$incomingFieldArray, int|string $id, DataHandler $dataHandler): bool
     {
         $backendUser = $dataHandler->BE_USER;
+
+        if (!$this->normalizeSingleSelect($incomingFieldArray, 'status', $dataHandler)
+            || !$this->normalizeSingleSelect($incomingFieldArray, 'owner_be_user', $dataHandler)
+        ) {
+            return false;
+        }
 
         if (!MathUtility::canBeInterpretedAsInteger($id)) {
             if ($this->copyDepth > 0) {
@@ -199,16 +208,20 @@ class EventWorkflowGuardHook
     /**
      * @param array<string, mixed> $incomingFieldArray
      */
-    private function mayWriteAppointment(array $incomingFieldArray, int|string $id, DataHandler $dataHandler): bool
+    private function mayWriteAppointment(array &$incomingFieldArray, int|string $id, DataHandler $dataHandler): bool
     {
+        if (!$this->normalizeSingleSelect($incomingFieldArray, 'event', $dataHandler)) {
+            return false;
+        }
+
         $eventUids = [];
         if (MathUtility::canBeInterpretedAsInteger($id)) {
             $eventUids[] = (int)($this->recordReader->fetch(self::ENTRY_TABLE, (int)$id)['event'] ?? 0);
         } else {
             $eventUids[] = $this->parentEventInDatamap((string)$id, $dataHandler);
         }
-        if (MathUtility::canBeInterpretedAsInteger($incomingFieldArray['event'] ?? null)) {
-            $eventUids[] = (int)$incomingFieldArray['event'];
+        if (is_int($incomingFieldArray['event'] ?? null)) {
+            $eventUids[] = $incomingFieldArray['event'];
         }
 
         foreach (array_unique($eventUids) as $eventUid) {
@@ -223,6 +236,10 @@ class EventWorkflowGuardHook
     private function mayRunCommand(string $command, string $table, int $id, DataHandler $dataHandler): bool
     {
         $backendUser = $dataHandler->BE_USER;
+
+        if ($table === self::FILE_REFERENCE_TABLE) {
+            return $this->mayChangeFileReference($this->recordReader->fetch(self::FILE_REFERENCE_TABLE, $id) ?? [], $dataHandler);
+        }
 
         if ($table === self::ENTRY_TABLE) {
             $eventUid = (int)($this->recordReader->fetch(self::ENTRY_TABLE, $id)['event'] ?? 0);
@@ -248,6 +265,38 @@ class EventWorkflowGuardHook
     }
 
     /**
+     * The files of an event are part of its content: the stored and the submitted target of a
+     * reference both need the right to edit that event. References created while an event is
+     * copied belong to the copy.
+     *
+     * @param array<string, mixed> $incomingFieldArray
+     */
+    private function mayWriteFileReference(array $incomingFieldArray, int|string $id, DataHandler $dataHandler): bool
+    {
+        if (!MathUtility::canBeInterpretedAsInteger($id)) {
+            return $this->copyDepth > 0 || $this->mayChangeFileReference($incomingFieldArray, $dataHandler);
+        }
+
+        $storedReference = $this->recordReader->fetch(self::FILE_REFERENCE_TABLE, (int)$id) ?? [];
+
+        return $this->mayChangeFileReference($storedReference, $dataHandler)
+            && $this->mayChangeFileReference($incomingFieldArray + $storedReference, $dataHandler);
+    }
+
+    /**
+     * @param array<string, mixed> $reference
+     */
+    private function mayChangeFileReference(array $reference, DataHandler $dataHandler): bool
+    {
+        if (($reference['tablenames'] ?? '') !== self::EVENT_TABLE || !MathUtility::canBeInterpretedAsInteger($reference['uid_foreign'] ?? null)) {
+            return true;
+        }
+        $event = $this->recordReader->fetch(self::EVENT_TABLE, (int)$reference['uid_foreign']);
+
+        return $event === null || $this->policy->canEditEvent($dataHandler->BE_USER, $event);
+    }
+
+    /**
      * A new appointment created inline has no event yet: its parent is the event whose
      * appointments relation in the same datamap lists it.
      */
@@ -262,6 +311,34 @@ class EventWorkflowGuardHook
         }
 
         return 0;
+    }
+
+    /**
+     * Reduces a single select value to the record uid DataHandler would store (it url-decodes
+     * the value, cuts it at `|` and keeps the first of a list) and writes that uid back, so the
+     * checks see what gets stored. Placeholders of records created in the same datamap stay.
+     *
+     * @param array<string, mixed> $fieldArray
+     * @return bool false for a value that is no record uid
+     */
+    private function normalizeSingleSelect(array &$fieldArray, string $field, DataHandler $dataHandler): bool
+    {
+        if (!array_key_exists($field, $fieldArray)) {
+            return true;
+        }
+
+        $value = is_array($fieldArray[$field]) ? implode(',', $fieldArray[$field]) : (string)$fieldArray[$field];
+        $first = $dataHandler->checkValue_group_select_explodeSelectGroupValue($value)[0] ?? '0';
+        if (str_starts_with($first, 'NEW')) {
+            $fieldArray[$field] = $first;
+            return true;
+        }
+        if (!MathUtility::canBeInterpretedAsInteger($first)) {
+            return false;
+        }
+
+        $fieldArray[$field] = (int)$first;
+        return true;
     }
 
     /**
