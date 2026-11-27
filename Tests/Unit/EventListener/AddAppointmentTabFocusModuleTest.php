@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use TYPO3\CMS\Backend\Controller\EditDocumentController;
 use TYPO3\CMS\Backend\Controller\Event\AfterFormEnginePageInitializedEvent;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use TYPO3\CMS\Core\Page\JavaScriptRenderer;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use Xima\XimaTypo3Calendar\EventListener\AddAppointmentTabFocusModule;
@@ -19,16 +20,17 @@ final class AddAppointmentTabFocusModuleTest extends TestCase
     #[Test]
     public function addsTheModuleWhenAnAppointmentWasSelected(): void
     {
-        $javaScriptRenderer = JavaScriptRenderer::create();
+        $javaScriptRenderer = $this->createMock(JavaScriptRenderer::class);
+        $javaScriptRenderer->expects(self::once())
+            ->method('addJavaScriptModuleInstruction')
+            ->with(self::callback(
+                static fn (JavaScriptModuleInstruction $instruction): bool => $instruction->getName()
+                    === '@xima/xima-typo3-calendar/Event/calendar-appointment-tab-focus.js'
+            ));
         $pageRenderer = $this->createMock(PageRenderer::class);
         $pageRenderer->method('getJavaScriptRenderer')->willReturn($javaScriptRenderer);
 
         (new AddAppointmentTabFocusModule($pageRenderer))($this->createEvent(['appointmentUid' => '220']));
-
-        self::assertStringContainsString(
-            'calendar-appointment-tab-focus.js',
-            json_encode($javaScriptRenderer->toArray(), JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES)
-        );
     }
 
     /**
