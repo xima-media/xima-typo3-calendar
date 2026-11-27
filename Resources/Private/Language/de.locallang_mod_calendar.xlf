@@ -65,6 +65,11 @@
 			<trans-unit id="newEventType.end" resname="newEventType.end"><source /><target>Ende</target></trans-unit>
 			<trans-unit id="newEventType.allDay" resname="newEventType.allDay"><source /><target>Ganztägig</target></trans-unit>
 			<trans-unit id="newEventType.create" resname="newEventType.create"><source /><target>Erstellen</target></trans-unit>
+			<trans-unit id="newEventType.eventSearch" resname="newEventType.eventSearch"><source /><target>Event</target></trans-unit>
+			<trans-unit id="newEventType.eventSearchPlaceholder" resname="newEventType.eventSearchPlaceholder"><source /><target>Nach Titel suchen</target></trans-unit>
+			<trans-unit id="newEventType.eventSearchAppointments" resname="newEventType.eventSearchAppointments"><source /><target>Vorhandene Termine: %s</target></trans-unit>
+			<trans-unit id="newEventType.eventSearchNoResults" resname="newEventType.eventSearchNoResults"><source /><target>Kein passendes Event gefunden.</target></trans-unit>
+			<trans-unit id="newEventType.eventSearchClear" resname="newEventType.eventSearchClear"><source /><target>Event entfernen</target></trans-unit>
 			<trans-unit id="creation.noPermission" resname="creation.noPermission"><source /><target>Keine Berechtigung, Events anzulegen.</target></trans-unit>
 			<trans-unit id="creation.calendarNotAvailable" resname="creation.calendarNotAvailable"><source /><target>In diesem Kalender können Sie keine Datensätze anlegen.</target></trans-unit>
 		</body>

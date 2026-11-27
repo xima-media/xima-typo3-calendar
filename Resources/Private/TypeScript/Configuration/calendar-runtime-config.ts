@@ -9,6 +9,11 @@ export type CalendarModalLabels = {
     end: string;
     allDay: string;
     create: string;
+    eventSearch: string;
+    eventSearchPlaceholder: string;
+    eventSearchAppointments: string;
+    eventSearchNoResults: string;
+    eventSearchClear: string;
 };
 
 export type CalendarRecordTypeOption = {
@@ -37,6 +42,7 @@ export type Typo3TopWindow = Window & {
 export type CalendarConfig = {
     ajaxUrl: string;
     newRecordUrl: string;
+    eventSearchUrl: string;
     viewStateUrl: string;
     initialView: 'dayGridMonth' | 'timeGridWeek' | 'listMonth';
     locale: string;
@@ -74,7 +80,10 @@ const isCalendarModalLabels = (value: unknown): value is CalendarModalLabels => 
     const labels = value as Record<string, unknown>;
     return hasValues(
         labels,
-        ['title', 'event', 'appointment', 'recordType', 'calendar', 'selectCalendar', 'start', 'end', 'allDay', 'create'],
+        [
+            'title', 'event', 'appointment', 'recordType', 'calendar', 'selectCalendar', 'start', 'end', 'allDay', 'create',
+            'eventSearch', 'eventSearchPlaceholder', 'eventSearchAppointments', 'eventSearchNoResults', 'eventSearchClear',
+        ],
         isString,
     );
 };
@@ -134,7 +143,7 @@ const isCalendarConfig = (value: unknown): value is CalendarConfig => {
     }
 
     const config = value as Record<string, unknown>;
-    return hasValues(config, ['ajaxUrl', 'newRecordUrl', 'viewStateUrl', 'initialView', 'locale'], isString)
+    return hasValues(config, ['ajaxUrl', 'newRecordUrl', 'eventSearchUrl', 'viewStateUrl', 'initialView', 'locale'], isString)
         && ['dayGridMonth', 'timeGridWeek', 'listMonth'].includes(config.initialView as string)
         && hasValues(
             config,
