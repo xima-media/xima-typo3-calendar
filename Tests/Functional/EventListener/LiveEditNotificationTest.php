@@ -214,6 +214,18 @@ final class LiveEditNotificationTest extends AbstractCalendarFunctionalTestCase
     }
 
     #[Test]
+    public function notifiesTheLiveEventAnAppointmentIsPulledFromThroughTheInlineRelation(): void
+    {
+        $this->setUpBackendUser(self::EDITOR);
+
+        $this->process([self::TABLE_EVENT => [self::OWN_DRAFT => [
+            'appointments' => self::OWN_DRAFT_APPOINTMENT . ',' . self::OWN_LIVE_APPOINTMENT,
+        ]]]);
+
+        self::assertSame(['EventLiveNotification'], $this->templates());
+    }
+
+    #[Test]
     public function staysQuietForAppointmentsOfANonLiveEvent(): void
     {
         $this->setUpBackendUser(self::EDITOR);

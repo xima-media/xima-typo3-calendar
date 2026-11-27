@@ -380,7 +380,12 @@ class EventWorkflowGuardHook
         }
 
         return array_map(
-            static fn (string $id): string => str_starts_with($id, $childTable . '_') ? substr($id, strlen($childTable) + 1) : $id,
+            static function (string $id) use ($childTable): string {
+                $separator = strrpos($id, '_');
+                return $separator !== false && trim(substr($id, 0, $separator)) === $childTable
+                    ? trim(substr($id, $separator + 1))
+                    : $id;
+            },
             GeneralUtility::trimExplode(',', (string)$value, true)
         );
     }

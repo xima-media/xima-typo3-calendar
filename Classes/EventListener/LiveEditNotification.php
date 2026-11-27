@@ -83,6 +83,33 @@ final class LiveEditNotification
         }
     }
 
+    /**
+     * Inline relation writes bypass child lifecycle events. Remember the source events before
+     * RelationHandler moves these appointments to their new parent.
+     *
+     * @param array<string, mixed>|null $fieldArray
+     */
+    public function processDatamap_preProcessFieldArray(?array &$fieldArray, string $table, int|string $id, DataHandler $dataHandler): void
+    {
+        if ($table !== 'tx_ximatypo3calendar_domain_model_event' || !isset($fieldArray['appointments'])) {
+            return;
+        }
+
+        $value = $fieldArray['appointments'];
+        $ids = is_array($value) ? $value : explode(',', (string)$value);
+        foreach ($ids as $appointmentId) {
+            $appointmentId = trim((string)$appointmentId);
+            $separator = strrpos($appointmentId, '_');
+            if ($separator !== false && trim(substr($appointmentId, 0, $separator)) === self::ENTRY_TABLE) {
+                $appointmentId = trim(substr($appointmentId, $separator + 1));
+            }
+            $previousEventUid = (int)($this->recordReader->fetch(self::ENTRY_TABLE, (int)$appointmentId)['event'] ?? 0);
+            if ($previousEventUid > 0 && (string)$previousEventUid !== (string)$id) {
+                $this->changedEventFields[$previousEventUid]['appointments'] = true;
+            }
+        }
+    }
+
     public function processDatamap_afterAllOperations(DataHandler $dataHandler): void
     {
         if ($dataHandler->isOuterMostInstance() && $dataHandler->cmdmap === []) {

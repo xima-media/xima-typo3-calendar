@@ -347,13 +347,24 @@ final class EventWorkflowGuardHookTest extends AbstractCalendarFunctionalTestCas
         self::assertArrayNotHasKey($referenceId, $dataHandler->substNEWwithIDs);
     }
 
+    /** @return array<string, array{string, string}> */
+    public static function fileRelationValues(): array
+    {
+        return [
+            'plain files' => ['files', '1'],
+            'prefixed files' => ['files', 'sys_file_reference _1'],
+            'prefixed image' => ['preview_image', 'sys_file_reference _1'],
+        ];
+    }
+
     #[Test]
-    public function anEditorCannotPullAFileOfALiveEventIntoTheirDraft(): void
+    #[DataProvider('fileRelationValues')]
+    public function anEditorCannotPullAFileOfALiveEventIntoTheirDraft(string $field, string $reference): void
     {
         $this->givenFileReferencesOnOwnLiveAndOwnDraft();
         $this->setUpBackendUser(self::EDITOR);
 
-        $dataHandler = $this->process([self::TABLE_EVENT => [self::OWN_DRAFT => ['files' => '2,1']]]);
+        $dataHandler = $this->process([self::TABLE_EVENT => [self::OWN_DRAFT => [$field => '2,' . $reference]]]);
 
         self::assertSame(self::OWN_LIVE, (int)$this->fetchRawRecord(self::FILE_REFERENCE_TABLE, 1)['uid_foreign']);
         self::assertRefusalLogged($dataHandler);
@@ -666,7 +677,7 @@ final class EventWorkflowGuardHookTest extends AbstractCalendarFunctionalTestCas
         $groups->update('be_groups', [
             'tables_select' => $group['tables_select'] . ',' . self::FILE_REFERENCE_TABLE,
             'tables_modify' => $group['tables_modify'] . ',' . self::FILE_REFERENCE_TABLE,
-            'non_exclude_fields' => $group['non_exclude_fields'] . ',tx_ximatypo3calendar_domain_model_event:files,sys_file_reference:title',
+            'non_exclude_fields' => $group['non_exclude_fields'] . ',tx_ximatypo3calendar_domain_model_event:files,tx_ximatypo3calendar_domain_model_event:preview_image,sys_file_reference:title',
         ], ['uid' => 11]);
 
         $this->getConnectionPool()->getConnectionForTable('sys_file_storage')->insert('sys_file_storage', [
