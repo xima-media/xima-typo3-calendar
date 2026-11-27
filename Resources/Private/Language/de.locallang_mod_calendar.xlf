@@ -30,7 +30,6 @@
 			<trans-unit id="filter.categories" resname="filter.categories"><source /><target>Kategorien</target></trans-unit>
 			<trans-unit id="filter.status" resname="filter.status"><source /><target>Status</target></trans-unit>
 			<trans-unit id="filter.canceled.label" resname="filter.canceled.label"><source /><target>Abgesagt</target></trans-unit>
-			<trans-unit id="filter.canceled.marker" resname="filter.canceled.marker"><source /><target>[A]</target></trans-unit>
 			<trans-unit id="filter.loading" resname="filter.loading"><source /><target>Filter werden geladen …</target></trans-unit>
 			<trans-unit id="filter.error" resname="filter.error"><source /><target>Filter konnten nicht geladen werden.</target></trans-unit>
 			<trans-unit id="filter.hideSubcategories" resname="filter.hideSubcategories"><source /><target>Unterkategorien ausblenden</target></trans-unit>

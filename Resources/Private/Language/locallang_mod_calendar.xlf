@@ -24,7 +24,6 @@
 			<trans-unit id="filter.categories" resname="filter.categories"><source>Categories</source></trans-unit>
 			<trans-unit id="filter.status" resname="filter.status"><source>Status</source></trans-unit>
 			<trans-unit id="filter.canceled.label" resname="filter.canceled.label"><source>Canceled</source></trans-unit>
-			<trans-unit id="filter.canceled.marker" resname="filter.canceled.marker"><source>[C]</source></trans-unit>
 			<trans-unit id="filter.loading" resname="filter.loading"><source>Loading filters …</source></trans-unit>
 			<trans-unit id="filter.error" resname="filter.error"><source>Filters could not be loaded.</source></trans-unit>
 			<trans-unit id="filter.hideSubcategories" resname="filter.hideSubcategories"><source>Hide subcategories</source></trans-unit>
