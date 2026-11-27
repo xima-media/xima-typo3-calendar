@@ -40,6 +40,9 @@ final class LiveEditNotification
     /** @var array<int, true> */
     private array $changedAppointmentUids = [];
 
+    /** @var array<int, int> previous parent per appointment being moved inline */
+    private array $inlinePreviousParents = [];
+
     /** @var array<int, true> */
     private array $skippedEventUids = [];
 
@@ -105,10 +108,7 @@ final class LiveEditNotification
             }
             $previousEventUid = (int)($this->recordReader->fetch(self::ENTRY_TABLE, (int)$appointmentId)['event'] ?? 0);
             if ($previousEventUid > 0 && (string)$previousEventUid !== (string)$id) {
-                $this->changedEventFields[$previousEventUid]['appointments'] = true;
-                if (is_numeric($id)) {
-                    $this->changedEventFields[(int)$id]['appointments'] = true;
-                }
+                $this->inlinePreviousParents[(int)$appointmentId] ??= $previousEventUid;
             }
         }
     }
@@ -130,6 +130,17 @@ final class LiveEditNotification
     private function sendCollectedNotifications(): void
     {
         $changedEventFields = $this->changedEventFields;
+        foreach ($this->inlinePreviousParents as $appointmentUid => $previousEventUid) {
+            $currentEventUid = (int)($this->recordReader->fetch(self::ENTRY_TABLE, $appointmentUid)['event'] ?? 0);
+            if ($currentEventUid !== $previousEventUid) {
+                $changedEventFields[$previousEventUid]['appointments'] = true;
+                if ($currentEventUid > 0) {
+                    $changedEventFields[$currentEventUid]['appointments'] = true;
+                }
+            }
+        }
+        $this->inlinePreviousParents = [];
+
         foreach (array_keys($this->changedAppointmentUids) as $appointmentUid) {
             $eventUid = (int)($this->recordReader->fetch(self::ENTRY_TABLE, $appointmentUid)['event'] ?? 0);
             if ($eventUid > 0) {

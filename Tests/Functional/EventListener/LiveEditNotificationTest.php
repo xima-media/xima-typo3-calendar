@@ -239,6 +239,22 @@ final class LiveEditNotificationTest extends AbstractCalendarFunctionalTestCase
     }
 
     #[Test]
+    public function staysQuietWhenCoreRefusesAnInlineReassignment(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable('pages')->update('pages', ['perms_everybody' => 1], ['uid' => 2]);
+        $this->setUpBackendUser(self::EDITOR);
+        $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+        $dataHandler->start([self::TABLE_EVENT => [self::OWN_DRAFT => [
+            'appointments' => self::OWN_DRAFT_APPOINTMENT . ',' . self::OWN_LIVE_APPOINTMENT,
+        ]]], [], $GLOBALS['BE_USER']);
+        $dataHandler->process_datamap();
+        $dataHandler->process_cmdmap();
+
+        self::assertNotSame([], $dataHandler->errorLog);
+        self::assertSame([], $this->templates());
+    }
+
+    #[Test]
     public function staysQuietForAppointmentsOfANonLiveEvent(): void
     {
         $this->setUpBackendUser(self::EDITOR);
