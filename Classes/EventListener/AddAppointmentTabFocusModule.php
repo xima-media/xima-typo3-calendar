@@ -9,6 +9,9 @@ use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use TYPO3\CMS\Core\Page\PageRenderer;
 
+/**
+ * Focuses the appointments tab only when the form was opened from a calendar click.
+ */
 #[AsEventListener(
     identifier: 'xima-typo3-calendar/add-appointment-tab-focus-module',
     event: AfterFormEnginePageInitializedEvent::class,
@@ -22,6 +25,11 @@ final readonly class AddAppointmentTabFocusModule
 
     public function __invoke(AfterFormEnginePageInitializedEvent $event): void
     {
+        $appointmentUid = $event->getRequest()->getQueryParams()['appointmentUid'] ?? null;
+        if (!is_scalar($appointmentUid) || (int)$appointmentUid <= 0) {
+            return;
+        }
+
         $this->pageRenderer->getJavaScriptRenderer()->addJavaScriptModuleInstruction(
             JavaScriptModuleInstruction::create('@xima/xima-typo3-calendar/Event/calendar-appointment-tab-focus.js')
         );
