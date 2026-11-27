@@ -139,7 +139,8 @@ class EventWorkflowGuardHook
             $newEvent = ['uid' => $id] + $incomingFieldArray;
 
             return $this->policy->canTransition($backendUser, $newEvent, EventStatus::DRAFT, $this->policy->statusOf($newEvent))
-                && $this->mayLinkAppointments($incomingFieldArray, (string)$id, $dataHandler);
+                && $this->mayLinkAppointments($incomingFieldArray, (string)$id, $dataHandler)
+                && $this->mayLinkFileReferences($incomingFieldArray, $dataHandler);
         }
 
         $event = $this->recordReader->fetch(self::EVENT_TABLE, (int)$id);
@@ -176,7 +177,8 @@ class EventWorkflowGuardHook
             return false;
         }
 
-        return $this->mayLinkAppointments($incomingFieldArray, (string)$id, $dataHandler);
+        return $this->mayLinkAppointments($incomingFieldArray, (string)$id, $dataHandler)
+            && $this->mayLinkFileReferences($incomingFieldArray, $dataHandler);
     }
 
     /**
@@ -199,6 +201,30 @@ class EventWorkflowGuardHook
             $currentEventUid = (int)($appointment['event'] ?? 0);
             if ($currentEventUid > 0 && (string)$currentEventUid !== $eventId && !$this->mayManageAppointmentsOfEvent($currentEventUid, $dataHandler)) {
                 return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Like inline appointments, file fields re-parent every listed reference, so each of them
+     * has to belong to an event the user may edit.
+     *
+     * @param array<string, mixed> $incomingFieldArray
+     */
+    private function mayLinkFileReferences(array $incomingFieldArray, DataHandler $dataHandler): bool
+    {
+        foreach ($GLOBALS['TCA'][self::EVENT_TABLE]['columns'] ?? [] as $name => $column) {
+            if (($column['config']['type'] ?? '') !== 'file' || !array_key_exists($name, $incomingFieldArray)) {
+                continue;
+            }
+            foreach ($this->relationIds($incomingFieldArray[$name], self::FILE_REFERENCE_TABLE) as $referenceId) {
+                if (MathUtility::canBeInterpretedAsInteger($referenceId)
+                    && !$this->mayChangeFileReference($this->recordReader->fetch(self::FILE_REFERENCE_TABLE, (int)$referenceId) ?? [], $dataHandler)
+                ) {
+                    return false;
+                }
             }
         }
 
@@ -347,14 +373,14 @@ class EventWorkflowGuardHook
      *
      * @return list<string>
      */
-    private function relationIds(mixed $value): array
+    private function relationIds(mixed $value, string $childTable = self::ENTRY_TABLE): array
     {
         if (is_array($value)) {
             $value = implode(',', $value);
         }
 
         return array_map(
-            static fn (string $id): string => str_starts_with($id, self::ENTRY_TABLE . '_') ? substr($id, strlen(self::ENTRY_TABLE) + 1) : $id,
+            static fn (string $id): string => str_starts_with($id, $childTable . '_') ? substr($id, strlen($childTable) + 1) : $id,
             GeneralUtility::trimExplode(',', (string)$value, true)
         );
     }

@@ -348,6 +348,18 @@ final class EventWorkflowGuardHookTest extends AbstractCalendarFunctionalTestCas
     }
 
     #[Test]
+    public function anEditorCannotPullAFileOfALiveEventIntoTheirDraft(): void
+    {
+        $this->givenFileReferencesOnOwnLiveAndOwnDraft();
+        $this->setUpBackendUser(self::EDITOR);
+
+        $dataHandler = $this->process([self::TABLE_EVENT => [self::OWN_DRAFT => ['files' => '2,1']]]);
+
+        self::assertSame(self::OWN_LIVE, (int)$this->fetchRawRecord(self::FILE_REFERENCE_TABLE, 1)['uid_foreign']);
+        self::assertRefusalLogged($dataHandler);
+    }
+
+    #[Test]
     public function anEditorMayChangeAndDeleteTheFilesOfTheirDraft(): void
     {
         $this->givenFileReferencesOnOwnLiveAndOwnDraft();

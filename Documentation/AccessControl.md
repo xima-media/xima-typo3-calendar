@@ -82,7 +82,8 @@ for their owner; there is no lock during review.
 - Records hidden by the [event restriction](#rules) cannot be written, so the restriction is a
   real boundary and not just a filtered list.
 - File references of an event follow the event's edit rights, so a live event's images cannot be
-  swapped through the file reference records. Editors ask a publisher.
+  swapped through the file reference records or pulled into another event's file field. Editors
+  ask a publisher.
 - The guard decides on the value DataHandler stores: `status`, `owner_be_user` and an
   appointment's `event` are reduced to a plain uid first (DataHandler url-decodes select values
   and cuts them at `|`), so an encoded value cannot slip past a check.
