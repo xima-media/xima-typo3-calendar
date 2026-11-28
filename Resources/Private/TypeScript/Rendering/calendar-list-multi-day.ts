@@ -50,13 +50,15 @@ export const renderCalendarListMultiDayEvents = (
     const panel = document.createElement('aside');
     panel.className = 'xima-calendar-list__multi-day';
     const columnCount = Math.max(1, layout.columnCount);
-    if (columnCount >= 3) {
-        panel.classList.add('xima-calendar-list__multi-day--columns-3');
+    if (columnCount >= 4) {
+        panel.classList.add('xima-calendar-list__multi-day--columns-4');
     }
     if (columnCount >= 5) {
         panel.classList.add('xima-calendar-list__multi-day--columns-5');
     }
     panel.style.insetBlockStart = `${scrollContainer.offsetTop}px`;
+    // The panel is border-box with its own border, so it has to match the
+    // list's border box; clientHeight would leave it two pixels short.
     panel.style.blockSize = `${scrollContainer.offsetHeight}px`;
     panel.style.setProperty('--xima-list-column-count', String(columnCount));
     panel.style.setProperty('--xima-list-day-count', String(layout.dayCount));
