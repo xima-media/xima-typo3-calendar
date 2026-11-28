@@ -43,8 +43,8 @@ final class CalendarFilterController
                 ),
                 'search' => $this->getLanguageLabel('filter.search', 'Enter search term'),
                 'miniCalendar' => $this->getLanguageLabel('miniCalendar.title', 'Mini calendar'),
-                'previousMonth' => $this->getLanguageLabel('miniCalendar.previousMonth', 'Previous month'),
-                'nextMonth' => $this->getLanguageLabel('miniCalendar.nextMonth', 'Next month'),
+                'previousMonth' => $this->getLanguageLabel('calendar.previousMonth', 'Previous month'),
+                'nextMonth' => $this->getLanguageLabel('calendar.nextMonth', 'Next month'),
                 'selectYear' => $this->getLanguageLabel('miniCalendar.selectYear', 'Select year'),
             ],
         ]);

@@ -107,6 +107,14 @@ DocumentService.ready().then(async () => {
             .catch(error => console.error('Calendar view could not be saved', error));
     };
 
+    const withNavigationLabels = (unit: 'Month' | 'Week') => (
+        (buttonText: EventCalendarButtonText): EventCalendarButtonText => ({
+            ...buttonText,
+            prev: getCalendarLanguageLabel(`calendar.previous${unit}`),
+            next: getCalendarLanguageLabel(`calendar.next${unit}`),
+        })
+    );
+
     const ec = createCalendar(
         container,
         [DayGrid, TimeGrid, List, Interaction],
@@ -127,7 +135,14 @@ DocumentService.ready().then(async () => {
             view: calendarConfig.initialView,
             firstDay: 1,
             views: {
+                dayGridMonth: {
+                    buttonText: withNavigationLabels('Month'),
+                },
+                listMonth: {
+                    buttonText: withNavigationLabels('Month'),
+                },
                 timeGridWeek: {
+                    buttonText: withNavigationLabels('Week'),
             scrollTime: calendarConfig.scrollStartTime,
                     slotMinTime: '00:00:00',
                     slotMaxTime: '24:00:00',

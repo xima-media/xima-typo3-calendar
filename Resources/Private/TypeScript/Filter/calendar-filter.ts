@@ -92,12 +92,14 @@ export class CalendarFilterElement extends LitElement {
             : Object.values(this.filterConfiguration).map((filter) => this.renderFilter(filter))}
         </div>
 
-        <section
-          class="xima-calendar-filter__mini-calendar"
-          aria-label=${this.filterLabels?.miniCalendar ?? nothing}
-        >
-          <xima-calendar-filter-mini-calendar .labels=${this.filterLabels}></xima-calendar-filter-mini-calendar>
-        </section>
+        ${this.filterLabels === null ? nothing : html`
+          <section
+            class="xima-calendar-filter__mini-calendar"
+            aria-label=${this.filterLabels.miniCalendar}
+          >
+            <xima-calendar-filter-mini-calendar .labels=${this.filterLabels}></xima-calendar-filter-mini-calendar>
+          </section>
+        `}
       </div>
     `;
   }

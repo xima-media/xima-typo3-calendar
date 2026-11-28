@@ -43,14 +43,16 @@
 			<trans-unit id="calendar.week" resname="calendar.week"><source /><target>Woche</target></trans-unit>
 			<trans-unit id="calendar.list" resname="calendar.list"><source /><target>Liste</target></trans-unit>
 			<trans-unit id="calendar.today" resname="calendar.today"><source /><target>Heute</target></trans-unit>
+			<trans-unit id="calendar.previousMonth" resname="calendar.previousMonth"><source /><target>Vorheriger Monat</target></trans-unit>
+			<trans-unit id="calendar.nextMonth" resname="calendar.nextMonth"><source /><target>Nächster Monat</target></trans-unit>
+			<trans-unit id="calendar.previousWeek" resname="calendar.previousWeek"><source /><target>Vorherige Woche</target></trans-unit>
+			<trans-unit id="calendar.nextWeek" resname="calendar.nextWeek"><source /><target>Nächste Woche</target></trans-unit>
 			<trans-unit id="tooltip.allDay" resname="tooltip.allDay"><source /><target>Ganztägig</target></trans-unit>
 			<trans-unit id="tooltip.to" resname="tooltip.to"><source /><target>bis</target></trans-unit>
 			<trans-unit id="tooltip.location" resname="tooltip.location"><source /><target>Ort</target></trans-unit>
 			<trans-unit id="list.multiDay" resname="list.multiDay"><source /><target>Mehrtägige Termine</target></trans-unit>
 			<trans-unit id="miniCalendar.title" resname="miniCalendar.title"><source /><target>Minikalender</target></trans-unit>
-			<trans-unit id="miniCalendar.previousMonth" resname="miniCalendar.previousMonth"><source /><target>Vorheriger Monat</target></trans-unit>
 			<trans-unit id="miniCalendar.selectYear" resname="miniCalendar.selectYear"><source /><target>Jahr auswählen</target></trans-unit>
-			<trans-unit id="miniCalendar.nextMonth" resname="miniCalendar.nextMonth"><source /><target>Nächster Monat</target></trans-unit>
 			<trans-unit id="creation.error.title" resname="creation.error.title"><source /><target>Fehler</target></trans-unit>
 			<trans-unit id="creation.error.message" resname="creation.error.message">
 				<source />

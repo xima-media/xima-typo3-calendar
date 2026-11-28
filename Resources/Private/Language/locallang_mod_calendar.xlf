@@ -34,14 +34,16 @@
 			<trans-unit id="calendar.week" resname="calendar.week"><source>Week</source></trans-unit>
 			<trans-unit id="calendar.list" resname="calendar.list"><source>List</source></trans-unit>
 			<trans-unit id="calendar.today" resname="calendar.today"><source>Today</source></trans-unit>
+			<trans-unit id="calendar.previousMonth" resname="calendar.previousMonth"><source>Previous month</source></trans-unit>
+			<trans-unit id="calendar.nextMonth" resname="calendar.nextMonth"><source>Next month</source></trans-unit>
+			<trans-unit id="calendar.previousWeek" resname="calendar.previousWeek"><source>Previous week</source></trans-unit>
+			<trans-unit id="calendar.nextWeek" resname="calendar.nextWeek"><source>Next week</source></trans-unit>
 			<trans-unit id="tooltip.allDay" resname="tooltip.allDay"><source>All-day</source></trans-unit>
 			<trans-unit id="tooltip.to" resname="tooltip.to"><source>to</source></trans-unit>
 			<trans-unit id="tooltip.location" resname="tooltip.location"><source>Location</source></trans-unit>
 			<trans-unit id="list.multiDay" resname="list.multiDay"><source>Multi-day events</source></trans-unit>
 			<trans-unit id="miniCalendar.title" resname="miniCalendar.title"><source>Mini calendar</source></trans-unit>
-			<trans-unit id="miniCalendar.previousMonth" resname="miniCalendar.previousMonth"><source>Previous month</source></trans-unit>
 			<trans-unit id="miniCalendar.selectYear" resname="miniCalendar.selectYear"><source>Select year</source></trans-unit>
-			<trans-unit id="miniCalendar.nextMonth" resname="miniCalendar.nextMonth"><source>Next month</source></trans-unit>
 			<trans-unit id="creation.error.title" resname="creation.error.title"><source>Error</source></trans-unit>
 			<trans-unit id="creation.error.message" resname="creation.error.message">
 				<source>The event could not be created. Please try again.</source>
