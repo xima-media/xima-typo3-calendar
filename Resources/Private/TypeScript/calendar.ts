@@ -217,9 +217,10 @@ DocumentService.ready().then(async () => {
 
     listNavigation = createCalendarListNavigation(
         container,
-        calendarConfig.locale.startsWith('de')
-            ? {previous: 'Vorheriger Monat', next: 'Nächster Monat'}
-            : {previous: 'Previous month', next: 'Next month'},
+        {
+            previous: getCalendarLanguageLabel('calendar.previousMonth'),
+            next: getCalendarLanguageLabel('calendar.nextMonth'),
+        },
         calendarConfig.locale,
         () => ec.prev(),
         () => ec.next(),

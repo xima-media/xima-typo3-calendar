@@ -1,4 +1,6 @@
 #xima-calendar-mount .ec-list {
+    --xima-calendar-list-highlight-bg: color-mix(in srgb, var(--typo3-state-default-bg), var(--typo3-component-color) 12%);
+    --xima-calendar-list-highlight-strong-bg: color-mix(in srgb, var(--typo3-state-default-bg), var(--typo3-component-color) 18%);
     min-block-size: 0;
 
     .ec-main .ec-event.xima-calendar-list__multi-day-source {
@@ -27,11 +29,7 @@
     }
 
     .ec-day.ec-today {
-        background: color-mix(
-            in srgb,
-            var(--typo3-state-default-bg),
-            var(--typo3-component-color) 12%
-        );
+        background: var(--xima-calendar-list-highlight-bg);
     }
 
     .ec-day-head {
@@ -43,11 +41,7 @@
     }
 
     .ec-day.ec-today .ec-day-head {
-        background: color-mix(
-            in srgb,
-            var(--typo3-state-default-bg),
-            var(--typo3-component-color) 18%
-        );
+        background: var(--xima-calendar-list-highlight-strong-bg);
         color: var(--typo3-state-default-color);
         font-weight: 700;
     }
@@ -82,20 +76,16 @@
 }
 
 #xima-calendar-mount .xima-calendar-list-navigation {
-    display: none;
+    display: flex;
+    position: sticky;
+    inset-block-end: 0;
+    z-index: 5;
     flex: 0 0 auto;
     box-sizing: border-box;
     justify-content: space-between;
     gap: 0.5rem;
     padding: 0.75rem;
     background: var(--typo3-component-bg);
-}
-
-#xima-calendar-mount.xima-calendar-list-navigation-visible .xima-calendar-list-navigation {
-    display: flex;
-    position: sticky;
-    inset-block-end: 0;
-    z-index: 5;
 }
 
 #xima-calendar-mount .xima-calendar-list-navigation__button {
@@ -215,21 +205,13 @@
     }
 
     .xima-calendar-list__multi-day-grid-row--today {
-        background: color-mix(
-            in srgb,
-            var(--typo3-state-default-bg),
-            var(--typo3-component-color) 12%
-        );
+        background: var(--xima-calendar-list-highlight-bg);
         color: var(--typo3-state-default-color);
         font-weight: 600;
     }
 
     .xima-calendar-list__multi-day-grid-row--hovered {
-        background: color-mix(
-            in srgb,
-            var(--typo3-state-default-bg),
-            var(--typo3-component-color) 18%
-        );
+        background: var(--xima-calendar-list-highlight-strong-bg);
         color: var(--typo3-state-default-color);
     }
 

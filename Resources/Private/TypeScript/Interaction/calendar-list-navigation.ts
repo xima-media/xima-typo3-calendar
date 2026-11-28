@@ -65,27 +65,41 @@ export const createCalendarListNavigation = (
         nextButton.title = `${labels.next}: ${nextMonthLabel}`;
     };
 
-    const appendToListMain = (): void => {
-        const listMain = container.querySelector<HTMLElement>('.ec-main');
-        if (listMain && navigation.parentElement !== listMain) {
-            listMain.append(navigation);
+    let mountFrame: number | null = null;
+
+    const cancelMount = (): void => {
+        if (mountFrame !== null) {
+            window.cancelAnimationFrame(mountFrame);
+            mountFrame = null;
         }
     };
-    appendToListMain();
+
+    // datesSet may fire before the list view has replaced the previous view's DOM.
+    const mountAfterRender = (): void => {
+        cancelMount();
+        mountFrame = window.requestAnimationFrame(() => {
+            mountFrame = null;
+            const listMain = container.querySelector<HTMLElement>('.ec-list .ec-main');
+            if (listMain && navigation.parentElement !== listMain) {
+                listMain.append(navigation);
+            }
+        });
+    };
 
     return {
         viewChanged(viewType, currentStart): void {
-            updateMonthLabels(currentStart);  
-            if (viewType.startsWith('list')) {
-                appendToListMain();
+            const isList = viewType.startsWith('list');
+            updateMonthLabels(currentStart);
+            if (isList) {
+                mountAfterRender();
+            } else {
+                cancelMount();
+                navigation.remove();
             }
-            container.classList.toggle(
-                'xima-calendar-list-navigation-visible',
-                viewType.startsWith('list'),
-            );
         },
 
         destroy(): void {
+            cancelMount();
             previousButton.removeEventListener('click', onPrevious);
             nextButton.removeEventListener('click', onNext);
             navigation.remove();

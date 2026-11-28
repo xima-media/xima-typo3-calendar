@@ -2,16 +2,13 @@ import {contentToText, type CalendarEventData} from './calendar-event-data';
 import {createCalendarListLayout} from './calendar-list-layout';
 import type {CalendarEventRenderer} from './calendar-event-renderer';
 import {getCalendarLanguageLabel} from '../Services/calendar-language';
+import {formatLocalCalendarDate} from '../Filter/Services/calendar-date-utils';
 
 const startOfDay = (date: Date): Date => {
     const result = new Date(date);
     result.setHours(0, 0, 0, 0);
     return result;
 };
-
-const getDateKey = (date: Date): string => (
-    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-);
 
 const getMonthEnd = (monthStart: Date): Date => (
     new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 1)
@@ -84,7 +81,7 @@ export const renderCalendarListMultiDayEvents = (
         label.className = 'xima-calendar-list__multi-day-day';
         const date = new Date(monthStart);
         date.setDate(date.getDate() + day);
-        row.dataset.ximaCalendarDate = getDateKey(date);
+        row.dataset.ximaCalendarDate = formatLocalCalendarDate(date);
         if (date.getTime() === today.getTime()) {
             row.classList.add('xima-calendar-list__multi-day-grid-row--today');
         }

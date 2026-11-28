@@ -30,8 +30,7 @@ export const createCalendarListHoverSync = (container: HTMLElement): CalendarLis
         const day = getDayElement(target);
         const dateKey = day ? getDateKey(day) : null;
         const nextRow = dateKey
-            ? Array.from(container.querySelectorAll<HTMLElement>('[data-xima-calendar-date]'))
-                .find(row => row.dataset.ximaCalendarDate === dateKey) ?? null
+            ? container.querySelector<HTMLElement>(`[data-xima-calendar-date="${CSS.escape(dateKey)}"]`)
             : null;
 
         if (nextRow === currentRow) {
@@ -43,13 +42,13 @@ export const createCalendarListHoverSync = (container: HTMLElement): CalendarLis
         currentRow?.classList.add(hoveredRowClass);
     };
 
-    const handlePointerOver = (event: PointerEvent): void => {
+    const handleEnter = (event: PointerEvent | FocusEvent): void => {
         if (enabled) {
             updateHoveredRow(event.target);
         }
     };
 
-    const handlePointerOut = (event: PointerEvent): void => {
+    const handleLeave = (event: PointerEvent | FocusEvent): void => {
         if (!enabled) {
             return;
         }
@@ -68,8 +67,10 @@ export const createCalendarListHoverSync = (container: HTMLElement): CalendarLis
         updateHoveredRow(relatedDay);
     };
 
-    container.addEventListener('pointerover', handlePointerOver);
-    container.addEventListener('pointerout', handlePointerOut);
+    container.addEventListener('pointerover', handleEnter);
+    container.addEventListener('pointerout', handleLeave);
+    container.addEventListener('focusin', handleEnter);
+    container.addEventListener('focusout', handleLeave);
 
     return {
         viewChanged(viewType): void {
@@ -80,8 +81,10 @@ export const createCalendarListHoverSync = (container: HTMLElement): CalendarLis
         },
 
         destroy(): void {
-            container.removeEventListener('pointerover', handlePointerOver);
-            container.removeEventListener('pointerout', handlePointerOut);
+            container.removeEventListener('pointerover', handleEnter);
+            container.removeEventListener('pointerout', handleLeave);
+            container.removeEventListener('focusin', handleEnter);
+            container.removeEventListener('focusout', handleLeave);
             clearHoveredRow();
         },
     };
