@@ -23,7 +23,7 @@ and these filters:
 
 | Identifier | Filter | Notes |
 |------------|--------|-------|
-| `categories` | Category tree | Only categories used by events, plus their parents. Selecting a category includes its children. Supports colour coding. |
+| `categories` | Category tree | Only categories used by events, plus their parents. Selecting a category includes its children. Supports colour coding; while it is the `colorSource`, parents without events of their own are grey unless `filterColors` sets their colour. |
 | `statuses` | Status (*Draft*, *Review*, *Rejected*, *Live*, *Canceled*) | Drives the appearance of an appointment: hatched for draft, dashed for review, outlined for rejected, a marker for canceled. |
 | `recordTypes` | Event record type | Only shown when more than one record type is available on the pages holding a calendar (resolved like in the record form). Drives the icon. |
 

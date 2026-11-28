@@ -171,6 +171,7 @@ final readonly class CalendarFilterCategory implements CalendarFilterListenerInt
         }
 
         $usedUids = $this->getUsedCategoryUids();
+        $ownEntryUids = array_flip($usedUids);
 
         $visibleUids = [];
 
@@ -193,6 +194,7 @@ final readonly class CalendarFilterCategory implements CalendarFilterListenerInt
             $items[$uid] = new TreeCalendarFilterItem(
                 label: (string)$row['title'],
                 value: $uid,
+                hasOwnEntries: isset($ownEntryUids[$uid]),
             );
         }
 

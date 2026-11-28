@@ -8,6 +8,7 @@ export type CalendarFilterItem = {
 
 export type TreeFilterItem = CalendarFilterItem & {
   parentUid: string | number | null;
+  hasOwnEntries: boolean;
 };
 
 export type TreeCalendarFilter = {

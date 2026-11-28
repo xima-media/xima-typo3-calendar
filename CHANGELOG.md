@@ -12,7 +12,8 @@ All notable changes to this extension are documented here. The format follows
   and gets a filter sidebar as navigation component: a mini calendar, a category tree, status
   and record type. Appointments are coloured by category (fixed colours via `filterColors`),
   styled by status, marked when canceled, and carry the record type's icon; the sidebar doubles
-  as legend. View, filters and sidebar sections are remembered per backend user. See
+  as legend, with parent categories that have no events of their own in grey. View, filters and
+  sidebar sections are remembered per backend user. See
   [Calendar Module](Documentation/BackendModule.md).
 - **Creating records from the calendar.** Click or drag over days or time slots, or use the new
   *New Event* / *New Event Appointment* buttons, pick the calendar and the dates, and the native

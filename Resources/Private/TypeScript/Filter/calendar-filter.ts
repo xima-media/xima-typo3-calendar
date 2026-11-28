@@ -62,7 +62,6 @@ export class CalendarFilterElement extends LitElement {
 
   private filterStatePersistence: CalendarFilterStatePersistence | null = null;
 
-
   public connectedCallback(): void {
     super.connectedCallback();
     const typo3Top = window.top as unknown as Typo3TopWindow;
@@ -111,12 +110,20 @@ export class CalendarFilterElement extends LitElement {
       activeItems: [],
       expandedItems: {},
     };
-    const items = tree.items.map((item) => ({
-      ...item,
-      color: tree.supportsColorCoding && tree.identifier === this.colorSource
-        ? getColor(tree.identifier, item.value, this.filterColors)
-        : undefined,
-    }));
+    const isColored = tree.supportsColorCoding && tree.identifier === this.colorSource;
+    const items = tree.items.map((item) => {
+      const neutral = isColored
+        && !item.hasOwnEntries
+        && !this.filterColors[tree.identifier]?.[String(item.value)];
+
+      return {
+        ...item,
+        color: isColored && !neutral
+          ? getColor(tree.identifier, item.value, this.filterColors)
+          : undefined,
+        neutral,
+      };
+    });
 
     return html`
       <section class="xima-calendar-filter__section">
