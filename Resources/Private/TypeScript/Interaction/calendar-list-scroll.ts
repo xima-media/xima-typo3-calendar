@@ -60,23 +60,16 @@ export const scrollCalendarListToRelevantDate = (
         .map(event => ({event, start: getEventStart(event)}))
         .filter(({start}) => start !== null && isSameMonth(start, monthStart))
         .sort((first, second) => first.start!.getTime() - second.start!.getTime());
-    const requestedDate = configuration.targetDate
+    const referenceDate = configuration.targetDate
         ? startOfDay(configuration.targetDate)
-        : null;
-
-    const todayEvent = monthEvents.find(({start}) => isSameDay(start!, today));
-    const nextEvent = monthEvents.find(({start}) => start! >= today);
-    const selectedDayEvent = requestedDate !== null
-        ? monthEvents.find(({start}) => isSameDay(start!, requestedDate))
+        : today;
+    const sameDayEvent = monthEvents.find(({start}) => isSameDay(start!, referenceDate));
+    const previousEvent = configuration.targetDate
+        ? [...monthEvents].reverse().find(({start}) => start! < referenceDate)
         : undefined;
-    const previousEvent = requestedDate !== null
-        ? [...monthEvents]
-            .reverse()
-            .find(({start}) => start! < requestedDate)
-        : undefined;
-    const scrollDate = selectedDayEvent?.start
+    const nextEvent = monthEvents.find(({start}) => start! >= referenceDate);
+    const scrollDate = sameDayEvent?.start
         ?? previousEvent?.start
-        ?? todayEvent?.start
         ?? nextEvent?.start
         ?? monthStart;
     const target = list.querySelector<HTMLElement>(
