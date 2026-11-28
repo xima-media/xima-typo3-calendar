@@ -70,15 +70,12 @@ export const createCalendarListScrollController = (
                     onEventClick,
                     onEventTooltip,
                 );
-                const didScroll = scrollCalendarListToRelevantDate({
+                scrollCalendarListToRelevantDate({
                     container,
                     viewStart: currentViewStart,
                     events: currentEvents,
                     targetDate: requestedDate ?? undefined,
                 });
-                if (didScroll) {
-                    requestedDate = null;
-                }
             });
         });
     };
@@ -87,6 +84,17 @@ export const createCalendarListScrollController = (
         viewChanged(view): void {
             currentViewType = view.type;
             currentViewStart = view.currentStart;
+            // Keep the selected date until its month is left: the first pass may only see the
+            // previous range's events.
+            if (
+                requestedDate !== null
+                && (
+                    requestedDate.getFullYear() !== view.currentStart.getFullYear()
+                    || requestedDate.getMonth() !== view.currentStart.getMonth()
+                )
+            ) {
+                requestedDate = null;
+            }
 
             if (view.type.startsWith('list')) {
                 observeListSize();

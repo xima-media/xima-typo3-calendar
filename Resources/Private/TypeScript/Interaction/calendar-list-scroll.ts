@@ -45,12 +45,12 @@ const toDateAttribute = (date: Date): string => {
 
 export const scrollCalendarListToRelevantDate = (
     configuration: CalendarListScrollConfiguration,
-): boolean => {
+): void => {
     const list = configuration.container.querySelector<HTMLElement>('.ec-list');
     const scrollContainer = configuration.container.querySelector<HTMLElement>('.ec-main');
 
     if (!list || !scrollContainer) {
-        return false;
+        return;
     }
 
     const monthStart = startOfDay(configuration.viewStart);
@@ -77,13 +77,11 @@ export const scrollCalendarListToRelevantDate = (
     )?.closest<HTMLElement>('.ec-day');
 
     if (!target) {
-        return false;
+        return;
     }
 
     scrollContainer.scrollTo({
         top: Math.max(0, target.offsetTop - 8),
         behavior: 'auto',
     });
-
-    return true;
 };
