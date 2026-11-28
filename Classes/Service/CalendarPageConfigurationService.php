@@ -16,6 +16,16 @@ final class CalendarPageConfigurationService
     private const DEFAULT_ENABLE_CLICK = true;
     private const DEFAULT_TIME_SLOT_MINUTES = 15;
     private const DEFAULT_SCROLL_TIME = '08:00:00';
+    private const DEFAULT_FIRST_DAY = 'monday';
+    private const VALID_FIRST_DAYS = [
+        'sunday',
+        'monday',
+        'tuesday',
+        'wednesday',
+        'thursday',
+        'friday',
+        'saturday',
+    ];
 
     public function __construct(
         private readonly CalendarPageConfigurationReader $configurationReader,
@@ -65,6 +75,21 @@ final class CalendarPageConfigurationService
                 self::DEFAULT_SCROLL_TIME,
             ),
         ];
+    }
+
+    public function getFirstDay(RequestInterface|ServerRequestInterface $request): string
+    {
+        $config = $this->configurationReader->read($request);
+        $calendar = $this->asArray($config['calendar.'] ?? $config['calendar'] ?? []);
+        $firstDay = $calendar['firstDay'] ?? null;
+        if (!is_string($firstDay)) {
+            return self::DEFAULT_FIRST_DAY;
+        }
+
+        $firstDay = strtolower(trim($firstDay));
+        return in_array($firstDay, self::VALID_FIRST_DAYS, true)
+            ? $firstDay
+            : self::DEFAULT_FIRST_DAY;
     }
 
     /**

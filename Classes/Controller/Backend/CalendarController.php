@@ -136,6 +136,7 @@ class CalendarController extends ActionController
             'eventAppearance' => $eventAppearance,
             'tooltipOrder' => $this->pageConfigurationService->getTooltipOrder($request),
             ...$newEventConfiguration,
+            'firstDay' => $this->pageConfigurationService->getFirstDay($request),
             'labels' => [
                 'title' => $this->getLanguageLabel('newEventType.title', 'Create new record'),
                 'event' => $this->getLanguageLabel('newEventType.event', 'Event'),

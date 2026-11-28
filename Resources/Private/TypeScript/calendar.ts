@@ -10,13 +10,13 @@ import {readCalendarConfig, type Typo3TopWindow} from './Configuration/calendar-
 import type {CalendarFilterConfiguration, CalendarFilterSelection} from './Filter/calendar-filter-state';
 import {createCalendarFilterSync} from './Filter/calendar-filter-sync';
 import {createCalendarMiniCalendarSync} from './Filter/Services/calendar-mini-calendar-sync';
-import {miniCalendarEvents} from './Filter/Services/calendar-mini-calendar-events';
 import {createCalendarEventSource} from './Data/calendar-event-source';
 
 import type {CalendarEventData} from './Rendering/calendar-event-data';
 import {createCalendarEventRenderer} from './Rendering/calendar-event-renderer';
 import {createCalendarEventTooltip} from './Rendering/calendar-event-tooltip';
 import {isMultiDayCalendarEvent} from './Rendering/calendar-list-layout';
+import {getFirstDayIndex} from './Services/calendar-week-utils';
 
 type EventCalendarTheme = Record<string, string | string[]>;
 type EventCalendarButtonText = Record<string, string>;
@@ -59,6 +59,7 @@ DocumentService.ready().then(async () => {
 
     let currentEvents: CalendarEventData[] = [];
     let refetchEvents = (): void => undefined;
+    let publishMainCalendarDate = (): void => undefined;
     const filterSync = createCalendarFilterSync({
         filterWindow,
         initialSelection: initialFilters,
@@ -124,7 +125,7 @@ DocumentService.ready().then(async () => {
             dayMaxEvents: true,
             moreLinkContent: ({num}: {num: number}) => `+${num} ${calendarConfig.locale.startsWith('de') ? 'weitere' : 'more'}`,
             view: calendarConfig.initialView,
-            firstDay: 1,
+            firstDay: getFirstDayIndex(calendarConfig.firstDay),
             views: {
                 timeGridWeek: {
             scrollTime: calendarConfig.scrollStartTime,
@@ -158,12 +159,7 @@ DocumentService.ready().then(async () => {
                 detailsController.datesSet();
                 persistCalendarView(view.type);
                 listScrollController.viewChanged(view);
-                filterWindow.dispatchEvent(new CustomEvent(miniCalendarEvents.mainDateChange, {
-                    detail: {
-                        date: view.currentStart.toISOString(),
-                        viewType: view.type,
-                    },
-                }));
+                publishMainCalendarDate();
             },
             select: enableDragNewEvent ? creationController.select : undefined,
             dateClick: enableClickNewEvent ? creationController.dateClick : undefined,
@@ -197,7 +193,10 @@ DocumentService.ready().then(async () => {
     );
 
     refetchEvents = () => ec.refetchEvents();
-    const miniCalendarSync = createCalendarMiniCalendarSync(ec, filterWindow);
+    const miniCalendarSync = createCalendarMiniCalendarSync(ec, filterWindow, {
+        scrollListToDate: listScrollController.scrollToDate,
+    });
+    publishMainCalendarDate = miniCalendarSync.publish;
     filterSync.start();
 
     const interactionController = createCalendarInteractionController(container, ec, creationController, {

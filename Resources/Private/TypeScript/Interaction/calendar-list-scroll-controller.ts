@@ -14,6 +14,7 @@ type CalendarListView = {
 export type CalendarListScrollController = {
     viewChanged(view: CalendarListView): void;
     eventsLoaded(events: CalendarEventData[]): void;
+    scrollToDate(date: Date): void;
     destroy(): void;
 };
 
@@ -26,6 +27,7 @@ export const createCalendarListScrollController = (
     let currentEvents: CalendarEventData[] = [];
     let currentViewStart = new Date();
     let currentViewType = '';
+    let requestedDate: Date | null = null;
     let scrollFrame: number | null = null;
     let resizeObserver: ResizeObserver | null = null;
 
@@ -72,6 +74,7 @@ export const createCalendarListScrollController = (
                     container,
                     viewStart: currentViewStart,
                     events: currentEvents,
+                    targetDate: requestedDate ?? undefined,
                 });
             });
         });
@@ -81,11 +84,23 @@ export const createCalendarListScrollController = (
         viewChanged(view): void {
             currentViewType = view.type;
             currentViewStart = view.currentStart;
+            // Keep the selected date until its month is left: the first pass may only see the
+            // previous range's events.
+            if (
+                requestedDate !== null
+                && (
+                    requestedDate.getFullYear() !== view.currentStart.getFullYear()
+                    || requestedDate.getMonth() !== view.currentStart.getMonth()
+                )
+            ) {
+                requestedDate = null;
+            }
 
             if (view.type.startsWith('list')) {
                 observeListSize();
                 scheduleScroll();
             } else {
+                requestedDate = null;
                 resizeObserver?.disconnect();
                 resizeObserver = null;
                 if (scrollFrame !== null) {
@@ -99,6 +114,13 @@ export const createCalendarListScrollController = (
         eventsLoaded(events): void {
             currentEvents = events;
             scheduleScroll();
+        },
+
+        scrollToDate(date): void {
+            requestedDate = new Date(date);
+            if (currentViewType.startsWith('list')) {
+                scheduleScroll();
+            }
         },
 
         destroy(): void {

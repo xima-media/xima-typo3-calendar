@@ -22,6 +22,7 @@ export function isCalendarFilterResponse(
   const response = value as Record<string, unknown>;
   const filters = response.filters;
   const filterColors = response.filterColors;
+  const firstDay = response.firstDay;
   const colorSource = response.colorSource;
   const state = response.state;
   const labels = response.labels;
@@ -32,6 +33,7 @@ export function isCalendarFilterResponse(
     || typeof filters !== 'object'
     || !filterColors
     || typeof filterColors !== 'object'
+    || typeof firstDay !== 'string'
     || typeof colorSource !== 'string'
     || !state
     || typeof state !== 'object'

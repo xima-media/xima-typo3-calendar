@@ -1,9 +1,17 @@
 import {html, LitElement, nothing} from 'lit';
-import {formatLocalCalendarDate} from '../Services/calendar-date-utils';
+import {
+  formatLocalCalendarDate,
+  parseCalendarDate,
+} from '../Services/calendar-date-utils';
 import {
   miniCalendarEvents,
   type MainCalendarDateDetail,
 } from '../Services/calendar-mini-calendar-events';
+import {
+  getFirstDayIndex,
+  getWeekdayOffset,
+  type CalendarDayOfWeek,
+} from '../../Services/calendar-week-utils';
 
 type Typo3TopWindow = Window & {
   TYPO3?: {
@@ -27,6 +35,12 @@ const YEARS_BEFORE_CURRENT = 3;
 const YEARS_AFTER_CURRENT = 5;
 
 export class CalendarFilterMiniCalendar extends LitElement {
+  static properties = {
+    firstDay: {attribute: false},
+  };
+
+  public firstDay = 'monday';
+
   private get topWindow(): Window {
     return window.top ?? window;
   }
@@ -37,10 +51,6 @@ export class CalendarFilterMiniCalendar extends LitElement {
 
   private mainViewDate = this.startOfDay(new Date());
 
-  private pendingClickedDate: Date | null = null;
-
-  private pendingNavigationMonth: Date | null = null;
-
   private readonly handleMainCalendarDateChange = (event: Event): void => {
     const detail = (event as CustomEvent<MainCalendarDateDetail>).detail;
     const date = detail?.date;
@@ -48,44 +58,13 @@ export class CalendarFilterMiniCalendar extends LitElement {
       return;
     }
 
-    const parsedDate = new Date(date);
+    const parsedDate = parseCalendarDate(date);
     if (Number.isNaN(parsedDate.getTime())) {
       return;
     }
 
-    if (this.pendingClickedDate !== null) {
-      if (
-        detail?.viewType !== 'timeGridWeek'
-        || !this.isSameMiniWeek(parsedDate, this.pendingClickedDate)
-      ) {
-        this.mainViewDate = this.startOfDay(parsedDate);
-        this.mainViewType = detail?.viewType ?? '';
-        this.requestUpdate();
-        return;
-      }
-    }
-
-    if (
-      this.pendingNavigationMonth !== null
-      && (
-        detail?.viewType === 'timeGridWeek'
-          ? !this.isSameMiniWeek(parsedDate, this.pendingNavigationMonth)
-          : !this.isSameMonth(parsedDate, this.pendingNavigationMonth)
-      )
-    ) {
-      this.mainViewDate = this.startOfDay(parsedDate);
-      this.mainViewType = detail?.viewType ?? '';
-      this.requestUpdate();
-      return;
-    }
-
-    const synchronizedDate = this.pendingClickedDate
-      ?? this.pendingNavigationMonth
-      ?? parsedDate;
-    this.pendingClickedDate = null;
-    this.pendingNavigationMonth = null;
-    this.displayedMonth = this.startOfMonth(synchronizedDate);
-    this.mainViewDate = this.startOfDay(synchronizedDate);
+    this.displayedMonth = this.startOfMonth(parsedDate);
+    this.mainViewDate = this.startOfDay(parsedDate);
     this.mainViewType = detail?.viewType ?? '';
     this.requestUpdate();
   };
@@ -178,15 +157,20 @@ export class CalendarFilterMiniCalendar extends LitElement {
       ?? navigator.language;
   }
 
+  private getFirstDay(): CalendarDayOfWeek {
+    return getFirstDayIndex(this.firstDay);
+  }
+
   private getWeekdays(locale: string): string[] {
     const formatter = new Intl.DateTimeFormat(locale, {weekday: 'short'});
-    const monday = new Date(2024, 0, 1);
+    const weekStart = new Date(2024, 0, 1);
+    weekStart.setDate(weekStart.getDate() - getWeekdayOffset(weekStart, this.getFirstDay()));
 
     return Array.from({length: 7}, (_, index) => (
       formatter.format(new Date(
-        monday.getFullYear(),
-        monday.getMonth(),
-        monday.getDate() + index,
+        weekStart.getFullYear(),
+        weekStart.getMonth(),
+        weekStart.getDate() + index,
       )).charAt(0).toUpperCase()
     ));
   }
@@ -202,7 +186,7 @@ export class CalendarFilterMiniCalendar extends LitElement {
 
   private getDays(): MiniCalendarDay[] {
     const firstDay = this.startOfMonth(this.displayedMonth);
-    const firstWeekday = (firstDay.getDay() + 6) % 7;
+    const firstWeekday = getWeekdayOffset(firstDay, this.getFirstDay());
     const daysInMonth = new Date(
       firstDay.getFullYear(),
       firstDay.getMonth() + 1,
@@ -262,7 +246,6 @@ export class CalendarFilterMiniCalendar extends LitElement {
   }
 
   private navigateToMonth(targetMonth: Date, monthDelta: number): void {
-    this.pendingNavigationMonth = targetMonth;
     this.displayedMonth = this.startOfMonth(targetMonth);
     this.mainViewDate = this.startOfDay(targetMonth);
     this.requestUpdate();
@@ -276,10 +259,8 @@ export class CalendarFilterMiniCalendar extends LitElement {
 
   private selectDate(date: Date): void {
     const clickedDate = this.startOfDay(date);
-    this.pendingClickedDate = clickedDate;
     this.displayedMonth = this.startOfMonth(date);
     this.mainViewDate = clickedDate;
-    this.mainViewType = 'timeGridWeek';
     this.dispatchEvent(new CustomEvent('mini-calendar-date-change', {
       bubbles: true,
       composed: true,
@@ -301,7 +282,7 @@ export class CalendarFilterMiniCalendar extends LitElement {
 
   private startOfMiniWeek(date: Date): Date {
     const start = this.startOfDay(date);
-    const weekday = (start.getDay() + 6) % 7;
+    const weekday = getWeekdayOffset(start, this.getFirstDay());
     start.setDate(start.getDate() - weekday);
     return start;
   }
@@ -312,14 +293,6 @@ export class CalendarFilterMiniCalendar extends LitElement {
       && first.getDate() === second.getDate();
   }
 
-  private isSameMonth(first: Date, second: Date): boolean {
-    return first.getFullYear() === second.getFullYear()
-      && first.getMonth() === second.getMonth();
-  }
-
-  private isSameMiniWeek(first: Date, second: Date): boolean {
-    return this.isSameDay(this.startOfMiniWeek(first), this.startOfMiniWeek(second));
-  }
 }
 
 customElements.define(

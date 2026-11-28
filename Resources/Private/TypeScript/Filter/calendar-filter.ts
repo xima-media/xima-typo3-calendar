@@ -52,6 +52,7 @@ export class CalendarFilterElement extends LitElement {
 
   private filterColors: ColorOverrides = {};
 
+  private firstDay = 'monday';
   private colorSource = '';
 
   private filterState: CalendarFilterState | null = null;
@@ -96,7 +97,7 @@ export class CalendarFilterElement extends LitElement {
           class="xima-calendar-filter__mini-calendar"
           aria-label="Mini calendar"
         >
-          <xima-calendar-filter-mini-calendar></xima-calendar-filter-mini-calendar>
+          <xima-calendar-filter-mini-calendar .firstDay=${this.firstDay}></xima-calendar-filter-mini-calendar>
         </section>
       </div>
     `;
@@ -208,6 +209,7 @@ export class CalendarFilterElement extends LitElement {
 
       this.filterConfiguration = data.filters;
       this.filterColors = data.filterColors;
+      this.firstDay = data.firstDay;
       this.colorSource = data.colorSource;
       this.filterState = data.state;
       this.filterLabels = data.labels;

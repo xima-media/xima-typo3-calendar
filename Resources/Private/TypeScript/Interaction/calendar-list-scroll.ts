@@ -5,6 +5,7 @@ type CalendarListScrollConfiguration = {
     container: HTMLElement;
     viewStart: Date;
     events: CalendarEventData[];
+    targetDate?: Date;
     today?: Date;
 };
 
@@ -59,12 +60,20 @@ export const scrollCalendarListToRelevantDate = (
         .map(event => ({event, start: getEventStart(event)}))
         .filter(({start}) => start !== null && isSameMonth(start, monthStart))
         .sort((first, second) => first.start!.getTime() - second.start!.getTime());
-
-    const todayEvent = monthEvents.find(({start}) => isSameDay(start!, today));
-    const nextEvent = monthEvents.find(({start}) => start! >= today);
-    const targetDate = todayEvent?.start ?? nextEvent?.start ?? monthStart;
+    const referenceDate = configuration.targetDate
+        ? startOfDay(configuration.targetDate)
+        : today;
+    const sameDayEvent = monthEvents.find(({start}) => isSameDay(start!, referenceDate));
+    const previousEvent = configuration.targetDate
+        ? [...monthEvents].reverse().find(({start}) => start! < referenceDate)
+        : undefined;
+    const nextEvent = monthEvents.find(({start}) => start! >= referenceDate);
+    const scrollDate = sameDayEvent?.start
+        ?? previousEvent?.start
+        ?? nextEvent?.start
+        ?? monthStart;
     const target = list.querySelector<HTMLElement>(
-        `time[datetime="${toDateAttribute(targetDate!)}"]`,
+        `time[datetime="${toDateAttribute(scrollDate)}"]`,
     )?.closest<HTMLElement>('.ec-day');
 
     if (!target) {

@@ -56,6 +56,7 @@ export type CalendarConfig = {
     defaultRecordType: string | null;
     timeSlotMinutes: number;
     scrollStartTime: string;
+    firstDay: string;
     calendars: CalendarOption[];
     lastCalendarUid: number | null;
     tooltipOrder: string[];
@@ -154,6 +155,7 @@ const isCalendarConfig = (value: unknown): value is CalendarConfig => {
         && (config.defaultRecordType === null || isString(config.defaultRecordType))
         && hasValues(config, ['timeSlotMinutes'], isNumber)
         && hasValues(config, ['scrollStartTime'], isString)
+        && hasValues(config, ['firstDay'], isString)
         && isCalendarOptions(config.calendars)
         && (config.lastCalendarUid === null || isNumber(config.lastCalendarUid))
         && isStringArray(config.tooltipOrder)
