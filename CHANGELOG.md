@@ -90,6 +90,9 @@ All notable changes to this extension are documented here. The format follows
 - `CalendarApi` (the `type=1778227923` feed) dispatches `BuildCalendarEntriesQueryEvent`,
   `ApplyCalendarFilterEvent` and `CalendarEntrySerializationEvent` too, so listeners for the
   calendar module filters also shape that feed.
+- The calendar module's controls, notifications, tooltip and filter sidebar take their labels
+  from `locallang_mod_calendar.xlf` instead of hardcoded English/German strings, so every
+  backend language with a translation is supported.
 
 - The event `status` column is nullable and defaults to `NULL`, so a custom record type that
   does not show the status field stores no status. New events of a record type that shows it

@@ -5,7 +5,7 @@ import {
   updateTreeSelection,
   type TreeValue,
 } from './tree-utils';
-import type {CalendarFilterActionLabels} from '../calendar-filter-state';
+import type {CalendarFilterLabels} from '../calendar-filter-state';
 
 export type {TreeValue} from './tree-utils';
 
@@ -35,7 +35,7 @@ export class CalendarFilterTree extends LitElement {
 
   public identifier = '';
   public treeTitle = '';
-  public actionLabels: CalendarFilterActionLabels | null = null;
+  public actionLabels: CalendarFilterLabels | null = null;
   public items: TreeCalendarFilterItem[] = [];
   public activeItems: TreeValue[] = [];
   public expandedItems: Record<TreeValue, boolean> = {};
@@ -204,7 +204,7 @@ export class CalendarFilterTree extends LitElement {
     key: string,
     fallback: string,
   ): string {
-    const actionKey = key.replace('filter.', '') as keyof CalendarFilterActionLabels;
+    const actionKey = key.replace('filter.', '') as keyof CalendarFilterLabels;
     const label = this.actionLabels?.[actionKey] ?? fallback;
 
     return label.replace('###name###', this.treeTitle);

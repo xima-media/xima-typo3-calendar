@@ -52,11 +52,16 @@ export type CalendarFilterResponse = {
   filterColors: Record<string, Record<string, string>>;
   colorSource: string;
   state: CalendarFilterState;
-  labels: CalendarFilterActionLabels;
+  labels: CalendarFilterLabels;
 };
 
-export type CalendarFilterActionLabels = {
+export type CalendarFilterLabels = {
   moreActions: string;
   selectAllChildren: string;
   deselectAllChildren: string;
+  search: string;
+  miniCalendar: string;
+  previousMonth: string;
+  nextMonth: string;
+  selectYear: string;
 };
