@@ -17,6 +17,7 @@ What other extensions can hook into, and how to register it.
 | `Event\BuildCalendarEntriesQueryEvent` | `Domain\Repository\EntryRepository::getBackendCalendarEntries()` | Join tables and select columns for the calendar module's feed |
 | `Event\ApplyCalendarFilterEvent` | same | Restrict the feed query to the filter values the editor selected |
 | `Event\CalendarEntrySerializationEvent` | `Serializer\VkurkoCalendarSerializer::serializeBackendEntries()` | Add properties and filter values to one feed entry |
+| `Event\ModifyEventSearchResultsEvent` | `Service\EventSearchService::search()` | Add details to, drop or reorder the events offered in the creation modal |
 
 The three record-change events share `AbstractRecordChangedEvent` (`uid`, `table`, `changeType`,
 `changedFields`) and are documented in detail in [DataHandler Events](DataHandlerEvents.md). They
@@ -79,6 +80,32 @@ final readonly class EnrichEventDetailView
         );
 
         $event->setAssignedValues($values);
+    }
+}
+```
+
+### Event search of the creation modal
+
+`ModifyEventSearchResultsEvent` carries the events the creation modal is about to offer for a
+new appointment, at most ten, plus the search term. Each result is an array with `uid`, `title`,
+`firstStart` and `lastEnd` (timestamps of the event's appointments, `null` without any) and
+`details`, a list of strings the modal shows after the date range:
+
+```php
+use TYPO3\CMS\Core\Attribute\AsEventListener;
+use Xima\XimaTypo3Calendar\Event\ModifyEventSearchResultsEvent;
+
+#[AsEventListener(identifier: 'my-ext/event-search-results')]
+final readonly class AddOrganizerToEventSearchResults
+{
+    public function __invoke(ModifyEventSearchResultsEvent $event): void
+    {
+        $results = $event->getResults();
+        foreach ($results as &$result) {
+            $result['details'][] = $this->findOrganizerName($result['uid']);
+        }
+
+        $event->setResults($results);
     }
 }
 ```
@@ -240,13 +267,16 @@ identifier, e.g. `xima-typo3-calendar/configure-status-filter`) and calls `setFi
 
 ## Fluid ViewHelpers
 
-`ViewHelpers\Backend\CanPublishLiveEventsViewHelper` exposes the publish permission to backend
-templates. The namespace root is `Xima\XimaTypo3Calendar\ViewHelpers`:
+`ViewHelpers\Backend\EventStatusItemsViewHelper` returns the status options of an event for the
+current backend user, as decided by `Service\EventWorkflowPolicy`: its current status plus every
+allowed target, each with `value`, `label` and `description`. A single item means the user may
+not change the status. The namespace root is `Xima\XimaTypo3Calendar\ViewHelpers`:
 
 ```html
 {namespace xtc=Xima\XimaTypo3Calendar\ViewHelpers}
-<f:if condition="{xtc:backend.canPublishLiveEvents()}">
-    <button>Set live</button>
+<f:variable name="statusItems" value="{xtc:backend.eventStatusItems(event: item)}" />
+<f:if condition="{statusItems -> f:count()} > 1">
+    <button>Change status</button>
 </f:if>
 ```
 

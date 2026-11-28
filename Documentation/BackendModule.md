@@ -56,7 +56,11 @@ as defaults. **Nothing is stored before the editor saves that form**, so closing
 record behind and no [DataHandler events](DataHandlerEvents.md) are fired.
 
 - *Event* opens a new event with one appointment.
-- *Event Appointment* opens a new appointment; the editor picks its event in the form.
+- *Event Appointment* opens a new appointment. Its event can already be chosen in the modal:
+  typing at least two characters of the title lists up to ten matching events, the ones with
+  upcoming appointments first, each with the date range of its appointments. Leaving the field
+  empty leaves the choice to the form. The modal only offers events the editor may assign in the
+  form, and it hides the field for editors who may not edit an appointment's event.
 
 The record is stored on the page of the chosen calendar. Which calendars and record types are
 offered, and why an editor may see no creation at all, is described in

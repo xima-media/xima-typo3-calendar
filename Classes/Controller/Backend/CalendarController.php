@@ -20,6 +20,7 @@ use Xima\XimaTypo3Calendar\Service\CalendarPageConfigurationService;
 use Xima\XimaTypo3Calendar\Service\CalendarRecordButtonService;
 use Xima\XimaTypo3Calendar\Service\CalendarSelectionService;
 use Xima\XimaTypo3Calendar\Service\EventRecordTypeService;
+use Xima\XimaTypo3Calendar\Service\EventSearchService;
 use Xima\XimaTypo3Calendar\Utility\CalendarFeedRequestUtility;
 
 class CalendarController extends ActionController
@@ -35,6 +36,7 @@ class CalendarController extends ActionController
         protected CalendarFilterService $filterService,
         protected CalendarRecordButtonService $recordButtonService,
         protected EventDispatcherInterface $eventDispatcher,
+        protected EventSearchService $eventSearchService,
     ) {
     }
 
@@ -57,6 +59,10 @@ class CalendarController extends ActionController
             ['id' => $pageId],
         );
         $newRecordUrl = (string)$this->backendUriBuilder->buildUriFromRoute('ajax_xima_calendar_new_record');
+        // An empty URL leaves the event out of the creation modal.
+        $eventSearchUrl = $this->eventSearchService->canSearch()
+            ? (string)$this->backendUriBuilder->buildUriFromRoute('ajax_xima_calendar_event_search')
+            : '';
         $locale = $GLOBALS['LANG']->getLocale()?->getName() ?? 'en';
         $calendars = $this->calendarSelectionService->getAvailableCalendars();
         $canCreateAppointment = $calendars !== [];
@@ -123,6 +129,7 @@ class CalendarController extends ActionController
         $calendarConfig = json_encode([
             'ajaxUrl' => $ajaxUrl,
             'newRecordUrl' => $newRecordUrl,
+            'eventSearchUrl' => $eventSearchUrl,
             'viewStateUrl' => $viewStateUrl,
             'initialView' => $this->filterService->getView(),
             'locale' => $locale,
@@ -145,6 +152,11 @@ class CalendarController extends ActionController
                 'end' => $this->getLanguageLabel('newEventType.end', 'End'),
                 'allDay' => $this->getLanguageLabel('newEventType.allDay', 'All-day'),
                 'create' => $this->getLanguageLabel('newEventType.create', 'Create'),
+                'eventSearch' => $this->getLanguageLabel('newEventType.eventSearch', 'Event'),
+                'eventSearchPlaceholder' => $this->getLanguageLabel('newEventType.eventSearchPlaceholder', 'Search by title'),
+                'eventSearchAppointments' => $this->getLanguageLabel('newEventType.eventSearchAppointments', 'Existing appointments: %s'),
+                'eventSearchNoResults' => $this->getLanguageLabel('newEventType.eventSearchNoResults', 'No matching event found.'),
+                'eventSearchClear' => $this->getLanguageLabel('newEventType.eventSearchClear', 'Remove event'),
             ],
         ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
 

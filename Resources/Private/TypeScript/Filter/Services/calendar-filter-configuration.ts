@@ -23,6 +23,7 @@ export function isCalendarFilterResponse(
   const filters = response.filters;
   const filterColors = response.filterColors;
   const firstDay = response.firstDay;
+  const colorSource = response.colorSource;
   const state = response.state;
   const labels = response.labels;
 
@@ -33,6 +34,7 @@ export function isCalendarFilterResponse(
     || !filterColors
     || typeof filterColors !== 'object'
     || typeof firstDay !== 'string'
+    || typeof colorSource !== 'string'
     || !state
     || typeof state !== 'object'
     || !labels
@@ -47,6 +49,7 @@ export function isCalendarFilterResponse(
     && typeof filters === 'object'
     && Boolean(filterColors)
     && typeof filterColors === 'object'
+    && typeof colorSource === 'string'
     && Boolean(filterState.checkboxLists)
     && typeof filterState.checkboxLists === 'object'
     && Boolean(filterState.trees)

@@ -51,6 +51,7 @@ export type CalendarFilterResponse = {
   filters: CalendarFilterConfiguration;
   filterColors: Record<string, Record<string, string>>;
   firstDay: string;
+  colorSource: string;
   state: CalendarFilterState;
   labels: CalendarFilterActionLabels;
 };

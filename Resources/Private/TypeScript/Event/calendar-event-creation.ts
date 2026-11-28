@@ -58,6 +58,7 @@ export function createCalendarCreationController(
             type: selection.type,
             ...(selection.recordType === null ? {} : {recordType: selection.recordType}),
             ...(selection.calendarUid === null ? {} : {calendarUid: selection.calendarUid}),
+            ...(selection.eventUid === null ? {} : {eventUid: selection.eventUid}),
         });
         const result = await response.resolve() as NewRecordResponse;
         if (!result.success || !result.url) {
@@ -88,6 +89,8 @@ export function createCalendarCreationController(
             initialEnd: end,
             initialAllDay: allDay,
             defaultRecordType: calendarConfig.defaultRecordType,
+            eventSearchUrl: calendarConfig.eventSearchUrl,
+            locale: calendarConfig.locale,
         })
             .then((creation) => {
                 if (creation !== null) {

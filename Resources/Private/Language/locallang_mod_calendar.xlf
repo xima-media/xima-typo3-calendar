@@ -24,7 +24,6 @@
 			<trans-unit id="filter.categories" resname="filter.categories"><source>Categories</source></trans-unit>
 			<trans-unit id="filter.status" resname="filter.status"><source>Status</source></trans-unit>
 			<trans-unit id="filter.canceled.label" resname="filter.canceled.label"><source>Canceled</source></trans-unit>
-			<trans-unit id="filter.canceled.marker" resname="filter.canceled.marker"><source>[C]</source></trans-unit>
 			<trans-unit id="filter.loading" resname="filter.loading"><source>Loading filters …</source></trans-unit>
 			<trans-unit id="filter.error" resname="filter.error"><source>Filters could not be loaded.</source></trans-unit>
 			<trans-unit id="filter.hideSubcategories" resname="filter.hideSubcategories"><source>Hide subcategories</source></trans-unit>
@@ -54,6 +53,11 @@
 			<trans-unit id="newEventType.end" resname="newEventType.end"><source>End</source></trans-unit>
 			<trans-unit id="newEventType.allDay" resname="newEventType.allDay"><source>All-day</source></trans-unit>
 			<trans-unit id="newEventType.create" resname="newEventType.create"><source>Create</source></trans-unit>
+			<trans-unit id="newEventType.eventSearch" resname="newEventType.eventSearch"><source>Event</source></trans-unit>
+			<trans-unit id="newEventType.eventSearchPlaceholder" resname="newEventType.eventSearchPlaceholder"><source>Search by title</source></trans-unit>
+			<trans-unit id="newEventType.eventSearchAppointments" resname="newEventType.eventSearchAppointments"><source>Existing appointments: %s</source></trans-unit>
+			<trans-unit id="newEventType.eventSearchNoResults" resname="newEventType.eventSearchNoResults"><source>No matching event found.</source></trans-unit>
+			<trans-unit id="newEventType.eventSearchClear" resname="newEventType.eventSearchClear"><source>Remove event</source></trans-unit>
 			<trans-unit id="creation.noPermission" resname="creation.noPermission"><source>No permission to create events.</source></trans-unit>
 			<trans-unit id="creation.calendarNotAvailable" resname="creation.calendarNotAvailable"><source>You cannot create records in this calendar.</source></trans-unit>
 		</body>

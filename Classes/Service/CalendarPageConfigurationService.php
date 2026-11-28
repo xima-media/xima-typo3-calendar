@@ -146,7 +146,7 @@ final class CalendarPageConfigurationService
      * }
      */
     public function getEventAppearanceConfiguration(
-        RequestInterface $request,
+        RequestInterface|ServerRequestInterface $request,
     ): array {
         $config = $this->configurationReader->read($request);
         $eventAppearance = $this->asArray(

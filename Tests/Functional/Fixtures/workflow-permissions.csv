@@ -1,0 +1,25 @@
+"be_groups",,,,,,,
+,"uid","pid","title","tables_select","tables_modify","non_exclude_fields","db_mountpoints","custom_options"
+,11,0,"Calendar editors","tx_ximatypo3calendar_domain_model_event,tx_ximatypo3calendar_domain_model_entry","tx_ximatypo3calendar_domain_model_event,tx_ximatypo3calendar_domain_model_entry","tx_ximatypo3calendar_domain_model_event:record_type,tx_ximatypo3calendar_domain_model_event:title,tx_ximatypo3calendar_domain_model_event:status,tx_ximatypo3calendar_domain_model_event:status_message,tx_ximatypo3calendar_domain_model_event:owner_be_user,tx_ximatypo3calendar_domain_model_event:appointments,tx_ximatypo3calendar_domain_model_event:hidden,tx_ximatypo3calendar_domain_model_entry:record_type,tx_ximatypo3calendar_domain_model_entry:event,tx_ximatypo3calendar_domain_model_entry:calendar,tx_ximatypo3calendar_domain_model_entry:title,tx_ximatypo3calendar_domain_model_entry:start_date,tx_ximatypo3calendar_domain_model_entry:end_date,tx_ximatypo3calendar_domain_model_entry:all_day,tx_ximatypo3calendar_domain_model_entry:hidden","1",""
+,12,0,"Calendar publishers","","","","","tx_ximatypo3calendar_permissions:publish_live_events"
+"be_users",,,,,,,,,,,
+,"uid","pid","username","realName","email","admin","usergroup","options","disable","deleted","tx_ximatypo3calendar_notify_live"
+,2,0,"editor","Eddie Editor","editor@example.com",0,"11",3,0,0,0
+,3,0,"publisher","Pia Publisher","publisher@example.com",0,"11,12",3,0,0,0
+,4,0,"colleague","Cole Colleague","colleague@example.com",0,"11",3,0,0,0
+,5,0,"live-subscriber","Liv Subscriber","live@example.com",0,"",3,0,0,1
+"tx_ximatypo3calendar_domain_model_event",,,,,,,,,,
+,"uid","pid","tstamp","record_type","title","status","owner","owner_be_user","hidden","deleted"
+,11,2,1767000000,"event","Own live",2,0,2,0,0
+,12,2,1767000000,"event","Own draft",0,0,2,0,0
+,13,2,1767000000,"event","Own review",1,0,2,0,0
+,14,2,1767000000,"event","Own rejected",3,0,2,0,0
+,15,2,1767000000,"event","Foreign draft",0,0,4,0,0
+,16,2,1767000000,"event","Foreign review",1,0,4,0,0
+,17,2,1767000000,"event","Foreign live",2,0,4,0,0
+"tx_ximatypo3calendar_domain_model_entry",,,,,,,,,,,
+,"uid","pid","tstamp","record_type","event","calendar","title","start_date","end_date","hidden","deleted"
+,11,2,1767100000,"event-appointment",11,1,"Own live appointment",1767225600,1767229200,0,0
+,12,2,1767100000,"event-appointment",17,1,"Foreign live appointment",1767225600,1767229200,0,0
+,13,2,1767100000,"event-appointment",12,1,"Own draft appointment",1767225600,1767229200,0,0
+,14,2,1767100000,"event-appointment",15,1,"Foreign draft appointment",1767225600,1767229200,0,0

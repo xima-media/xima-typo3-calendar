@@ -30,6 +30,7 @@ final class CalendarFilterController
             'filters' => $this->filterService->getFilters($request, $pageId),
             'filterColors' => $this->pageConfigurationService->getFilterColors($request),
             'firstDay' => $this->pageConfigurationService->getNewEventConfiguration($request)['firstDay'],
+            'colorSource' => $this->pageConfigurationService->getEventAppearanceConfiguration($request)['colorSource'],
             'state' => $this->filterService->getState($request, $pageId),
             'labels' => [
                 'moreActions' => $this->getLanguageLabel('filter.moreActions', 'More actions'),
