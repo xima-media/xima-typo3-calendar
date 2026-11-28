@@ -11,6 +11,7 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 use Xima\XimaTypo3Calendar\Domain\Model\Dto\TreeCalendarFilter;
 use Xima\XimaTypo3Calendar\Domain\Model\Dto\TreeCalendarFilterItem;
 use Xima\XimaTypo3Calendar\Event\ConfigureCalendarFilterEvent;
+use Xima\XimaTypo3Calendar\Service\CalendarFilterMarkerResolver;
 use Xima\XimaTypo3Calendar\Service\CalendarFilterService;
 use Xima\XimaTypo3Calendar\Service\CalendarPageConfigurationReader;
 use Xima\XimaTypo3Calendar\Tests\Functional\AbstractCalendarFunctionalTestCase;
@@ -55,6 +56,7 @@ final class CalendarFilterServiceTest extends AbstractCalendarFunctionalTestCase
             $service = new CalendarFilterService(
                 $eventDispatcher,
                 $this->get(CalendarPageConfigurationReader::class),
+                new CalendarFilterMarkerResolver(),
             );
             $request = new ServerRequest('https://example.com/typo3/');
             $service->saveState($request, [

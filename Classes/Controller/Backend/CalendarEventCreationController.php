@@ -10,6 +10,7 @@ use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use Xima\XimaTypo3Calendar\Service\CalendarSelectionService;
 use Xima\XimaTypo3Calendar\Service\EventRecordTypeService;
+use Xima\XimaTypo3Calendar\Service\EventSearchService;
 
 /**
  * Turns a selection in the calendar module into the URL of the native new-record form.
@@ -27,6 +28,7 @@ final class CalendarEventCreationController
     public function __construct(
         private readonly CalendarSelectionService $calendarSelectionService,
         private readonly EventRecordTypeService $recordTypeService,
+        private readonly EventSearchService $eventSearchService,
         private readonly UriBuilder $uriBuilder,
     ) {
     }
@@ -46,6 +48,7 @@ final class CalendarEventCreationController
             ? trim((string)$data['recordType'])
             : null;
         $calendarUid = (int)($data['calendarUid'] ?? 0);
+        $eventUid = (int)($data['eventUid'] ?? 0);
 
         if (!in_array($creationType, self::CREATION_TYPES, true)) {
             return new JsonResponse(['success' => false, 'message' => 'Invalid creation type.'], 400);
@@ -82,6 +85,13 @@ final class CalendarEventCreationController
         $this->calendarSelectionService->rememberCalendar($calendar['uid']);
 
         if ($creationType === 'event-appointment') {
+            if ($eventUid > 0) {
+                if (!$this->eventSearchService->isSelectable($eventUid)) {
+                    return new JsonResponse(['success' => false, 'message' => 'Invalid event.'], 400);
+                }
+                $appointmentDefaults['event'] = $eventUid;
+            }
+
             return $this->newRecordResponse(self::ENTRY_TABLE, $pid, [self::ENTRY_TABLE => $appointmentDefaults]);
         }
 

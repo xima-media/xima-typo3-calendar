@@ -10,7 +10,6 @@ import {
 import {getEventIcon} from './calendar-event-icons';
 
 export type CalendarEventRendererConfiguration = {
-    locale: string;
     filterColors: Record<string, Record<string, string>>;
     appearanceSource: string;
     colorSource: string;
@@ -36,57 +35,22 @@ const isCanceledEvent = (event: CalendarEventData): boolean => {
         || canceled === '1';
 };
 
-const eventTime = (
-    value: string | Date | undefined,
-): number | null => {
-    if (!value) {
-        return null;
-    }
+const getCanceledMarker = (
+    configuration: CalendarFilterConfiguration,
+): string | null => {
+    for (const filter of Object.values(configuration)) {
+        const item = filter.items.find(item => (
+            String(item.value) === 'canceled'
+            || String(item.value) === 'cancelled'
+        ));
 
-    const timestamp = value instanceof Date
-        ? value.getTime()
-        : Date.parse(value);
-
-    return Number.isFinite(timestamp) ? timestamp : null;
-};
-
-const getConcurrentEventCount = (
-    event: CalendarEventData,
-    events: CalendarEventData[],
-): number => {
-    const start = eventTime(event.start);
-    const end = eventTime(event.end);
-
-    if (event.allDay || start === null || end === null) {
-        return 0;
-    }
-
-    return events.filter((other) => {
-        if (
-            other === event
-            || other.allDay
-            || (
-                other.id !== undefined
-                && event.id !== undefined
-                && other.id === event.id
-            )
-        ) {
-            return false;
+        if (item?.marker) {
+            return item.marker;
         }
+    }
 
-        const otherStart = eventTime(other.start);
-        const otherEnd = eventTime(other.end);
-
-        return otherStart !== null
-            && otherEnd !== null
-            && start < otherEnd
-            && end > otherStart;
-    }).length;
+    return null;
 };
-
-const getCanceledMarker = (locale: string): string => (
-    locale.startsWith('de') ? '[A]' : '[C]'
-);
 
 export const createCalendarEventRenderer = (
     configuration: CalendarEventRendererConfiguration,
@@ -130,7 +94,7 @@ export const createCalendarEventRenderer = (
         ];
     },
 
-    didMount(event, element, events): void {
+    didMount(event, element): void {
         const filterConfiguration = configuration.getFilterConfiguration();
 
         const eventBody = element.querySelector<HTMLElement>(
@@ -141,19 +105,23 @@ export const createCalendarEventRenderer = (
             return;
         }
 
-        const concurrentEventCount = getConcurrentEventCount(event, events);
-        if (concurrentEventCount >= 1) {
-            element.classList.add('xima-calendar-event--overlap-2');
-        }
-        if (isCanceledEvent(event) && concurrentEventCount >= 1) {
+        const canceledMarker = getCanceledMarker(filterConfiguration);
+
+        if (canceledMarker && isCanceledEvent(event)) {
             const titleElement = eventBody.querySelector<HTMLElement>(
                 '.ec-event-title',
             );
 
             if (titleElement) {
-                titleElement.textContent = `${getCanceledMarker(configuration.locale)} ${
-                    titleElement.textContent ?? ''
-                }`;
+                const previousMarker = titleElement.dataset.ximaCanceledMarker;
+                const currentTitle = titleElement.textContent ?? '';
+                const previousPrefix = previousMarker ? `${previousMarker} ` : '';
+                const title = previousPrefix && currentTitle.startsWith(previousPrefix)
+                    ? currentTitle.slice(previousPrefix.length)
+                    : currentTitle;
+
+                titleElement.textContent = `${canceledMarker} ${title}`;
+                titleElement.dataset.ximaCanceledMarker = canceledMarker;
             }
         }
 

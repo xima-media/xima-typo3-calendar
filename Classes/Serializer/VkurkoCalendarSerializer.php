@@ -64,6 +64,7 @@ class VkurkoCalendarSerializer
                 'end' => $end,
                 'allDay' => (bool)$row['all_day'],
                 'extendedProps' => [
+                    'appointmentUid' => self::toNullableInt($row['uid'] ?? null),
                     'url' => self::buildEventSingleUrl($row, $languageId),
                     'calendarUid' => (int)$row['calendar'],
                     'calendarTitle' => $row['calendar_title'] ?? '',
