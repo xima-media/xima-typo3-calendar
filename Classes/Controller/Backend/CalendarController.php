@@ -117,7 +117,6 @@ class CalendarController extends ActionController
         );
         $this->pageRenderer->addInlineLanguageLabelFile(
             'EXT:xima_typo3_calendar/Resources/Private/Language/locallang_mod_calendar.xlf',
-            'filter',
         );
 
         $newEventConfiguration = $this->pageConfigurationService->getNewEventConfiguration($request);
