@@ -4,18 +4,26 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\Hooks;
 
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use Xima\XimaTypo3Calendar\Service\EventWorkflowPolicy;
 
 /**
  * Stamps the creating backend user onto an event's `owner_be_user` field.
  *
  * Runs on creation only: existing records keep whatever backend owner they were
- * assigned. An explicit owner_be_user provided with the create datamap is kept.
+ * assigned. An explicit owner_be_user in the create datamap is kept only for users
+ * the EventWorkflowPolicy allows to assign owners.
  */
+#[Autoconfigure(public: true)]
 class EventOwnerBackendUserHook
 {
     private const EVENT_TABLE = 'tx_ximatypo3calendar_domain_model_event';
+
+    public function __construct(
+        private readonly EventWorkflowPolicy $policy,
+    ) {
+    }
 
     public function processDatamap_postProcessFieldArray(
         string $status,
@@ -28,18 +36,11 @@ class EventOwnerBackendUserHook
             return;
         }
 
-        if (array_key_exists('owner_be_user', $fieldArray) && (int)$fieldArray['owner_be_user'] > 0) {
+        $backendUser = $parentObject->BE_USER;
+        if ((int)($fieldArray['owner_be_user'] ?? 0) > 0 && $this->policy->canAssignOwner($backendUser)) {
             return;
         }
 
-        $backendUser = $GLOBALS['BE_USER'] ?? null;
-        if (!$backendUser instanceof BackendUserAuthentication) {
-            return;
-        }
-
-        $backendUserUid = (int)($backendUser->user['uid'] ?? 0);
-        if ($backendUserUid > 0) {
-            $fieldArray['owner_be_user'] = $backendUserUid;
-        }
+        $fieldArray['owner_be_user'] = (int)($backendUser->user['uid'] ?? 0);
     }
 }

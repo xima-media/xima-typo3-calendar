@@ -172,6 +172,9 @@
 			<trans-unit id="status.modal.success.message">
 				<source>The event status has been updated.</source>
 			</trans-unit>
+			<trans-unit id="status.modal.readOnly">
+				<source>You may not change the status of this event.</source>
+			</trans-unit>
 			<trans-unit id="palettes.event_info_palette">
 				<source>Event Information</source>
 			</trans-unit>

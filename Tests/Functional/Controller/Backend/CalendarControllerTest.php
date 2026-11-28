@@ -9,12 +9,14 @@ use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Form\FormDataCompiler;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use Xima\XimaTypo3Calendar\Controller\Backend\CalendarEventCreationController;
 use Xima\XimaTypo3Calendar\Service\CalendarSelectionService;
 use Xima\XimaTypo3Calendar\Service\EventRecordTypeService;
+use Xima\XimaTypo3Calendar\Service\EventSearchService;
 use Xima\XimaTypo3Calendar\Tests\Functional\AbstractCalendarFunctionalTestCase;
 use Xima\XimaTypo3Calendar\Tests\Functional\Fixtures\RecordingEventListener;
 
@@ -275,6 +277,41 @@ final class CalendarControllerTest extends AbstractCalendarFunctionalTestCase
     }
 
     #[Test]
+    public function prefillsTheEventChosenForANewAppointment(): void
+    {
+        $this->actAs(self::EDITOR);
+
+        $query = $this->formQuery($this->newRecord(['type' => 'event-appointment', 'eventUid' => 1]));
+
+        self::assertSame('1', $query['defVals'][self::TABLE_ENTRY]['event'] ?? null);
+    }
+
+    #[Test]
+    public function ignoresAChosenEventForANewEvent(): void
+    {
+        $this->actAs(self::EDITOR);
+
+        $query = $this->formQuery($this->newRecord(['type' => 'event', 'eventUid' => 1]));
+
+        self::assertArrayNotHasKey('event', $query['defVals'][self::TABLE_ENTRY] ?? []);
+    }
+
+    #[Test]
+    public function refusesAnEventTheUserCannotSee(): void
+    {
+        // EventRestriction only applies to backend requests.
+        $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest('https://example.com/typo3/'))
+            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
+        $this->actAs(self::EDITOR);
+
+        $response = $this->newRecord(['type' => 'event-appointment', 'eventUid' => 2]);
+        unset($GLOBALS['TYPO3_REQUEST']);
+
+        self::assertSame(400, $response->getStatusCode());
+        self::assertSame(['success' => false, 'message' => 'Invalid event.'], $this->decode($response));
+    }
+
+    #[Test]
     public function remembersTheCalendarOfTheLastCreation(): void
     {
         $this->actAs(self::ADMIN);
@@ -332,6 +369,7 @@ final class CalendarControllerTest extends AbstractCalendarFunctionalTestCase
         return new CalendarEventCreationController(
             $this->get(CalendarSelectionService::class),
             new EventRecordTypeService($this->get(FormDataCompiler::class), $this->get(ConnectionPool::class)),
+            $this->get(EventSearchService::class),
             $this->get(UriBuilder::class),
         );
     }

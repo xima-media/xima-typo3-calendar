@@ -11,8 +11,9 @@ use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Imaging\IconSize;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Xima\XimaTypo3Calendar\Database\RawRecordReader;
 use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
-use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
+use Xima\XimaTypo3Calendar\Service\EventWorkflowPolicy;
 use Xima\XimaTypo3Calendar\Service\StatusChangeContext;
 use Xima\XimaTypo3Recordlist\Controller\AbstractBackendController;
 use Xima\XimaTypo3Recordlist\Dto\RecordSource;
@@ -30,7 +31,8 @@ class EventsController extends AbstractBackendController
     public function __construct(
         private readonly ExtensionConfiguration $extensionConfiguration,
         private readonly StatusChangeContext $statusChangeContext,
-        private readonly CalendarPermissionService $permissionService,
+        private readonly EventWorkflowPolicy $workflowPolicy,
+        private readonly RawRecordReader $recordReader,
     ) {
     }
 
@@ -39,21 +41,30 @@ class EventsController extends AbstractBackendController
      * together with the optional status message, and controls whether the event
      * owner is notified. The change runs through the DataHandler so the regular
      * workflow hooks and notification listeners fire.
+     *
+     * A transition the EventWorkflowPolicy refuses answers 403, and so does an event
+     * that does not exist, so the endpoint reveals nothing about hidden events.
      */
     public function updateStatus(ServerRequestInterface $request): ResponseInterface
     {
         $parsedBody = $request->getParsedBody();
 
         $uid = (int)($parsedBody['uid'] ?? 0);
-        $statusValue = (int)($parsedBody['status'] ?? -1);
+        $targetStatus = EventStatus::tryFrom((int)($parsedBody['status'] ?? -1));
         $message = trim((string)($parsedBody['message'] ?? ''));
         $notifyOwner = (bool)(int)($parsedBody['notifyOwner'] ?? 1);
 
-        if ($uid <= 0 || EventStatus::tryFrom($statusValue) === null) {
+        if ($uid <= 0 || $targetStatus === null) {
             return new JsonResponse(['success' => false], 400);
         }
 
-        if ($statusValue === EventStatus::LIVE->value && !$this->permissionService->canPublishLiveEvents()) {
+        $backendUser = $GLOBALS['BE_USER'] ?? null;
+        $event = $this->recordReader->fetch(self::EVENT_TABLE, $uid);
+        if (!$backendUser instanceof BackendUserAuthentication
+            || $event === null
+            || (int)$event['deleted'] === 1
+            || !$this->workflowPolicy->canTransition($backendUser, $event, $this->workflowPolicy->statusOf($event), $targetStatus)
+        ) {
             return new JsonResponse(['success' => false], 403);
         }
 
@@ -63,7 +74,7 @@ class EventsController extends AbstractBackendController
         $data = [
             self::EVENT_TABLE => [
                 $uid => [
-                    'status' => $statusValue,
+                    'status' => $targetStatus->value,
                     'status_message' => $message,
                 ],
             ],
