@@ -179,7 +179,7 @@ events; the shipped `categories`, `statuses` and `recordTypes` filters use exact
 
 | Event | Step |
 |-------|------|
-| `ConfigureCalendarFilterEvent` | Describe the filter: a `CheckboxCalendarFilter` (flat list) or a `TreeCalendarFilter` (nested, optional colour coding), with its items. `getRequest()` returns the backend request. |
+| `ConfigureCalendarFilterEvent` | Describe the filter: a `CheckboxCalendarFilter` (flat list) or a `TreeCalendarFilter` (nested, optional colour coding), with its items. Set `hasOwnEntries: false` on a `TreeCalendarFilterItem` that is only listed as a parent: the legend shows it grey. `getRequest()` returns the backend request. |
 | `BuildCalendarEntriesQueryEvent` | Add joins and selected columns the other steps need. The query reads the entry table as `e`, the calendar as `c`, the event as `v` and the location as `loc`. |
 | `ApplyCalendarFilterEvent` | Restrict the query to the selected values: `getFilters()['filters'][<identifier>]` is a list of the selected item values. Treat them as user input. |
 | `CalendarEntrySerializationEvent` | Tell the client which item an entry belongs to with `addFilterValue()`, and add data with `addExtendedProperty()`. The client uses the filter values for colours, icons, appearances and tooltips. |

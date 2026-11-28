@@ -8,10 +8,6 @@ import './Components/calendar-filter-mini-calendar';
 import type {TreeStateChangePayload} from './Components/calendar-filter-tree';
 import type {CheckboxListChangePayload} from './Components/calendar-filter-checkbox-list';
 import {CalendarFilterStatePersistence} from './Services/calendar-filter-state-persistence';
-import {
-  treeEventValuesUpdatedEvent,
-  type TreeEventValues,
-} from './calendar-filter-events';
 import {isCalendarFilterResponse, requestCalendarFilterConfiguration,} from './Services/calendar-filter-configuration';
 import {
   createFilterSelection,
@@ -66,28 +62,8 @@ export class CalendarFilterElement extends LitElement {
 
   private filterStatePersistence: CalendarFilterStatePersistence | null = null;
 
-  private treeEventValues: TreeEventValues = {};
-
-  private treeEventValuesLoaded = false;
-
-  private readonly handleTreeEventValuesUpdated = (event: Event): void => {
-    const detail = (event as CustomEvent<TreeEventValues>).detail;
-    if (!detail || typeof detail !== 'object') {
-      return;
-    }
-
-    this.treeEventValues = detail;
-    this.treeEventValuesLoaded = true;
-    this.requestUpdate();
-  };
-
   public connectedCallback(): void {
     super.connectedCallback();
-    const eventWindow = window.top ?? window;
-    eventWindow.addEventListener(
-      treeEventValuesUpdatedEvent,
-      this.handleTreeEventValuesUpdated,
-    );
     const typo3Top = window.top as unknown as Typo3TopWindow;
     const stateUrl = typo3Top.TYPO3?.settings?.ajaxUrls?.xima_calendar_filter_state
       ?? typo3Top.TYPO3?.settings?.ximaCalendar?.filterStateUrl;
@@ -96,15 +72,6 @@ export class CalendarFilterElement extends LitElement {
     }
 
     void this.loadFilterConfiguration();
-  }
-
-  public disconnectedCallback(): void {
-    const eventWindow = window.top ?? window;
-    eventWindow.removeEventListener(
-      treeEventValuesUpdatedEvent,
-      this.handleTreeEventValuesUpdated,
-    );
-    super.disconnectedCallback();
   }
 
   public createRenderRoot(): HTMLElement {
@@ -143,23 +110,18 @@ export class CalendarFilterElement extends LitElement {
       activeItems: [],
       expandedItems: {},
     };
-    const parentValues = new Set(
-      tree.items
-        .map((item) => item.parentUid)
-        .filter((parentUid): parentUid is string | number => parentUid !== null)
-        .map((parentUid) => String(parentUid)),
-    );
+    const isColored = tree.supportsColorCoding && tree.identifier === this.colorSource;
     const items = tree.items.map((item) => {
-      const isParent = parentValues.has(String(item.value));
-      const hasOwnEvents = this.treeEventValues[tree.identifier]?.includes(String(item.value)) ?? false;
+      const neutral = isColored
+        && !item.hasOwnEntries
+        && !this.filterColors[tree.identifier]?.[String(item.value)];
 
       return {
         ...item,
-        color: tree.supportsColorCoding && tree.identifier === this.colorSource
-          ? isParent && this.treeEventValuesLoaded && !hasOwnEvents
-            ? 'color-mix(in srgb, var(--typo3-component-color) 45%, var(--typo3-component-bg))'
-            : getColor(tree.identifier, item.value, this.filterColors)
+        color: isColored && !neutral
+          ? getColor(tree.identifier, item.value, this.filterColors)
           : undefined,
+        neutral,
       };
     });
 

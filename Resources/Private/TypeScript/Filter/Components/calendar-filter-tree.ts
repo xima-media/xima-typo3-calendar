@@ -21,6 +21,7 @@ export type TreeCalendarFilterItem = {
   selected: boolean;
   parentUid: TreeValue | null;
   color?: string;
+  neutral?: boolean;
 };
 
 export class CalendarFilterTree extends LitElement {
@@ -116,7 +117,9 @@ export class CalendarFilterTree extends LitElement {
 
             <label class="form-check">
               <input
-                class="xima-calendar-filter__tree-checkbox"
+                class=${item.neutral
+                  ? 'xima-calendar-filter__tree-checkbox xima-calendar-filter__tree-checkbox--neutral'
+                  : 'xima-calendar-filter__tree-checkbox'}
                 type="checkbox"
                 .checked=${isSelected}
                 style=${item.color

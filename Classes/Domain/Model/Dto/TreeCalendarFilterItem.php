@@ -11,6 +11,7 @@ final class TreeCalendarFilterItem implements \JsonSerializable
         public int|string $value = '',
         public bool $selected = false,
         public ?self $parent = null,
+        public bool $hasOwnEntries = true,
     ) {
     }
 
@@ -19,7 +20,8 @@ final class TreeCalendarFilterItem implements \JsonSerializable
      *     label: string,
      *     value: string,
      *     selected: bool,
-     *     parentUid: int|null
+     *     parentUid: int|null,
+     *     hasOwnEntries: bool
      * }
      */
     public function jsonSerialize(): array
@@ -29,6 +31,7 @@ final class TreeCalendarFilterItem implements \JsonSerializable
             'value' => $this->value,
             'selected' => $this->selected,
             'parentUid' => $this->parent !== null ? (int)$this->parent->value : null,
+            'hasOwnEntries' => $this->hasOwnEntries,
         ];
     }
 }

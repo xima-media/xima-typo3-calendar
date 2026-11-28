@@ -14,7 +14,7 @@ final class TreeCalendarFilterTest extends TestCase
     #[Test]
     public function serializesItemsAsArrays(): void
     {
-        $parent = new TreeCalendarFilterItem('Parent', 1);
+        $parent = new TreeCalendarFilterItem('Parent', 1, hasOwnEntries: false);
         $filter = new TreeCalendarFilter('categories', 'Categories', true);
         $filter->addItem($parent);
         $filter->addItem(new TreeCalendarFilterItem('Child', 2, false, $parent));
@@ -30,12 +30,14 @@ final class TreeCalendarFilterTest extends TestCase
                     'value' => 1,
                     'selected' => false,
                     'parentUid' => null,
+                    'hasOwnEntries' => false,
                 ],
                 [
                     'label' => 'Child',
                     'value' => 2,
                     'selected' => false,
                     'parentUid' => 1,
+                    'hasOwnEntries' => true,
                 ],
             ],
         ], $filter->jsonSerialize());

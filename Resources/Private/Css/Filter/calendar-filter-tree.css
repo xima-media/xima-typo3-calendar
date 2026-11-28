@@ -161,6 +161,10 @@
     cursor: pointer;
 }
 
+.xima-calendar-filter__tree .xima-calendar-filter__tree-checkbox--neutral {
+    --xima-tree-item-color: color-mix(in srgb, var(--typo3-component-color) 45%, var(--typo3-component-bg));
+}
+
 .xima-calendar-filter__tree .xima-calendar-filter__tree-checkbox:checked {
     background: var(--xima-tree-item-color);
     box-shadow: inset 0 0 0 2px var(--typo3-component-bg);
