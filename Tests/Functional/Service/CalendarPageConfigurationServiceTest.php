@@ -38,7 +38,6 @@ final class CalendarPageConfigurationServiceTest extends AbstractCalendarFunctio
                 'defaultRecordType' => 'event',
                 'timeSlotMinutes' => 15,
                 'scrollStartTime' => '07:00:00',
-                'firstDay' => 'monday',
             ],
             $service->getNewEventConfiguration($request),
         );
@@ -51,6 +50,17 @@ final class CalendarPageConfigurationServiceTest extends AbstractCalendarFunctio
             $service->getEventAppearanceConfiguration($request),
         );
         self::assertSame([], $service->getFilterColors($request));
+        self::assertSame('monday', $service->getFirstDay($request));
+    }
+
+    #[Test]
+    public function firstDayIsCaseInsensitive(): void
+    {
+        $this->setPageTsConfig(<<<'TSCONFIG'
+            mod.tx_ximatypo3calendar.calendar.firstDay = Sunday
+            TSCONFIG);
+
+        self::assertSame('sunday', $this->createService()->getFirstDay($this->createRequest(self::STORAGE_PAGE)));
     }
 
     #[Test]
@@ -81,7 +91,7 @@ final class CalendarPageConfigurationServiceTest extends AbstractCalendarFunctio
         self::assertSame('meeting', $configuration['defaultRecordType']);
         self::assertSame(30, $configuration['timeSlotMinutes']);
         self::assertSame('06:30:15', $configuration['scrollStartTime']);
-        self::assertSame('sunday', $configuration['firstDay']);
+        self::assertSame('sunday', $this->createService()->getFirstDay($this->createRequest(self::STORAGE_PAGE)));
     }
 
     #[Test]
@@ -109,7 +119,7 @@ final class CalendarPageConfigurationServiceTest extends AbstractCalendarFunctio
         self::assertNull($configuration['defaultRecordType']);
         self::assertSame(15, $configuration['timeSlotMinutes']);
         self::assertSame('08:00:00', $configuration['scrollStartTime']);
-        self::assertSame('monday', $configuration['firstDay']);
+        self::assertSame('monday', $this->createService()->getFirstDay($this->createRequest(self::STORAGE_PAGE)));
     }
 
     #[Test]

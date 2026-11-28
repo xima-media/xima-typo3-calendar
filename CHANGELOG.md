@@ -22,8 +22,8 @@ All notable changes to this extension are documented here. The format follows
   type); without any, the module offers no creation. See
   [Access Control](Documentation/AccessControl.md#creating-records-in-the-calendar-module).
 - **Page TSconfig for the calendar module** under `mod.tx_ximatypo3calendar`: `filterOrder`,
-  `tooltipOrder`, `weekViewGrid` (`timeSlotMinutes`, `scrollStartTime`), `eventAppearance`
-  (`iconSource`, `appearanceSource`, `colorSource`), `filterColors` and `newEvent`
+  `tooltipOrder`, `calendar.firstDay`, `weekViewGrid` (`timeSlotMinutes`, `scrollStartTime`),
+  `eventAppearance` (`iconSource`, `appearanceSource`, `colorSource`), `filterColors` and `newEvent`
   (`interaction.enableClick|enableDrag`, `defaults.startTime|endTime|allDay|recordType`). See
   [Calendar Module → Page TSconfig](Documentation/BackendModule.md#page-tsconfig).
 - **Choosing the event of a new appointment in the creation modal.** A search field finds events

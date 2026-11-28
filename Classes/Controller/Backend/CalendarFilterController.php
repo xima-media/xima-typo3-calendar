@@ -29,7 +29,7 @@ final class CalendarFilterController
             'success' => true,
             'filters' => $this->filterService->getFilters($request, $pageId),
             'filterColors' => $this->pageConfigurationService->getFilterColors($request),
-            'firstDay' => $this->pageConfigurationService->getNewEventConfiguration($request)['firstDay'],
+            'firstDay' => $this->pageConfigurationService->getFirstDay($request),
             'colorSource' => $this->pageConfigurationService->getEventAppearanceConfiguration($request)['colorSource'],
             'state' => $this->filterService->getState($request, $pageId),
             'labels' => [

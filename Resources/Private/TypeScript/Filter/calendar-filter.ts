@@ -39,7 +39,6 @@ type Typo3TopWindow = Window & {
         filterStateUrl?: string;
         filterColors?: ColorOverrides;
         locale?: string;
-        firstDay?: string;
       };
     };
   };
