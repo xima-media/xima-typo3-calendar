@@ -267,13 +267,16 @@ identifier, e.g. `xima-typo3-calendar/configure-status-filter`) and calls `setFi
 
 ## Fluid ViewHelpers
 
-`ViewHelpers\Backend\CanPublishLiveEventsViewHelper` exposes the publish permission to backend
-templates. The namespace root is `Xima\XimaTypo3Calendar\ViewHelpers`:
+`ViewHelpers\Backend\EventStatusItemsViewHelper` returns the status options of an event for the
+current backend user, as decided by `Service\EventWorkflowPolicy`: its current status plus every
+allowed target, each with `value`, `label` and `description`. A single item means the user may
+not change the status. The namespace root is `Xima\XimaTypo3Calendar\ViewHelpers`:
 
 ```html
 {namespace xtc=Xima\XimaTypo3Calendar\ViewHelpers}
-<f:if condition="{xtc:backend.canPublishLiveEvents()}">
-    <button>Set live</button>
+<f:variable name="statusItems" value="{xtc:backend.eventStatusItems(event: item)}" />
+<f:if condition="{statusItems -> f:count()} > 1">
+    <button>Change status</button>
 </f:if>
 ```
 

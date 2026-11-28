@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Xima\XimaTypo3Calendar\Backend\Tca;
 
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
-use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
+use Xima\XimaTypo3Calendar\Service\EventWorkflowPolicy;
 
 /**
  * itemsProcFunc for the event `status` field.
  *
- * Removes the LIVE option for backend users without the publish permission so
- * they cannot move an event live through the edit form. An event that is already
- * LIVE keeps the option, so its status still renders correctly and is not
- * silently downgraded on save.
+ * Offers the event's current status plus the statuses the EventWorkflowPolicy lets the
+ * backend user move it to. The current status stays, so it still renders correctly and
+ * is not silently changed on save.
  */
 final class EventStatusItemsProcessor
 {
@@ -23,14 +23,13 @@ final class EventStatusItemsProcessor
      */
     public function removeUnauthorizedItems(array &$params): void
     {
-        $permissionService = GeneralUtility::makeInstance(CalendarPermissionService::class);
-        if ($permissionService->canPublishLiveEvents()) {
-            return;
-        }
-
-        if ($this->currentStatus($params) === EventStatus::LIVE->value) {
-            return;
-        }
+        $backendUser = $GLOBALS['BE_USER'] ?? null;
+        $policy = GeneralUtility::makeInstance(EventWorkflowPolicy::class);
+        $targets = $backendUser instanceof BackendUserAuthentication ? $policy->allowedTargetStatuses($backendUser, $params['row']) : [];
+        $offeredValues = array_map(
+            static fn (EventStatus $status): int => $status->value,
+            [$policy->statusOf($params['row']), ...$targets]
+        );
 
         foreach ($params['items'] as $key => $item) {
             $itemValue = $item['value'] ?? null;
@@ -39,24 +38,11 @@ final class EventStatusItemsProcessor
                 $itemValue = $itemValues[1] ?? -1;
             }
 
-            if ((int)$itemValue === EventStatus::LIVE->value) {
+            if (!in_array((int)$itemValue, $offeredValues, true)) {
                 unset($params['items'][$key]);
             }
         }
 
         $params['items'] = array_values($params['items']);
-    }
-
-    /**
-     * @param array<string, mixed> $params
-     */
-    private function currentStatus(array $params): int
-    {
-        $status = $params['row']['status'] ?? 0;
-        if (is_array($status)) {
-            $status = $status[0] ?? 0;
-        }
-
-        return (int)$status;
     }
 }

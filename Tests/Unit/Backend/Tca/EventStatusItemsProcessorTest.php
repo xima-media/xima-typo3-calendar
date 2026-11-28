@@ -8,19 +8,23 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Xima\XimaTypo3Calendar\Backend\Tca\EventStatusItemsProcessor;
 use Xima\XimaTypo3Calendar\Domain\Model\Enum\EventStatus;
 use Xima\XimaTypo3Calendar\Service\CalendarPermissionService;
+use Xima\XimaTypo3Calendar\Service\EventWorkflowPolicy;
 
 /**
- * The processor resolves CalendarPermissionService through GeneralUtility, and
- * the service itself reads $GLOBALS['BE_USER']. Both are steered here: a real
- * (non-mockable, final) permission service is pushed onto the GeneralUtility
- * instance stack and the backend user's check() result decides the outcome.
+ * The processor resolves EventWorkflowPolicy through GeneralUtility and reads
+ * $GLOBALS['BE_USER']. A real policy is pushed onto the GeneralUtility instance
+ * stack and the backend user's check() result decides the publish permission.
+ * The transition table itself is covered by the functional EventWorkflowPolicyTest.
  */
 final class EventStatusItemsProcessorTest extends TestCase
 {
+    private const OWN_USER_UID = 7;
+
     private EventStatusItemsProcessor $subject;
 
     /** @var array<string, mixed> */
@@ -30,6 +34,10 @@ final class EventStatusItemsProcessorTest extends TestCase
     {
         $this->subject = new EventStatusItemsProcessor();
         $this->globalsBackup = ['BE_USER' => $GLOBALS['BE_USER'] ?? null];
+        GeneralUtility::addInstance(
+            EventWorkflowPolicy::class,
+            new EventWorkflowPolicy(new CalendarPermissionService(), self::createStub(ExtensionConfiguration::class))
+        );
     }
 
     protected function tearDown(): void
@@ -43,17 +51,14 @@ final class EventStatusItemsProcessorTest extends TestCase
     }
 
     #[Test]
-    public function removesTheLiveItemForAUserWithoutThePublishPermission(): void
+    public function offersAnOwnerWithoutThePublishPermissionOnlyDraftAndReview(): void
     {
         $this->givenPublishPermission(false);
         $params = $this->params(EventStatus::DRAFT->value);
 
         $this->subject->removeUnauthorizedItems($params);
 
-        self::assertSame(
-            [EventStatus::DRAFT->value, EventStatus::REVIEW->value, EventStatus::REJECTED->value],
-            self::itemValues($params)
-        );
+        self::assertSame([EventStatus::DRAFT->value, EventStatus::REVIEW->value], self::itemValues($params));
     }
 
     #[Test]
@@ -64,7 +69,7 @@ final class EventStatusItemsProcessorTest extends TestCase
 
         $this->subject->removeUnauthorizedItems($params);
 
-        self::assertSame([0, 1, 2], array_keys($params['items']));
+        self::assertSame([0, 1], array_keys($params['items']));
     }
 
     #[Test]
@@ -87,18 +92,42 @@ final class EventStatusItemsProcessorTest extends TestCase
     }
 
     /**
-     * An event that is already live keeps the option so its status still renders
-     * correctly and is not silently downgraded on save.
+     * A live event keeps only its own status, so it still renders and cannot be moved.
      */
     #[Test]
-    public function keepsTheLiveItemWhenTheRecordIsAlreadyLive(): void
+    public function offersOnlyTheCurrentStatusOfALiveEvent(): void
     {
         $this->givenPublishPermission(false);
         $params = $this->params(EventStatus::LIVE->value);
 
         $this->subject->removeUnauthorizedItems($params);
 
-        self::assertContains(EventStatus::LIVE->value, self::itemValues($params));
+        self::assertSame([EventStatus::LIVE->value], self::itemValues($params));
+    }
+
+    #[Test]
+    public function keepsTheStatusOfARejectedEventNextToItsTargets(): void
+    {
+        $this->givenPublishPermission(false);
+        $params = $this->params(EventStatus::REJECTED->value);
+
+        $this->subject->removeUnauthorizedItems($params);
+
+        self::assertSame(
+            [EventStatus::DRAFT->value, EventStatus::REVIEW->value, EventStatus::REJECTED->value],
+            self::itemValues($params)
+        );
+    }
+
+    #[Test]
+    public function offersOnlyTheCurrentStatusOfAForeignEvent(): void
+    {
+        $this->givenPublishPermission(false);
+        $params = $this->params(EventStatus::DRAFT->value, self::OWN_USER_UID + 1);
+
+        $this->subject->removeUnauthorizedItems($params);
+
+        self::assertSame([EventStatus::DRAFT->value], self::itemValues($params));
     }
 
     /**
@@ -113,7 +142,7 @@ final class EventStatusItemsProcessorTest extends TestCase
 
         $this->subject->removeUnauthorizedItems($params);
 
-        self::assertContains(EventStatus::LIVE->value, self::itemValues($params));
+        self::assertSame([EventStatus::LIVE->value], self::itemValues($params));
     }
 
     /**
@@ -128,25 +157,31 @@ final class EventStatusItemsProcessorTest extends TestCase
                 [0 => 'Draft', 1 => EventStatus::DRAFT->value],
                 [0 => 'Live', 1 => EventStatus::LIVE->value],
             ],
-            'row' => ['status' => EventStatus::DRAFT->value],
+            'row' => ['uid' => 1, 'owner_be_user' => self::OWN_USER_UID, 'status' => EventStatus::DRAFT->value],
         ];
 
         $this->subject->removeUnauthorizedItems($params);
 
-        self::assertCount(1, $params['items']);
         self::assertSame([EventStatus::DRAFT->value], self::itemValues($params));
     }
 
+    /**
+     * A new record has no status and no owner yet: it starts as the user's own draft.
+     */
     #[Test]
     #[DataProvider('missingStatusProvider')]
-    public function treatsAMissingStatusAsDraftAndStillRemovesLive(mixed $status): void
+    public function treatsANewRecordAsTheUsersOwnDraft(mixed $status): void
     {
         $this->givenPublishPermission(false);
-        $params = ['items' => $this->items(), 'row' => $status === null ? [] : ['status' => $status]];
+        $row = ['uid' => 'NEW123'];
+        if ($status !== null) {
+            $row['status'] = $status;
+        }
+        $params = ['items' => $this->items(), 'row' => $row];
 
         $this->subject->removeUnauthorizedItems($params);
 
-        self::assertNotContains(EventStatus::LIVE->value, self::itemValues($params));
+        self::assertSame([EventStatus::DRAFT->value, EventStatus::REVIEW->value], self::itemValues($params));
     }
 
     /**
@@ -165,37 +200,37 @@ final class EventStatusItemsProcessorTest extends TestCase
      * A request without a backend user must not be treated as permitted.
      */
     #[Test]
-    public function removesTheLiveItemWhenNoBackendUserIsPresent(): void
+    public function offersOnlyTheCurrentStatusWhenNoBackendUserIsPresent(): void
     {
         unset($GLOBALS['BE_USER']);
-        GeneralUtility::addInstance(CalendarPermissionService::class, new CalendarPermissionService());
         $params = $this->params(EventStatus::DRAFT->value);
 
         $this->subject->removeUnauthorizedItems($params);
 
-        self::assertNotContains(EventStatus::LIVE->value, self::itemValues($params));
+        self::assertSame([EventStatus::DRAFT->value], self::itemValues($params));
     }
 
     private function givenPublishPermission(bool $granted): void
     {
-        $backendUser = $this->createMock(BackendUserAuthentication::class);
-        $backendUser->method('check')
-            ->with(
-                'custom_options',
-                CalendarPermissionService::PERMISSION_GROUP . ':' . CalendarPermissionService::PERMISSION_PUBLISH_LIVE_EVENTS
-            )
-            ->willReturn($granted);
+        $backendUser = self::createStub(BackendUserAuthentication::class);
+        $backendUser->user = ['uid' => self::OWN_USER_UID];
+        $backendUser->method('check')->willReturnCallback(
+            static fn (string $type, string $value): bool => $granted
+                && $value === CalendarPermissionService::PERMISSION_GROUP . ':' . CalendarPermissionService::PERMISSION_PUBLISH_LIVE_EVENTS
+        );
 
         $GLOBALS['BE_USER'] = $backendUser;
-        GeneralUtility::addInstance(CalendarPermissionService::class, new CalendarPermissionService());
     }
 
     /**
      * @return array{items: array<int, array<string, mixed>>, row: array<string, mixed>}
      */
-    private function params(mixed $currentStatus): array
+    private function params(mixed $currentStatus, int $owner = self::OWN_USER_UID): array
     {
-        return ['items' => $this->items(), 'row' => ['status' => $currentStatus]];
+        return [
+            'items' => $this->items(),
+            'row' => ['uid' => 1, 'owner_be_user' => $owner, 'status' => $currentStatus],
+        ];
     }
 
     /**
