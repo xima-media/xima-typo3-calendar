@@ -5,6 +5,7 @@ import {
 } from '../Rendering/calendar-list-multi-day';
 import type {CalendarEventRenderer} from '../Rendering/calendar-event-renderer';
 import {scrollCalendarListToRelevantDate} from './calendar-list-scroll';
+import {createCalendarListHoverSync} from './calendar-list-hover-sync';
 
 type CalendarListView = {
     type: string;
@@ -28,6 +29,7 @@ export const createCalendarListScrollController = (
     let currentViewType = '';
     let scrollFrame: number | null = null;
     let resizeObserver: ResizeObserver | null = null;
+    const hoverSync = createCalendarListHoverSync(container);
 
     const observeListSize = (): void => {
         resizeObserver?.disconnect();
@@ -63,7 +65,6 @@ export const createCalendarListScrollController = (
                     container,
                     currentEvents,
                     currentViewStart,
-                    document.documentElement.lang || 'en',
                     eventRenderer,
                     onEventClick,
                     onEventTooltip,
@@ -81,6 +82,7 @@ export const createCalendarListScrollController = (
         viewChanged(view): void {
             currentViewType = view.type;
             currentViewStart = view.currentStart;
+            hoverSync.viewChanged(view.type);
 
             if (view.type.startsWith('list')) {
                 observeListSize();
@@ -103,6 +105,7 @@ export const createCalendarListScrollController = (
 
         destroy(): void {
             resizeObserver?.disconnect();
+            hoverSync.destroy();
             if (scrollFrame !== null) {
                 window.cancelAnimationFrame(scrollFrame);
                 scrollFrame = null;

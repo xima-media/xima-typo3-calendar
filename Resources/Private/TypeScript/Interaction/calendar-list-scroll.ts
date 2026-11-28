@@ -1,5 +1,6 @@
 import type {CalendarEventData} from '../Rendering/calendar-event-data';
 import {isMultiDayCalendarEvent} from '../Rendering/calendar-list-layout';
+import {formatLocalCalendarDate} from '../Filter/Services/calendar-date-utils';
 
 type CalendarListScrollConfiguration = {
     container: HTMLElement;
@@ -34,14 +35,6 @@ const isSameMonth = (date: Date, month: Date): boolean => (
     && date.getMonth() === month.getMonth()
 );
 
-const toDateAttribute = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-};
-
 export const scrollCalendarListToRelevantDate = (
     configuration: CalendarListScrollConfiguration,
 ): void => {
@@ -64,15 +57,27 @@ export const scrollCalendarListToRelevantDate = (
     const nextEvent = monthEvents.find(({start}) => start! >= today);
     const targetDate = todayEvent?.start ?? nextEvent?.start ?? monthStart;
     const target = list.querySelector<HTMLElement>(
-        `time[datetime="${toDateAttribute(targetDate!)}"]`,
+        `time[datetime="${formatLocalCalendarDate(targetDate!)}"]`,
     )?.closest<HTMLElement>('.ec-day');
 
     if (!target) {
         return;
     }
 
+    const firstAppointment = target.querySelector<HTMLElement>(
+        '.ec-event:not(.xima-calendar-list__multi-day-source)',
+    );
+    // The day heading is sticky and would otherwise cover the first appointment.
+    const stickyDayHeadHeight = firstAppointment
+        ? target.querySelector<HTMLElement>('.ec-day-head')?.offsetHeight ?? 0
+        : 0;
+    const scrollTarget = firstAppointment ?? target;
+    const targetTop = scrollTarget.getBoundingClientRect().top
+        - scrollContainer.getBoundingClientRect().top
+        + scrollContainer.scrollTop;
+
     scrollContainer.scrollTo({
-        top: Math.max(0, target.offsetTop - 8),
+        top: Math.max(0, targetTop - stickyDayHeadHeight),
         behavior: 'auto',
     });
 };

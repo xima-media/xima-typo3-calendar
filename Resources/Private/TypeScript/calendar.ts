@@ -6,6 +6,7 @@ import {createCalendarCreationController} from './Event/calendar-event-creation'
 import {createCalendarDetailsController} from './Event/calendar-details';
 import {createCalendarInteractionController} from './Interaction/calendar-interaction';
 import {createCalendarListScrollController} from './Interaction/calendar-list-scroll-controller';
+import {createCalendarListNavigation, type CalendarListNavigation} from './Interaction/calendar-list-navigation';
 import {readCalendarConfig, type Typo3TopWindow} from './Configuration/calendar-runtime-config';
 import type {CalendarFilterConfiguration, CalendarFilterSelection} from './Filter/calendar-filter-state';
 import {createCalendarFilterSync} from './Filter/calendar-filter-sync';
@@ -17,6 +18,7 @@ import type {CalendarEventData} from './Rendering/calendar-event-data';
 import {createCalendarEventRenderer} from './Rendering/calendar-event-renderer';
 import {createCalendarEventTooltip} from './Rendering/calendar-event-tooltip';
 import {isMultiDayCalendarEvent} from './Rendering/calendar-list-layout';
+import {getCalendarLanguageLabel} from './Services/calendar-language';
 
 type EventCalendarTheme = Record<string, string | string[]>;
 type EventCalendarButtonText = Record<string, string>;
@@ -38,8 +40,8 @@ DocumentService.ready().then(async () => {
     const calendarConfig = readCalendarConfig(container);
     if (!calendarConfig) {
         Notification.error(
-            'Configuration error',
-            'The calendar configuration is invalid.',
+            getCalendarLanguageLabel('calendar.configurationError.title'),
+            getCalendarLanguageLabel('calendar.configurationError.message'),
         );
         return;
     }
@@ -93,6 +95,7 @@ DocumentService.ready().then(async () => {
     );
 
     const creationController = createCalendarCreationController(container, calendarConfig);
+    let listNavigation: CalendarListNavigation | null = null;
     let currentView = calendarConfig.initialView;
     const persistCalendarView = (view: string): void => {
         if (view === currentView) {
@@ -106,14 +109,20 @@ DocumentService.ready().then(async () => {
             .catch(error => console.error('Calendar view could not be saved', error));
     };
 
+    const withNavigationLabels = (unit: 'Month' | 'Week') => (
+        (buttonText: EventCalendarButtonText): EventCalendarButtonText => ({
+            ...buttonText,
+            prev: getCalendarLanguageLabel(`calendar.previous${unit}`),
+            next: getCalendarLanguageLabel(`calendar.next${unit}`),
+        })
+    );
+
     const ec = createCalendar(
         container,
         [DayGrid, TimeGrid, List, Interaction],
         {
             locale: calendarConfig.locale,
-            noEventsContent: calendarConfig.locale.startsWith('de')
-                ? 'Noch keine Events für diesen Monat'
-                : 'No events for this month yet',
+            noEventsContent: getCalendarLanguageLabel('calendar.noEvents'),
             eventGap: 3,
             height: '100%',
             nowIndicator: true,
@@ -122,11 +131,20 @@ DocumentService.ready().then(async () => {
             eventStartEditable: false,
             eventDurationEditable: false,
             dayMaxEvents: true,
-            moreLinkContent: ({num}: {num: number}) => `+${num} ${calendarConfig.locale.startsWith('de') ? 'weitere' : 'more'}`,
+            moreLinkContent: ({num}: {num: number}) => (
+                `+${num} ${getCalendarLanguageLabel('calendar.more')}`
+            ),
             view: calendarConfig.initialView,
             firstDay: 1,
             views: {
+                dayGridMonth: {
+                    buttonText: withNavigationLabels('Month'),
+                },
+                listMonth: {
+                    buttonText: withNavigationLabels('Month'),
+                },
                 timeGridWeek: {
+                    buttonText: withNavigationLabels('Week'),
             scrollTime: calendarConfig.scrollStartTime,
                     slotMinTime: '00:00:00',
                     slotMaxTime: '24:00:00',
@@ -144,10 +162,10 @@ DocumentService.ready().then(async () => {
             }),
             buttonText: (buttonText: EventCalendarButtonText) => ({
                 ...buttonText,
-                dayGridMonth: calendarConfig.locale.startsWith('de') ? 'Monat' : 'Month',
-                timeGridWeek: calendarConfig.locale.startsWith('de') ? 'Woche' : 'Week',
-                listMonth: calendarConfig.locale.startsWith('de') ? 'Liste' : 'List',
-                today: calendarConfig.locale.startsWith('de') ? 'Heute' : 'Today',
+                dayGridMonth: getCalendarLanguageLabel('calendar.month'),
+                timeGridWeek: getCalendarLanguageLabel('calendar.week'),
+                listMonth: getCalendarLanguageLabel('calendar.list'),
+                today: getCalendarLanguageLabel('calendar.today'),
             }),
             headerToolbar: {
                 start: 'prev next today',
@@ -158,6 +176,7 @@ DocumentService.ready().then(async () => {
                 detailsController.datesSet();
                 persistCalendarView(view.type);
                 listScrollController.viewChanged(view);
+                listNavigation?.viewChanged(view.type, view.currentStart);
                 filterWindow.dispatchEvent(new CustomEvent(miniCalendarEvents.mainDateChange, {
                     detail: {
                         date: view.currentStart.toISOString(),
@@ -196,6 +215,18 @@ DocumentService.ready().then(async () => {
         },
     );
 
+    listNavigation = createCalendarListNavigation(
+        container,
+        {
+            previous: getCalendarLanguageLabel('calendar.previousMonth'),
+            next: getCalendarLanguageLabel('calendar.nextMonth'),
+        },
+        calendarConfig.locale,
+        () => ec.prev(),
+        () => ec.next(),
+    );
+    listNavigation.viewChanged(ec.getView().type, ec.getView().currentStart);
+
     refetchEvents = () => ec.refetchEvents();
     const miniCalendarSync = createCalendarMiniCalendarSync(ec, filterWindow);
     filterSync.start();
@@ -229,6 +260,8 @@ DocumentService.ready().then(async () => {
         interactionController.destroy();
         eventTooltip.destroy();
         listScrollController.destroy();
+        listNavigation?.destroy();
+        listNavigation = null;
         calendarCleanups.delete(container);
         await destroyCalendar(ec);
     };

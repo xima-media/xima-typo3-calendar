@@ -1,6 +1,8 @@
 import {contentToText, type CalendarEventData} from './calendar-event-data';
 import {createCalendarListLayout} from './calendar-list-layout';
 import type {CalendarEventRenderer} from './calendar-event-renderer';
+import {getCalendarLanguageLabel} from '../Services/calendar-language';
+import {formatLocalCalendarDate} from '../Filter/Services/calendar-date-utils';
 
 const startOfDay = (date: Date): Date => {
     const result = new Date(date);
@@ -25,7 +27,6 @@ export const renderCalendarListMultiDayEvents = (
     container: HTMLElement,
     events: CalendarEventData[],
     monthStartValue: Date,
-    locale: string,
     eventRenderer: CalendarEventRenderer,
     onEventClick: (event: CalendarEventData, element: HTMLElement) => void,
     onEventTooltip: (event: CalendarEventData, element: HTMLElement) => void,
@@ -63,9 +64,7 @@ export const renderCalendarListMultiDayEvents = (
 
     const heading = document.createElement('h3');
     heading.className = 'xima-calendar-list__multi-day-title';
-    heading.textContent = locale.startsWith('de')
-        ? 'Mehrtägige Termine'
-        : 'Multi-day events';
+    heading.textContent = getCalendarLanguageLabel('list.multiDay');
     panel.append(heading);
 
     const grid = document.createElement('div');
@@ -82,6 +81,7 @@ export const renderCalendarListMultiDayEvents = (
         label.className = 'xima-calendar-list__multi-day-day';
         const date = new Date(monthStart);
         date.setDate(date.getDate() + day);
+        row.dataset.ximaCalendarDate = formatLocalCalendarDate(date);
         if (date.getTime() === today.getTime()) {
             row.classList.add('xima-calendar-list__multi-day-grid-row--today');
         }

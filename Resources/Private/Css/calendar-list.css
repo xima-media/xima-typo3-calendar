@@ -1,4 +1,6 @@
 #xima-calendar-mount .ec-list {
+    --xima-calendar-list-highlight-bg: color-mix(in srgb, var(--typo3-state-default-bg), var(--typo3-component-color) 12%);
+    --xima-calendar-list-highlight-strong-bg: color-mix(in srgb, var(--typo3-state-default-bg), var(--typo3-component-color) 18%);
     min-block-size: 0;
 
     .ec-main .ec-event.xima-calendar-list__multi-day-source {
@@ -26,12 +28,22 @@
         background: var(--typo3-component-bg);
     }
 
+    .ec-day.ec-today {
+        background: var(--xima-calendar-list-highlight-bg);
+    }
+
     .ec-day-head {
         padding: 0.65rem 1rem;
         background: var(--typo3-component-bg);
         color: var(--typo3-component-color);
         font-size: 0.9rem;
         font-weight: 600;
+    }
+
+    .ec-day.ec-today .ec-day-head {
+        background: var(--xima-calendar-list-highlight-strong-bg);
+        color: var(--typo3-state-default-color);
+        font-weight: 700;
     }
 
     .ec-event {
@@ -63,12 +75,50 @@
     }
 }
 
+#xima-calendar-mount .xima-calendar-list-navigation {
+    display: flex;
+    position: sticky;
+    inset-block-end: 0;
+    z-index: 5;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--typo3-component-bg);
+}
+
+#xima-calendar-mount .xima-calendar-list-navigation__button {
+    gap: 0.35rem;
+    font-size: inherit;
+    line-height: 1;
+    outline: 1px solid transparent;
+    outline-offset: -1px;
+    transition: background-color 120ms ease, border-color 120ms ease, outline-color 120ms ease;
+}
+
+#xima-calendar-mount .xima-calendar-list-navigation__button--next {
+    flex-direction: row-reverse;
+}
+
+#xima-calendar-mount .xima-calendar-list-navigation__button:hover,
+#xima-calendar-mount .xima-calendar-list-navigation__button:focus-visible {
+    outline-color: var(--typo3-component-hover-border-color, currentColor);
+    background-color: color-mix(
+        in srgb,
+        var(--typo3-component-bg, transparent),
+        var(--typo3-component-color, currentColor) 10%
+    );
+}
+
 #xima-calendar-mount .ec-list.xima-calendar-list-main--has-sidebar {
     position: relative;
     --xima-calendar-list-sidebar-gap: 1rem;
 
     .ec-main {
         box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
         inline-size: calc(66.667% - var(--xima-calendar-list-sidebar-gap));
         max-inline-size: calc(66.667% - var(--xima-calendar-list-sidebar-gap));
         min-inline-size: 0;
@@ -102,6 +152,11 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+
+        .xima-calendar-list-navigation {
+            inline-size: 100%;
+            margin-block-start: auto;
         }
     }
 
@@ -150,9 +205,14 @@
     }
 
     .xima-calendar-list__multi-day-grid-row--today {
-        background: var(--typo3-state-default-bg);
+        background: var(--xima-calendar-list-highlight-bg);
         color: var(--typo3-state-default-color);
         font-weight: 600;
+    }
+
+    .xima-calendar-list__multi-day-grid-row--hovered {
+        background: var(--xima-calendar-list-highlight-strong-bg);
+        color: var(--typo3-state-default-color);
     }
 
     .xima-calendar-list__multi-day-event {
