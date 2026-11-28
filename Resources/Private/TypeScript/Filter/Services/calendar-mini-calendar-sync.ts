@@ -15,7 +15,7 @@ export function createCalendarMiniCalendarSync(
     calendar: Calendar,
     filterWindow: Window,
     options: CalendarMiniCalendarSyncOptions = {},
-): {destroy: () => void} {
+): {publish: () => void; destroy: () => void} {
     const publishMainCalendarDate = (): void => {
         const view = calendar.getView();
         const configuredDate = calendar.getOption('date');
@@ -43,21 +43,17 @@ export function createCalendarMiniCalendarSync(
             return;
         }
 
-        if (detail.date) {
-            const targetMonth = parseCalendarDate(detail.date);
-            if (!Number.isNaN(targetMonth.getTime())) {
-                calendar.gotoDate(targetMonth);
-                return;
-            }
-        }
-
+        const requestedMonth = detail.date ? parseCalendarDate(detail.date) : null;
         const currentStart = calendar.getView().currentStart;
-        const monthDelta = direction === 'prev' ? -1 : 1;
-        calendar.gotoDate(new Date(
-            currentStart.getFullYear(),
-            currentStart.getMonth() + monthDelta,
-            1,
-        ));
+        const targetMonth = requestedMonth && !Number.isNaN(requestedMonth.getTime())
+            ? requestedMonth
+            : new Date(
+                currentStart.getFullYear(),
+                currentStart.getMonth() + (direction === 'prev' ? -1 : 1),
+                1,
+            );
+        calendar.gotoDate(targetMonth);
+        publishMainCalendarDate();
     };
 
     const handleMiniCalendarDateChange = (event: Event): void => {
@@ -68,14 +64,12 @@ export function createCalendarMiniCalendarSync(
 
         const parsedDate = parseCalendarDate(date);
         if (!Number.isNaN(parsedDate.getTime())) {
-            if (calendar.getView().type.startsWith('list')) {
-                calendar.gotoDate(parsedDate);
-                options.scrollListToDate?.(parsedDate);
-                return;
-            }
-
-            calendar.setOption('view', 'timeGridWeek');
             calendar.gotoDate(parsedDate);
+            // A date inside the current range triggers no datesSet.
+            publishMainCalendarDate();
+            if (calendar.getView().type.startsWith('list')) {
+                options.scrollListToDate?.(parsedDate);
+            }
         }
     };
 
@@ -94,6 +88,7 @@ export function createCalendarMiniCalendarSync(
     publishMainCalendarDate();
 
     return {
+        publish: publishMainCalendarDate,
         destroy: (): void => {
             filterWindow.removeEventListener(
                 miniCalendarEvents.navigate,

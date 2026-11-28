@@ -51,10 +51,6 @@ export class CalendarFilterMiniCalendar extends LitElement {
 
   private mainViewDate = this.startOfDay(new Date());
 
-  private pendingClickedDate: Date | null = null;
-
-  private pendingNavigationMonth: Date | null = null;
-
   private readonly handleMainCalendarDateChange = (event: Event): void => {
     const detail = (event as CustomEvent<MainCalendarDateDetail>).detail;
     const date = detail?.date;
@@ -67,13 +63,8 @@ export class CalendarFilterMiniCalendar extends LitElement {
       return;
     }
 
-    const synchronizedDate = this.pendingClickedDate
-      ?? this.pendingNavigationMonth
-      ?? parsedDate;
-    this.pendingClickedDate = null;
-    this.pendingNavigationMonth = null;
-    this.displayedMonth = this.startOfMonth(synchronizedDate);
-    this.mainViewDate = this.startOfDay(synchronizedDate);
+    this.displayedMonth = this.startOfMonth(parsedDate);
+    this.mainViewDate = this.startOfDay(parsedDate);
     this.mainViewType = detail?.viewType ?? '';
     this.requestUpdate();
   };
@@ -255,7 +246,6 @@ export class CalendarFilterMiniCalendar extends LitElement {
   }
 
   private navigateToMonth(targetMonth: Date, monthDelta: number): void {
-    this.pendingNavigationMonth = targetMonth;
     this.displayedMonth = this.startOfMonth(targetMonth);
     this.mainViewDate = this.startOfDay(targetMonth);
     this.requestUpdate();
@@ -269,10 +259,8 @@ export class CalendarFilterMiniCalendar extends LitElement {
 
   private selectDate(date: Date): void {
     const clickedDate = this.startOfDay(date);
-    this.pendingClickedDate = clickedDate;
     this.displayedMonth = this.startOfMonth(date);
     this.mainViewDate = clickedDate;
-    this.mainViewType = 'timeGridWeek';
     this.dispatchEvent(new CustomEvent('mini-calendar-date-change', {
       bubbles: true,
       composed: true,
