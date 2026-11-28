@@ -104,7 +104,6 @@ DocumentService.ready().then(async () => {
     filterWindow.addEventListener('xima-calendar-filter-configuration-loaded', publishCurrentTreeEventValues);
 
     const eventRenderer = createCalendarEventRenderer({
-        locale: calendarConfig.locale,
         filterColors: calendarConfig.filterColors,
         appearanceSource: calendarConfig.eventAppearance.appearanceSource,
         colorSource: calendarConfig.eventAppearance.colorSource,

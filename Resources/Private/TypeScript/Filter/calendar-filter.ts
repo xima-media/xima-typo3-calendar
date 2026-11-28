@@ -56,6 +56,8 @@ export class CalendarFilterElement extends LitElement {
 
   private filterColors: ColorOverrides = {};
 
+  private colorSource = '';
+
   private filterState: CalendarFilterState | null = null;
 
   private filterLabels: CalendarFilterActionLabels | null = null;
@@ -153,7 +155,7 @@ export class CalendarFilterElement extends LitElement {
 
       return {
         ...item,
-        color: tree.supportsColorCoding
+        color: tree.supportsColorCoding && tree.identifier === this.colorSource
           ? isParent && this.treeEventValuesLoaded && !hasOwnEvents
             ? 'color-mix(in srgb, var(--typo3-component-color) 45%, var(--typo3-component-bg))'
             : getColor(tree.identifier, item.value, this.filterColors)
@@ -251,6 +253,7 @@ export class CalendarFilterElement extends LitElement {
 
       this.filterConfiguration = data.filters;
       this.filterColors = data.filterColors;
+      this.colorSource = data.colorSource;
       this.filterState = data.state;
       this.filterLabels = data.labels;
       this.publishFilterConfiguration();
