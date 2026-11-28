@@ -57,7 +57,9 @@ export const renderCalendarListMultiDayEvents = (
         panel.classList.add('xima-calendar-list__multi-day--columns-5');
     }
     panel.style.insetBlockStart = `${scrollContainer.offsetTop}px`;
-    panel.style.blockSize = `${scrollContainer.clientHeight}px`;
+    // The panel is border-box with its own border, so it has to match the
+    // list's border box; clientHeight would leave it two pixels short.
+    panel.style.blockSize = `${scrollContainer.offsetHeight}px`;
     panel.style.setProperty('--xima-list-column-count', String(columnCount));
     panel.style.setProperty('--xima-list-day-count', String(layout.dayCount));
 
@@ -108,13 +110,6 @@ export const renderCalendarListMultiDayEvents = (
         eventElement.style.cssText += Array.isArray(eventStyles)
             ? eventStyles.join(';')
             : eventStyles;
-
-        if (lane.event.backgroundColor) {
-            eventElement.style.backgroundColor = lane.event.backgroundColor;
-        }
-        if (lane.event.textColor) {
-            eventElement.style.color = lane.event.textColor;
-        }
 
         const eventBody = document.createElement('div');
         eventBody.className = 'ec-event-body';

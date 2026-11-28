@@ -81,11 +81,10 @@
 #xima-calendar-mount .ec-time-grid .ec-event-body {
     box-sizing: border-box;
     min-inline-size: 0;
-    align-self: flex-start;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
     overflow: hidden;
-    padding: 0.15rem 0.35rem;
+    padding: calc(0.15rem + 2px) calc(0.35rem + 2px);
 }
 
 #xima-calendar-mount .ec-time-grid .ec-event-title {

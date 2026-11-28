@@ -9,16 +9,12 @@
         flex: 1 1 auto;
         min-block-size: 0;
 
-        .ec-event:not(.ec-preview):not(.ec-pointer) {
+        .ec-event:not(.ec-preview):not(.ec-pointer) .ec-event-body {
             transform-origin: center;
-            transition: inline-size 120ms ease, margin-inline 120ms ease, scale 120ms ease;
         }
 
-        .ec-event:not(.ec-preview):not(.ec-pointer):hover,
-        .ec-event:not(.ec-preview):not(.ec-pointer):focus-visible {
-            inline-size: calc(100% - 6px);
-            margin-inline: 3px;
-            scale: 1 .9;
+        .ec-event:not(.ec-preview):not(.ec-pointer):is(:hover, :focus-visible) .ec-event-body {
+            scale: .99 .9;
         }
     }
 
@@ -37,7 +33,6 @@
     .ec-event {
         align-items: center;
         min-block-size: 3rem;
-        padding: 0.65rem 1rem;
         border-block-end: 1px solid var(--typo3-component-border-color);
         border-radius: 0;
     }
@@ -47,6 +42,17 @@
         align-items: center;
         gap: 0.5rem;
         min-width: 0;
+        /* Start padding includes the 4px tag and its 8px gap. */
+        padding: 0.65rem 1rem 0.65rem calc(1rem + 12px);
+    }
+
+    /* EC's tag sits outside the coloured body: the body draws it as an inset shadow instead. */
+    .ec-event-tag {
+        display: none;
+    }
+
+    .ec-main .ec-event-body {
+        box-shadow: inset 4px 0 var(--xima-event-color);
     }
 
     .ec-event-time {
@@ -81,7 +87,6 @@
         .ec-event {
             inline-size: 100%;
             margin-inline: 0;
-            padding-inline: 0;
             border-block-end: 0;
         }
 
@@ -91,6 +96,9 @@
 
         .ec-event-body {
             min-inline-size: 0;
+            padding-inline: 12px 0;
+            flex-wrap: wrap;
+            align-content: center;
             align-items: baseline;
             overflow: hidden;
         }
@@ -162,7 +170,7 @@
         max-inline-size: 100%;
         min-block-size: 0 !important;
         margin: 0.2rem !important;
-        padding: 0.35rem 0.5rem !important;
+        border-block-end: 0;
         border-radius: var(--typo3-component-border-radius, 0.25rem);
         overflow: hidden;
     }
@@ -170,8 +178,15 @@
     .xima-calendar-list__multi-day-event .ec-event-body {
         inline-size: 100%;
         min-inline-size: 0;
+        padding: 0.35rem 0.5rem;
+        flex-wrap: wrap;
+        align-content: center;
         align-items: flex-start;
         overflow: hidden;
+    }
+
+    .xima-calendar-list__multi-day-event:is(:hover, :focus-visible) .ec-event-body {
+        scale: .96 .97;
     }
 
     .xima-calendar-list__multi-day-event .ec-event-title {
@@ -191,22 +206,6 @@
     .xima-calendar-list__multi-day--columns-5
     .xima-calendar-list__multi-day-event .ec-event-title {
         display: none;
-    }
-
-    .ec-main .ec-event.xima-calendar-event--dashed,
-    .xima-calendar-list__multi-day-event.xima-calendar-event--dashed {
-        border-block-end: 2px dashed light-dark(
-            color-mix(in srgb, var(--xima-event-color, currentColor) 70%, #000 30%),
-            color-mix(in srgb, var(--xima-event-color, currentColor) 70%, #fff 30%)
-        ) !important;
-    }
-
-    .ec-main .ec-event.xima-calendar-event--outlined,
-    .xima-calendar-list__multi-day-event.xima-calendar-event--outlined {
-        border-block-end: 2px solid light-dark(
-            color-mix(in srgb, var(--xima-event-color, currentColor) 70%, #000 30%),
-            color-mix(in srgb, var(--xima-event-color, currentColor) 70%, #fff 30%)
-        ) !important;
     }
 
     .xima-calendar-list__multi-day-day {
